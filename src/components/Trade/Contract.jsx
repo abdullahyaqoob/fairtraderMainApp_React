@@ -53,7 +53,7 @@ class App extends Component {
 
   userAddressHandle = async () => {
     let userAddres;
-    if (this.props["props"].UserAccountAddr.userAccountAdd !== "") {
+    if (this.props["props"].UserAccountAddr.userAccountAddr !== "") {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
       console.log(userAddres);
       this.setState({ connectedUserAddr: userAddres });

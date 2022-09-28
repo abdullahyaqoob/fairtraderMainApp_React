@@ -330,6 +330,15 @@ class App extends Component {
   }
 
   render() {
+    let resolutionMediatorEmail = this.state.resolutionMediatorSelected.email
+    let resolutionMediatorProfileEmail =
+      <a href={`mailto:${resolutionMediatorEmail}`} target="_blank">
+        <img src={emailIcon} alt="emailIcon" />
+      </a>
+
+
+
+
     let mutualFriendOrMentor;
     if (this.state.mutualFriend === true) {
       mutualFriendOrMentor = (
@@ -601,7 +610,7 @@ class App extends Component {
           <div className="slcMedBlackContainer">
             <div className="row" style={{ marginTop: "-20px" }}>
               {this.state.selectedResolutionMediators.map((value, index) => (
-                <div className="col-6" style={{ marginTop: "20px" }}>
+                <div className="col-6" style={{ marginTop: "20px" }} key={index}>
                   {/* <div className="mediatorBlueDiv" onClick={() => { this.handleSelectMediator('location1') }}> */}
                   <div className="mediatorBlueDiv">
                     <div className="mediatorBlackDiv">
@@ -955,11 +964,14 @@ class App extends Component {
                                 />
                             </span> */}
               <div className="selectResolutionBtnDiv">
-                <Link to={{ pathname: "/Contract" }}>
-                  <p className="selectResolutionBtn alignCenter">
-                    Select Mediator
-                  </p>
-                </Link>
+                {/* <Link to={{ pathname: "/Contract" }}> */}
+                <p className="selectResolutionBtn alignCenter" onClick={() => toast.warning("First Select, Any Mediator", {
+                  position: "top-right",
+                })
+                }>
+                  Select Mediator
+                </p>
+                {/* </Link> */}
               </div>
               {/* <span className="alignEnd" style={{ float: 'right' }}>
                                 <img src={mediatorNext} className='floatRight' alt="mediatorNext" onClick={() => {
@@ -1268,11 +1280,11 @@ class App extends Component {
                                 />
                             </span> */}
               <div className="selectResolutionBtnDiv">
-                <Link to={{ pathname: "/Contract" }}>
-                  <p className="selectResolutionBtn alignCenter">
-                    Select Mediator
-                  </p>
-                </Link>
+                {/* <Link to={{ pathname: "/Contract" }}> */}
+                <p className="selectResolutionBtn alignCenter">
+                  Select Mediator
+                </p>
+                {/* </Link> */}
               </div>
               {/* <span className="alignEnd" style={{ float: 'right' }}>
                                 <img src={mediatorNext} className='floatRight' alt="mediatorNext" onClick={() => {
@@ -1597,11 +1609,11 @@ class App extends Component {
                                 />
                             </span> */}
               <div className="selectResolutionBtnDiv">
-                <Link to={{ pathname: "/Contract" }}>
-                  <p className="selectResolutionBtn alignCenter">
-                    Select Mediator
-                  </p>
-                </Link>
+                {/* <Link to={{ pathname: "/Contract" }}> */}
+                <p className="selectResolutionBtn alignCenter">
+                  Select Mediator
+                </p>
+                {/* </Link> */}
               </div>
               {/* <span className="alignEnd" style={{ float: 'right' }}>
                                 <Link to={{ pathname: '/Contract' }}>
@@ -1763,14 +1775,14 @@ class App extends Component {
             <center>
               <div className="mediatorSocialLinks">
                 <img src={websiteIcon} alt="websiteIcon" />
-                <img src={emailIcon} alt="emailIcon" />
+                {resolutionMediatorProfileEmail}
                 <img src={telegramIcon} alt="telegramIcon" />
               </div>
             </center>
 
             <div className="selectResolutionDIv invoiceThreeBtnDiv contractDIvBTN">
               <span className="alignStart">
-                <img src={mediatorPrev} alt="mapIcon" />
+                <img src={mediatorPrev} alt="mapIcon" onClick={() => this.setState({ handleSelectMediatorLocation: true })} />
               </span>
               <span className="invoiceThreeBtn contractBTNText">
                 <p
@@ -1786,13 +1798,16 @@ class App extends Component {
                 </p>
               </span>
               <span className="alignEnd" style={{ float: "right" }}>
-                <Link to={{ pathname: "/Resolution" }}>
-                  <img
-                    src={mediatorNext}
-                    className="floatRight"
-                    alt="walletGreaterSign"
-                  />
-                </Link>
+                <img
+                  onClick={() => {
+                    this.handleSelectResolutionMediator(
+                      this.state.resolutionMediatorSelected
+                    );
+                  }}
+                  src={mediatorNext}
+                  className="floatRight"
+                  alt="walletGreaterSign"
+                />
               </span>
             </div>
           </div>
