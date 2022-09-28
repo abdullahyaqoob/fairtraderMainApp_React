@@ -307,6 +307,10 @@
 
 .colorWhite{
     color: white;
+    white-space: nowrap;
+}
+.noWrapWhiteSpace {
+    white-space: nowrap;
 }
 
 .invoiceUnpaidProfileData {

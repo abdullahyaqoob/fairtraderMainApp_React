@@ -617,11 +617,11 @@ class PurchaseHistory extends Component {
             <p
               className="selectResolutionBtn alignCenter"
               onClick={() => {
-                document.getElementById(
-                  "invoiceUnpaidSelectedOption"
-                ).style.display = "inherit";
-                document.getElementById("invoiceAllUnpaidBoxes").style.display =
-                  "none";
+                // document.getElementById(
+                //   "invoiceUnpaidSelectedOption"
+                // ).style.display = "inherit";
+                // document.getElementById("invoiceAllUnpaidBoxes").style.display =
+                //   "none";
                 this.setState({
                   purchasehistoryPaidBtn: true,
                 });
@@ -1619,7 +1619,7 @@ class PurchaseHistory extends Component {
                                     <div className="col-5 invoiceUnpaidProfile">
                                       <p className="invoiceUnpaidProfileData">
                                         <p className="colorWhite">
-                                          <b>{val.customername}</b>
+                                          <b>{val.customername.substring(0, 15)}</b>
                                         </p>
                                         <p className="colorWhite">#{val.id}</p>
                                         <p className="colorWhite">
@@ -1680,7 +1680,7 @@ class PurchaseHistory extends Component {
                                     <div className="col-5 invoiceUnpaidProfile">
                                       <p className="invoiceUnpaidProfileData">
                                         <p>
-                                          <b>{val.customername}</b>
+                                          <b>{val.customername.substring(0, 15)}</b>
                                         </p>
                                         <p>#{val.id}</p>
                                         <p>
@@ -1986,7 +1986,7 @@ class PurchaseHistory extends Component {
                         </div>
                         <div className="col-5 invoiceUnpaidProfile">
                           <p className="invoiceUnpaidProfileData">
-                            <p>
+                            <p className="noWrapWhiteSpace">
                               <b>{this.state.SelectedOrder.customername}</b>
                               {/* <b>XYZ Goods</b> */}
                             </p>
@@ -2121,8 +2121,8 @@ class PurchaseHistory extends Component {
                                 </div>
                                 <div className="col-5 invoiceUnpaidProfile">
                                   <p className="invoiceUnpaidProfileData">
-                                    <p>
-                                      <b>{val.customername}</b>
+                                    <p className="noWrapWhiteSpace">
+                                      <b>{val.customername.substring(0, 15)}</b>
                                     </p>
                                     <p>#{val.id}</p>
                                     <p>
