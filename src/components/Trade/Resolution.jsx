@@ -98,15 +98,15 @@ class App extends Component {
       console.log(userAddres);
       this.setState({ connectedUserAddr: userAddres });
 
-      console.log(localStorage.getItem(userAddres + "invoiceIcd"));
+      console.log(localStorage.getItem(userAddres + "invoiceId"));
       if (localStorage.getItem(userAddres + "invoiceId") === null) {
         toast.error("Please first Create your Invoice", {
           position: "top-right",
         });
 
-        setTimeout(() => {
-          window.location = "Invoice";
-        }, 2000);
+        // setTimeout(() => {
+        //   window.location = "Invoice";
+        // }, 2000);
       }
     } else {
       setTimeout(this.userAddressHandle, 250);

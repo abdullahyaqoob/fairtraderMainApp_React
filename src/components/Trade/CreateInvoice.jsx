@@ -87,7 +87,7 @@ class CreateInvoice extends Component {
       invoicePaidBtn: false,
       invoicePaymentStopped: false,
       userAccountAddress: "",
-      handleViewPDF: false
+      handleViewPDF: false,
     };
   }
 
@@ -113,6 +113,7 @@ class CreateInvoice extends Component {
   }
 
   onInvoiceFileSelect = async (e) => {
+    e.preventDefault();
     // console.log("event", e);
     // this.AllImageFiles = e.target.files;
 
@@ -215,8 +216,7 @@ class CreateInvoice extends Component {
   };
 
   render() {
-
-      let formatedCalenderValueUI;
+    let formatedCalenderValueUI;
     if (this.state.formatedCalenderValue === "") {
       formatedCalenderValueUI = "Payment";
     } else {
@@ -283,19 +283,23 @@ class CreateInvoice extends Component {
     let invoiceBtn;
     if (this.state.paymentCalender === true) {
       invoiceBtn = "";
-    } else if (
-      this.state.ProfileSelectedFileQual !== ""
-    ) {
+    } else if (this.state.ProfileSelectedFileQual !== "") {
       invoiceBtn = (
         <div className="selectResolutionDIv invoiceThreeBtnDiv">
           <span className="alignStart">
-            <img onClick={() => this.setState({ ProfileSelectedFileQual: "" })} src={invoiceDelete} alt="mapIcon" />
+            <img
+              onClick={() => this.setState({ ProfileSelectedFileQual: "" })}
+              src={invoiceDelete}
+              alt="mapIcon"
+            />
           </span>
           <span className="invoiceThreeBtn">
             <p
               className="selectResolutionBtn alignCenter"
               onClick={() => {
-                this.setState({handleViewPDF: true})
+                this.setState({ handleViewPDF: true });
+                document.getElementById("invoiceBLackContainer").style.display =
+                  "none";
               }}
               style={{ width: "200px" }}
             >
@@ -303,14 +307,12 @@ class CreateInvoice extends Component {
             </p>
           </span>
           <span className="alignEnd" style={{ float: "right" }}>
-            <Link to={{ pathname: "/Resolution" }}>
               <img
                 src={invoiceNextResolution}
                 onClick={() => this.createInvoiceHandler()}
                 className="floatRight"
                 alt="walletGreaterSign"
               />
-            </Link>
           </span>
         </div>
       );
@@ -318,11 +320,7 @@ class CreateInvoice extends Component {
       invoiceBtn = (
         <div className="selectResolutionDIv">
           <div className="selectResolutionBtnDiv">
-            <p
-              className="selectResolutionBtn alignCenter"
-            >
-              Enter Information
-            </p>
+            <p className="selectResolutionBtn alignCenter">Enter Information</p>
           </div>
         </div>
       );
@@ -543,33 +541,34 @@ class CreateInvoice extends Component {
             </button>
           </div>
         </section>
+        {/* {this.state.handleViewPDF === false ? */}
+        <div
+          className="handleMainPage"
+          id="InvoiceTabBody"
+          style={{ height: "680px", width: "100%" }}
+        >
+          {this.state.handleViewPDF === true ? (
+            <div className="viewPDFContainer" style={{ height: "70vh" }}>
+              <div
+                className="invoicePDFCloss"
+                onClick={() => {
+                  this.setState({ handleViewPDF: false });
+                  document.getElementById(
+                    "invoiceBLackContainer"
+                  ).style.display = "initial";
+                }}
+              >
+                <span>X</span>
+              </div>
+              <img src={invoiceDummyPDF} alt="invoiceDummyPDF" />
 
-        {this.state.handleViewPDF === true ?
-          <div className="viewPDFContainer" style={{height: '70vh'}}>
-            <div
-              className="invoicePDFCloss"
-              onClick={() => {
-                this.setState({handleViewPDF: false})
-
-              }}
-            >
-              <span>X</span>
+              {/* <img src={invoiceDelete} onClick={() => { this.handleClossPDF() }} className='invoicePDFCloss' alt="invoiceDelete" /> */}
             </div>
-            <img src={invoiceDummyPDF} alt="invoiceDummyPDF" />
+          ) : (
+            ""
+          )}
 
-            {/* <img src={invoiceDelete} onClick={() => { this.handleClossPDF() }} className='invoicePDFCloss' alt="invoiceDelete" /> */}
-          </div>
-          : ""}
-
-
-
-        {this.state.handleViewPDF === false ?
-
-          <div
-            className="handleMainPage"
-            id="InvoiceTabBody"
-            style={{ height: "680px", width: "100%" }}
-          >
+          <div id="invoiceBLackContainer">
             <div className="invoiceBlackContainer" id="invoiceBlackContainer">
               <p className="invoiceFirstLine">
                 <img
@@ -799,7 +798,7 @@ class CreateInvoice extends Component {
               {invoiceBtn}
             </div>
           </div>
-          : ""}
+        </div>
         <ToastContainer />
       </div>
     );
