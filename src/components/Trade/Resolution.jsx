@@ -93,7 +93,8 @@ class App extends Component {
 
   userAddressHandle = async () => {
     let userAddres;
-    if (this.props["props"].UserAccountAddr.userAccountAdd !== "") {
+    console.log(this.props["props"]);
+    if (this.props["props"].UserAccountAddr.userAccountAddr !== "") {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
       console.log(userAddres);
       this.setState({ connectedUserAddr: userAddres });
@@ -104,11 +105,12 @@ class App extends Component {
           position: "top-right",
         });
 
-        // setTimeout(() => {
-        //   window.location = "Invoice";
-        // }, 2000);
+        setTimeout(() => {
+          window.location = "Invoice";
+        }, 2000);
       }
     } else {
+      console.log('else');
       setTimeout(this.userAddressHandle, 250);
     }
   };
