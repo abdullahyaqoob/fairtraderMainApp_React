@@ -85,6 +85,7 @@ class App extends Component {
       selectedResolutionMediators: [],
       resolutionMediatorSelected: {},
       connectedUserAddr: "",
+      letMeSelectOrVs: false
     };
   }
   async componentWillMount() {
@@ -93,7 +94,6 @@ class App extends Component {
 
   userAddressHandle = async () => {
     let userAddres;
-    console.log(this.props["props"]);
     if (this.props["props"].UserAccountAddr.userAccountAddr !== "") {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
       console.log(userAddres);
@@ -110,7 +110,6 @@ class App extends Component {
         }, 2000);
       }
     } else {
-      console.log('else');
       setTimeout(this.userAddressHandle, 250);
     }
   };
@@ -118,6 +117,46 @@ class App extends Component {
   handleSelectIndustry(e) {
     this.setState({ selectedIndustry: e });
     this.setState({ openDropdown: false });
+  }
+
+  handleLetMeSelectOrVs() {
+
+    if (
+      document.getElementById("resolutionAutomaticTxt").style
+        .display === "initial"
+    ) {
+      setTimeout(() => {
+        document.getElementById(
+          "resolutionAutomaticBox"
+        ).style.display = "initial";
+        document.getElementById(
+          "resolutionAutomaticTxt"
+        ).style.display = "none";
+
+        this.setState({ letMeSelectOrVs: true })
+
+      }, 1);
+    } else if (
+      document.getElementById("resolutionAutomaticTxt").style
+        .display === "none"
+    ) {
+      setTimeout(() => {
+        document.getElementById(
+          "resolutionAutomaticBox"
+        ).style.display = "none";
+        document.getElementById(
+          "resolutionAutomaticTxt"
+        ).style.display = "initial";
+
+        this.setState({ letMeSelectOrVs: false })
+
+      }, 1);
+    }
+
+
+
+
+
   }
 
   handleMagnifierView(e) {
@@ -352,7 +391,7 @@ class App extends Component {
           Select Mediator
         </p>
       );
-    } else {
+    } else if (this.state.letMeSelectOrVs === true) {
       resolutionBtn = (
         <p
           className="selectResolutionBtn alignCenter"
@@ -361,6 +400,17 @@ class App extends Component {
           }}
         >
           Select Resolution
+        </p>
+      );
+    } else if (this.state.selectedIndustry === "") {
+      resolutionBtn = (
+        <p
+          className="selectResolutionBtn alignCenter"
+          onClick={() => {
+            this.handleSelectResolution();
+          }}
+        >
+          Approve
         </p>
       );
     }
@@ -580,7 +630,7 @@ class App extends Component {
                         alt="mediatorAustraliaFlag"
                       /> */}
                       {/* <p className="mediatorsInfoTxt" style={{textAlign: 'center'}}>{value.id}</p> */}
-                      <p className="mediatorsInfoTxt" style={{textAlign: 'center'}}>84 %</p>
+                      <p className="mediatorsInfoTxt" style={{ textAlign: 'center' }}>84 %</p>
                     </div>
                     {/* <img src={mediatorSearch} onClick={() => { this.handleMagnifierView() }} alt="mediatorSearch" className='mediatorSearch' /> */}
                     <img
@@ -1573,7 +1623,7 @@ class App extends Component {
                     <div className="row">
                       <div className="col-6 MediatorCardImg">
                         {this.state.resolutionMediatorSelected.passport ===
-                        "" ? (
+                          "" ? (
                           <img
                             src={location8}
                             alt="MediatorCardImg"
@@ -1755,42 +1805,8 @@ class App extends Component {
             <div
               className="resolutionOptionstoggle resolutionOptionstoggleAutoSelect"
               style={{ marginBottom: "-7px" }}
-              onClick={() => {
-                console.log(
-                  document.getElementById("resolutionAutomaticBox").style
-                    .display
-                );
-                console.log(
-                  document.getElementById("resolutionAutomaticTxt").style
-                    .display
-                );
+              onClick={() => this.handleLetMeSelectOrVs()}
 
-                if (
-                  document.getElementById("resolutionAutomaticTxt").style
-                    .display === "initial"
-                ) {
-                  setTimeout(() => {
-                    document.getElementById(
-                      "resolutionAutomaticBox"
-                    ).style.display = "initial";
-                    document.getElementById(
-                      "resolutionAutomaticTxt"
-                    ).style.display = "none";
-                  }, 1);
-                } else if (
-                  document.getElementById("resolutionAutomaticTxt").style
-                    .display === "none"
-                ) {
-                  setTimeout(() => {
-                    document.getElementById(
-                      "resolutionAutomaticBox"
-                    ).style.display = "none";
-                    document.getElementById(
-                      "resolutionAutomaticTxt"
-                    ).style.display = "initial";
-                  }, 1);
-                }
-              }}
             >
               <span className="alignStart">Let me select resolution</span>
 
