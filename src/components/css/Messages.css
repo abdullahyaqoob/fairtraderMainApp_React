@@ -1,0 +1,123 @@
+.messagesMainContianer {
+    padding: 8px;
+}
+
+.messagesDiv {
+    display: flex;
+    justify-content: space-between;
+    height: 40px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.messagesDiv div {
+    padding-top: 6px;
+    padding-left: 6px;
+    background-color: rgb(82, 76, 76);
+}
+
+.messageindex {
+    width: 10%;
+    /* width: 20%; */
+}
+
+.messagealert {
+    width: 15%;
+}
+
+.messagefrom {
+    width: 56.5%;
+    /* width: 46.5%; */
+}
+
+.messagefrom span {
+    font-weight: normal;
+}
+
+.messagedate {
+    width: 17%;
+}
+
+.messagesVl div {
+    background-color: transparent;
+    font-weight: normal;
+    font-size: 17px;
+}
+
+.messagesHR {
+    border-style: dotted none none;
+    border-width: 1px;
+    border-color: rgb(224, 224, 224);
+    margin-top: 0px;
+    margin-bottom: 1px;
+}
+
+
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    height: 28px;
+    width: 28px;
+    /* background-color: #eee; */
+    border: 2px solid white;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input~.checkmark {
+    background-color: transparent;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked~.checkmark {
+    background-color: transparent;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+    left: 7px;
+    top: 1px;
+    width: 9px;
+    height: 16px;
+    border: solid rgb(74, 253, 74);
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}

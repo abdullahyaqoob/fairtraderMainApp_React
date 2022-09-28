@@ -1,0 +1,206 @@
+.pinkContainer img {
+    margin-top: 70px;
+    margin-bottom: 30px;
+    /* background-color: red; */
+}
+
+.walletLogo {
+    margin-top: 24px;
+}
+
+.connectTxtMediate {
+    margin-left: 28px;
+    position: relative;
+    top: -93px;
+    font-size: 17px;
+    font-weight: bold;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    letter-spacing: 1px;
+}
+
+.connectWalletContainer {
+    background-color: black;
+    width: 85%;
+    height: auto;
+    border-radius: 20px;
+    margin-top: 45px;
+    border: 3px solid #21FFFE;
+    color: white;
+}
+
+.connectWalletContainer h2 {
+    color: #21FFFE;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 7px 0px;
+    padding-top: 14px;
+}
+
+.walletConnectCross {
+    color: #21FFFE;
+    font-weight: bold;
+    font-size: 19px;
+    float: right;
+    margin-right: 20px;
+    position: relative;
+    top: -40px;
+}
+
+.hrConnect {
+    width: 100%;
+    margin-top: 0px;
+    border: 1px solid #21FFFE;
+    background-color: #21FFFE;
+}
+
+.metamaskRow {
+    margin: 30px;
+    margin-top: 6px;
+}
+
+.metamaskRow b {
+    color: white;
+    padding-right: 14px;
+    padding-left: 14px;
+}
+
+.metamaskRow p {
+    text-align: start;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+.metamaskRow a {
+    color: #1DCCFF;
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: underline;
+}
+
+.selectResolutionBtnDivMyWallet {
+    position: absolute;
+    bottom: 15px;
+    /* margin-top: 50px; */
+    width: 50%;
+    left: 50%;
+    bottom: 14%;
+    transform: translate(-50%, 0%);
+}
+
+.walletMainOptions {
+    padding: 0 20px;
+    font-size: 21px;
+    font-weight: bold;
+    color: black;
+    width: 97%;
+    margin: 0 auto;
+    position: absolute;
+    bottom: 2%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.walletMainOptions p span {
+    border-bottom: 0px solid #21FEFD;
+    margin-top: 0px;
+    font-size: 20px;
+}
+
+.connectTxtTrade {
+    font-weight: bold;
+    font-size: 17px;
+    position: relative;
+    top: -130px;
+    left: -40px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    color: #21FFFE;
+    letter-spacing: 1px;
+}
+
+.AlertTabNoNadius {
+    border-radius: 0px !important;
+}
+
+.rotateImg {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.pinkText {
+    padding: 0 20px;
+    font-size: 21px;
+    font-weight: bold;
+    color: black;
+    width: 97%;
+    margin: 0 auto;
+}
+
+.pinkHowToUse {
+    float: left;
+    border-bottom: 4px solid #21FEFD;
+    color: #21FEFD;
+    border-radius: 4px;
+    padding-bottom: 2px;
+    margin-top: -4px;
+}
+
+.blackContainer {
+    width: 100%;
+    /* height: 50%; */
+    background-color: black;
+}
+
+.blackMainContainer {
+    width: 88%;
+    color: white;
+    padding-top: 24px;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 auto;
+}
+
+.paraHeading {
+    color: #1DCCFF;
+    margin-left: 10px;
+}
+
+.walletHR {
+    width: 362px;
+    margin-top: -1px;
+}
+
+.floatRight {
+    float: right;
+}
+
+.paraGreaterSign {
+    float: right;
+    margin-top: -9px;
+}
+
+.walletParaSpaceTop {
+    margin-top: -8px;
+}
+
+@media (max-width: 380px) {
+    .pinkText {
+        padding: 0 20px;
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 370px) {
+    .blackMainContainer {
+        font-size: 13px;
+    }
+
+    .pinkText {
+        padding: 0 20px;
+        font-size: 19px;
+    }
+}

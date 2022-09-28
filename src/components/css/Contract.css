@@ -1,0 +1,343 @@
+.contractMainPinkContainer {
+    /* background-color: black; */
+    width: 95%;
+    /* height: 600px; */
+    /* border-radius: 10px; */
+    margin: 0 auto;
+    margin-top: 5px;
+    color: black;
+    padding: 10px;
+    padding-top: 20px;
+    margin-bottom: -5px;
+    /* padding-bottom: 100px; */
+}
+
+
+.contractFullFeild {
+    width: 106%;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding: 5px;
+}
+
+.contractFullFeild2 {
+    margin-left: -10px;
+}
+
+.contractFullFeild span {
+    font-size: 19px;
+    font-weight: bold;
+    color: black;
+}
+
+.contractRspTm {
+    color: black;
+    font-weight: bold;
+    margin-top: 2.5px;
+    /* background-color: red; */
+    width: 116px;
+    margin-left: 15px;
+}
+
+.appealTImeDiv {
+    padding-left: 4px;
+}
+
+.headingFeilds {
+    font-size: 17px;
+    color: white;
+    font-weight: bold;
+    margin-top: 6px;
+    margin-bottom: -8px;
+    margin-left: 5px;
+}
+
+.headingFeilds2 {
+    margin-left: -5px;
+}
+
+.contractBlackContainer {
+    background-color: black;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 5px;
+    color: rgb(255, 255, 255);
+    padding: 10px;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 50px !important;
+}
+
+.contractBlackContainer h6 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: -8px;
+    /* margin-bottom: 2px; */
+}
+
+.contractBlackContainer p {
+    font-size: 14px;
+    line-height: 20px;
+    color: #e0e0e0;
+    /* font-weight: bold; */
+}
+
+.contractBtn {
+    font-size: 21px !important;
+    color: #21FFFE;
+    border: 3px solid #21FFFE;
+    /* font-weight: bold; */
+    height: 48px;
+    padding-top: 11px;
+    padding-bottom: 8px;
+    border-radius: 15px;
+
+    background-color: #FE18B3 !important;
+    color: white !important;
+}
+
+.contractDIvBTN {
+    padding-top: 17px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.contractBTNText {
+    transform: translate(-50%, 0);
+}
+
+
+/* CONTRACT SWITHCHES */
+.contractSwithOneInner:before {
+    content: "Yes";
+}
+
+.onoffswitch-inner_Payment:before {
+    content: "Yes";
+    left: -31px;
+    background-color: #099933;
+
+}
+
+.onoffswitch-inner_Payment::after {
+    content: "No";
+}
+
+.contractonoffswitch {
+    width: 68px;
+}
+
+.contractSwithOneInner:before, .contractSwithOneInner:after {
+    height: 29px;
+    line-height: 30px;
+}
+
+.contractSwithSwitch {
+    width: 23px;
+    height: 23px;
+    margin: 3px;
+    margin-right: 4px;
+    right: 38px;
+}
+
+.contractSwithOneInner:before {
+    /* content: "On"; */
+    /* padding-left: 7px; */
+    /* color: #FFFFFF; */
+    position: relative;
+    left: -32px;
+}
+
+.warrantyTxtAccept {
+    margin-left: 5px;
+    font-weight: bold;
+    font-size: 15px !important;
+    color: #4E658D !important;
+}
+
+
+#contractTabMenu {
+    background-color: #000;
+    width: 100%;
+    padding-top: 14px;
+}
+
+.contractTabMenuItems {
+    display: flex;
+}
+
+.contractTabMenuItems button {
+    width: 25%;
+    height: 90px;
+    position: relative;
+    background-color: #000;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid transparent;
+    outline: none;
+}
+
+.contractTabMenuItems .logo {
+    width: 75%;
+    height: 90px;
+    position: relative;
+    background-color: #000;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid transparent;
+    outline: none;
+    border-bottom-right-radius: 12px !important;
+}
+
+.ContractresolutionTab {
+    border-bottom-right-radius: 12px;
+}
+
+.ContractresolutionTab img {
+    position: relative;
+    left: -5px;
+    top: -2px;
+}
+
+.ContractwalletTab {
+    border-bottom-left-radius: 12px;
+}
+
+.ContractcontractTab {
+    background-color: #ff00b3 !important;
+}
+
+/* ------body------- */
+#contractTabBody {
+    /* background-image: linear-gradient(to bottom, #FF00B3, rgb(0, 0, 0)); */
+    background-image: linear-gradient(to bottom, #ff00b3, #ff00b3, black, black);
+}
+
+@media (max-width: 415px) {
+    .headingFeilds {
+        font-size: 16px;
+    }
+
+    .headingFeilds2 {
+        margin-left: -5px;
+    }
+}
+
+@media (max-width: 400px) {
+    .contractBlackContainer p {
+        font-size: 13px;
+    }
+
+    .contractBlackContainer h6 {
+        font-size: 17px;
+    }
+
+    .headingFeilds {
+        font-size: 15px;
+    }
+
+    .contractFullFeild {
+        width: 106%;
+        padding: 2px;
+        padding-left: 8px;
+        padding-right: 8px;
+        height: 32px;
+    }
+
+    .contractFullFeild span {
+        /* font-size: 19px; */
+        font-size: 16px;
+    }
+
+    .contractBoxes span {
+        font-size: 17px;
+    }
+
+    .contractPlusIcon {
+        width: 25px;
+        padding-top: 2px;
+    }
+
+    .contractResponseTimeIcon {
+        width: 27px;
+        padding-top: 2px;
+    }
+
+    .applyInvoices {
+        width: 19px;
+    }
+
+    .contractTimeIconFirst {
+        width: 29px;
+        padding-top: 0px;
+    }
+
+    .contractBoxes {
+        height: 32px;
+        padding: 4px;
+        padding-left: 10px;
+        padding-right: 10px;
+
+    }
+
+    .contractPlusIconfirstFeild {
+        padding-top: 4px;
+    }
+
+    .ContractTimeDays {
+        font-size: 15px !important;
+        position: relative;
+        top: 1px;
+    }
+
+    .contractSwithSwitchWhole {
+        width: 57px;
+        margin-top: 1px;
+    }
+
+    .contractSwithSwitch {
+        right: 33px;
+        width: 17px;
+        height: 17px;
+        top: 1px;
+    }
+
+    .contractSwithSwitchWhole label .onoffswitch-inner::before, .contractSwithSwitchWhole label .onoffswitch-inner::after {
+        height: 25px;
+        position: relative;
+        top: -2px;
+    }
+
+    .contractSwithSwitchWhole label .onoffswitch-inner::before {
+        left: -27px;
+        font-size: 14px;
+    }
+
+
+}
+
+@media (max-width: 373px) {
+    .contractBlackContainer p {
+        font-size: 12px;
+    }
+
+    .headingFeilds {
+        font-size: 14px;
+    }
+
+    .contractFullFeild span {
+        font-size: 15px;
+    }
+
+    .warrantyTxtAccept {
+        font-size: 13px !important;
+        position: relative;
+        top: 2px;
+    }
+
+    .contractBoxes {
+        margin-top: -4px !important;
+    }
+
+}

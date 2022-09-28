@@ -1,0 +1,43 @@
+
+#searchTabBody{
+    /* background-image: linear-gradient(to bottom, #9900ff, #9900ff, #4c135e, #000000); */
+    background-image: linear-gradient(to bottom, blue, #000000);
+}
+.searchDiscription{
+    color: #1dccff;
+    margin-top: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 6px;
+}
+.searchFeildLabel{
+    color: white;
+    font-size: 16px;
+    margin-left: 6px;
+    margin-top: 7px;
+    margin-bottom: -7px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.searchOpenSections{
+    position: absolute;
+    background-color: #1A3330;
+    z-index: 99;
+    width: 85%;
+    color: #1dccff;
+    height: 130px;
+    padding-top: 15px;
+    border-radius: 0;
+}
+.searchOpenSections h3{
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+.mediatorListSearch{
+    float: left;
+    margin-right: -9px;
+    margin-top: -20px;
+}
+.mediatorSearchBtnBag{
+    background-color: black;
+}

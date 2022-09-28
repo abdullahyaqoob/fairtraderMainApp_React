@@ -1,0 +1,14 @@
+.myFeesActiveTab{
+    background-color: rgb(23, 231, 4) !important;
+}
+
+#myFeesTabBody {
+    background-image: linear-gradient(to bottom, rgb(21, 255, 0), #000000);
+}
+
+.myFeesTableHeading tbody tr th {
+    color: rgb(23, 231, 4);
+}
+.myFeesBoxes p{
+    color: rgb(207, 255, 203);
+}

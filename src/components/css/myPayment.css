@@ -1,0 +1,133 @@
+.myPaymentHeading {
+    color: white;
+    font-size: 21px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.paymentDivContainer {
+    background-color: black;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: 95%;
+    height: 73vh;
+    margin: 0 auto;
+    padding-top: 18px;
+}
+
+.stableCoinSelectionContainer {
+    border: 3px solid #1dccff;
+    width: 92%;
+    margin: 0 auto;
+    border-radius: 11px;
+    padding-top: 6px;
+    padding-bottom: 5px;
+    padding-left: 8px;
+}
+
+.stableCoinSelectionContainer h2 {
+    text-align: start;
+    color: white;
+    font-size: 19px;
+    position: relative;
+    top: 4px;
+    margin-left: -20px;
+    font-weight: bold;
+    color: #1dccff;
+}
+
+.stableCoinSlcDiv {
+    position: relative;
+    top: 2px;
+    right: 12px;
+}
+
+.coinsContainer {
+    /* background-color: white; */
+    color: white;
+    font-size: 19px;
+    text-align: center;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.coinsDiv {
+    text-align: start;
+}
+
+.supportedTxt {
+    color: #1dccff;
+}
+
+.paymentHR {
+    width: 98%;
+    margin-top: 2px;
+    border: 4px solid rgb(93, 103, 112);
+    background-color: rgb(93, 103, 112);
+}
+
+.coinsDiv .oneCoinContainer {
+    margin-top: 20px;
+}
+
+.oneCoinContainer p {
+    margin-top: 5px;
+}
+
+
+
+
+/* Hide the browser's default checkbox */
+.oneCoinContainer input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    height: 22px;
+    width: 22px;
+    background-color: transparent;
+    border: 1px solid #1dccff;
+}
+
+/* On mouse-over, add a grey background color */
+.oneCoinContainer:hover input~.checkmark {
+    background-color: transparent;
+}
+
+/* When the checkbox is checked, add a blue background */
+.oneCoinContainer input:checked~.checkmark {
+    background-color: transparent;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.oneCoinContainer input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.oneCoinContainer .checkmark:after {
+    left: 6px;
+    top: 1px;
+    width: 8px;
+    height: 15px;
+    border: solid #14c048;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}

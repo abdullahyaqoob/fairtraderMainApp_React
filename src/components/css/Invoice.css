@@ -1,0 +1,678 @@
+.invoiceBlackContainer {
+    background-color: black;
+    width: 95%;
+    height: 77vh;
+    /* border-radius: 10px; */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin: 0 auto;
+    margin-top: 25px;
+    color: black;
+    padding: 10px;
+    padding-top: 20px;
+    /* padding-bottom: 100px; */
+}
+
+.invoiceFeildsTxt {
+    margin-left: 5px;
+    font-size: 17px;
+    color: #21FEFE;
+}
+
+.invoiceFirstLine {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.invoiceFirstToken {
+    float: right;
+    margin-top: 2px;
+    margin-left: 7px;
+    font-size: 16px;
+    color: #21FEFE;
+}
+
+.invoiceFeilds {
+    font-weight: normal;
+    font-size: 17px;
+    border-color: #21FEFE;
+    color: #ffffff;
+    height: 40px !important;
+    padding-left: 8px;
+    background-color: black;
+}
+
+.invoiceFields {
+    font-size: 17px;
+    margin-left: 5px;
+    position: absolute;
+    width: 76%;
+}
+
+.paymentAttach {
+    border: 3px solid #21FEFE;
+}
+
+.invoiceAdd {
+    background-color: #21FEFE;
+    height: 110px;
+}
+
+.invoiceDarkAdd {
+    margin-left: -7px;
+    margin-top: 5px;
+}
+
+.addInvoiceDark {
+    /* background-color: red; */
+    width: 140%;
+    margin-left: -22px;
+    font-size: 17px;
+    margin-top: 10px;
+    color: black;
+    font-weight: bold;
+}
+
+.invoiceAttachHR {
+    margin-left: -7px;
+    margin-top: -10px;
+    /* background-color: red; */
+}
+
+.invoiceLightAdd {
+    margin-top: -12px;
+}
+
+.paymentCalender {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 10px;
+    height: 180px;
+    font-size: 17px;
+    background-color: transparent;
+}
+
+.paymentCalender1 {
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-left: 3px solid #21FEFE;
+    border-top: 3px solid #21FEFE;
+    border-bottom: 3px solid #21FEFE;
+    border-right: 2px solid #21FEFE;
+    padding-top: 10px;
+}
+
+.paymentCalender2 {
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    border-right: 3px solid #21FEFE;
+    border-top: 3px solid #21FEFE;
+    border-bottom: 3px solid #21FEFE;
+    border-left: 1px solid #21FEFE;
+    padding-top: 10px;
+}
+
+.paymentButton {
+    border: none;
+    background-color: transparent;
+    border: 3px solid #21FEFE;
+    font-weight: bold;
+    width: 98%;
+    border-radius: 10px;
+    height: 40px;
+    margin-top: 25px;
+    color: #21FEFE;
+}
+
+.invoiceThreeBtn {
+    position: absolute;
+    left: 50%;
+    transform: translate(-52%, 0);
+}
+
+.invoiceThreeBtnDiv {
+    /* background-color: red; */
+    padding-top: 17px;
+    padding-left: 25px;
+    padding-right: 20px;
+}
+
+.viewPDFContainer {
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 25px;
+    margin-left: 10px;
+    padding: 10px;
+    margin-right: 10px;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    height: 100%;
+}
+
+.viewPDFContainer img {
+    width: 100%;
+    height: 100%;
+    /* width: 375px;
+    height: 535px; */
+}
+
+.invoicePDFCloss {
+    width: 42px !important;
+    height: 42px !important;
+    position: absolute;
+    right: 17px;
+    margin-top: -13px;
+    background-color: #ff0000;
+    border: 2px solid rgb(88, 88, 88);
+    border-radius: 10px;
+}
+
+.invoicePDFCloss span {
+    text-align: center;
+    font-size: 27px;
+    color: white;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+/* .InvoiceresolutionTab {
+    border-bottom-right-radius: 12px;
+} */
+
+.InvoiceresolutionTab img {
+    position: relative;
+    left: 0px;
+    top: -2px;
+}
+
+.InvoiceinvoiceTab {
+    /* margin-left: .5%; */
+}
+
+.InvoiceresolutionTab {
+    border-bottom-left-radius: 12px;
+}
+
+.InvoiceinvoiceTab {
+    background-color: #00922e !important;
+    border-top-left-radius: 0 !important;
+}
+
+.WalletwalletTab {
+    background-color: #9900ff !important;
+    border-top-right-radius: 0 !important;
+    border-top-left-radius: 10px !important;
+    max-width: 24.5%;
+}
+
+.walletcontractTab{
+    border-bottom-right-radius: 12px !important;
+}
+
+/* ------body------- */
+#InvoiceTabBody {
+    background-image: linear-gradient(to bottom, #059B34, #013a12);
+}
+
+#walletTabBody{
+    /* background-image: linear-gradient(to bottom, #9900ff, #9900ff, #4c135e, #000000); */
+    background-image: linear-gradient(to bottom, #9900ff, #9900ff, #210929, #000000);
+
+}
+
+.invoiceBlackDivMainContainer {
+    margin-top: 30px;
+}
+
+.invoiceBlackDiv {
+    background-color: black;
+    height: 100px;
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 12px;
+    margin-top: 12px;
+    color: white;
+}
+
+.purchaseHistory {
+    padding: 19px 15px;
+}
+
+.salesHistory {
+    padding: 15px 10px;
+}
+
+.invoiceOptionsTable tr th {
+    margin-top: 8px;
+    color: rgb(0, 204, 255);
+    /* padding-bottom: 3px; */
+    font-size: 21px;
+    float: left;
+}
+
+.invoiceOptionsTable tr td {
+    font-size: 17px;
+    width: 100%;
+}
+
+.invoiceDropdown {
+    margin-top: 14px;
+}
+
+.invoiceTabsRow {
+    /* background-color: red; */
+    text-align: center;
+    font-size: 17px;
+    color: white;
+    white-space: nowrap;
+    font-weight: bold;
+    margin-top: -10px;
+    margin-bottom: -17px;
+}
+
+.invoiceOrderBlackDiv {
+    height: 73.5vh;
+    color: white;
+}
+
+.invoiceOrderBlackSubDiv {
+    background-color: rgb(53, 53, 53);
+    width: 367px;
+    height: 86px;
+    border-radius: 20px;
+}
+
+.invoiceOrderBlackSubDiv:hover, .invoiceOrderBlackSubDiv:focus {
+    background-color: #006633;
+}
+
+.invoiceOrderBlackSubDiv .col-2 img {
+    margin-left: 12px;
+    margin-top: 12px;
+}
+
+.invoiceOrderBlackSubDiv .col-5 {
+    color: #ffff99;
+}
+
+.invoiceOrderBlackSubDivColorWhite .col-5 {
+    color: white;
+    /* color: rgb(182, 255, 182); */
+}
+
+.invoiceOrderBlackSubDiv .invoiceUnpaidProfile {
+    position: relative;
+    left: 15px;
+}
+
+.colorWhite{
+    color: white;
+}
+
+.invoiceUnpaidProfileData {
+    font-size: 16px;
+    margin-top: 6px;
+    line-height: 28px;
+}
+
+.invoiceUnpaidProfileData p {
+    margin-bottom: -4px;
+}
+
+.invoiceUnpaidSearch {
+    position: absolute;
+    right: 15px;
+    margin-top: -30px;
+}
+
+.invoiceUnpaidTotal {
+    width: 96%;
+    margin: 0 auto;
+    margin-top: 7px;
+}
+
+.invoiceUnpaidTotalTxt {
+    color: white;
+    font-size: 17px;
+    text-align: end;
+    font-weight: bold;
+}
+
+
+.profileBox {
+    /* height: 231px; */
+    border-radius: 10px;
+    border-bottom-right-radius: 20px;
+    border: 2px solid white;
+    background-color: #b3b3b3;
+}
+
+.profileBoxHeader {
+    background-color: #c62127;
+    border-top-right-radius: 9px;
+    border-top-left-radius: 9px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 7px;
+    padding-bottom: 6px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.profileBoxBody {
+    background-color: #b3b3b3;
+    margin-top: -10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 14px;
+    line-height: 17px;
+    color: black;
+    padding-top: 12px;
+    padding-bottom: 14px;
+}
+
+.profileBoxBody h6 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.profileBoxBottom {
+    background-color: #c62127;
+    border-top-right-radius: 22px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 9px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 15px;
+    padding-bottom: 8px;
+}
+
+.profileBoxBottom h5 {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.invoicesearchRed {
+    position: absolute;
+    right: 14px;
+    margin-top: -44px;
+}
+
+.invoiceProfileRightSection {
+    margin-bottom: 14px;
+    margin-top: 9px;
+    font-size: 15px;
+    line-height: 19px;
+    font-weight: bold;
+}
+
+.resolutionSelected {
+    background-color: #fdf475;
+    color: black;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    margin-top: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 8px;
+    padding-bottom: 2px;
+    height: 245px;
+}
+
+.resolutionSelectedTxt {
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 20px;
+}
+
+.resolutionSelectedRow {
+    border-bottom: 3px solid black;
+}
+
+.ResolutionSelectedBodyTxt {
+    margin-top: 14px;
+}
+
+.ResolutionSelectedBodyTxt h3 {
+    font-size: 17px;
+    line-height: 18px;
+}
+
+.ResolutionSelectedBodyTxt p {
+    font-size: 15px;
+    line-height: 18px;
+}
+
+.contractSelected {
+    background-color: pink;
+    color: black;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    margin-top: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 8px;
+    padding-bottom: 40px;
+    height: 245px;
+}
+
+.InvoiceAddNote {
+    background-color: rgb(162, 240, 194);
+    color: black;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    margin-top: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 8px;
+    padding-bottom: 17px;
+    height: 245px;
+}
+.InvoiceAddNotepaid{
+    background-color: lightblue;
+    padding-bottom: 118px;
+}
+
+.invoiceTermsTxt {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 18px;
+    margin-top: 4px;
+    position: relative;
+    left: 4px;
+}
+
+.viewAddNoteTexterea {
+    width: 100%;
+    height: 60px;
+    border: 1px dashed black;
+    background-color: transparent;
+    outline: none;
+    padding: 5px;
+    font-size: 15px;
+}
+.viewAddNoteTextereaPaid{
+    height: 24px;
+}
+
+.addNoteBtn {
+    width: 150px;
+    height: 42px;
+    font-size: 16px;
+    background-color: rgb(51, 51, 51);
+    border: 4px solid black;
+    border-radius: 13px;
+    margin-top: 24px;
+    color: white;
+    font-weight: bold;
+}
+
+.selectedOptionTxt{
+    word-spacing: 7px;
+    font-size: 19px;
+    padding: 10px;
+    padding-top: 20px;
+    color: rgb(0, 194, 0);
+}
+
+#invoiceStopPaymentContent p{
+    font-size: 18px;
+    color: white;
+    margin-top: 20px;
+    word-spacing: 5px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* placeholder color InvoiceinvoiceFields */
+input[type="InvoiceinvoiceFields"]::placeholder {
+
+    /* Firefox, Chrome, Opera */
+    color: #ffffff;
+}
+
+input[type="InvoiceinvoiceFields"]:-ms-input-placeholder {
+
+    /* Internet Explorer 10-11 */
+    color: #ffffff;
+}
+
+input[type="InvoiceinvoiceFields"]::-ms-input-placeholder {
+
+    /* Microsoft Edge */
+    color: white;
+}
+
+@media (max-width: 390px) {
+
+    .invoiceOptionsTable tr th {
+        margin-top: 12px;
+        font-size: 19px;
+    }
+
+    .invoiceOptionsTable tr td {
+        font-size: 16px;
+    }
+
+}
+
+@media (max-width: 380px) {
+    .resolutionOptionstoggle, .selectResolutionBtn {
+        font-size: 17px;
+    }
+
+    .changeBox, .registeredCompanies p, .mutualChange, .mutualFriendInput {
+        font-size: 17px;
+        margin-top: 0px;
+    }
+
+    .autoPickedData {
+        padding-top: 4px;
+    }
+
+    .purchaseHistory {
+        width: 90px;
+        padding-top: 16px;
+    }
+
+    .salesHistory {
+        width: 80px;
+        padding-top: 17px;
+    }
+
+    .invoiceBlackDiv {
+        background-color: black;
+        height: 90px;
+        width: 90%;
+        margin: 0 auto;
+        border-radius: 12px;
+        margin-top: 12px;
+        color: white;
+    }
+
+    .invoiceOptionsTable tr th {
+        margin-top: 10px;
+        font-size: 18px;
+    }
+
+    .invoiceOptionsTable tr td {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 370px) {
+    .purchaseHistory {
+        width: 85px;
+        padding-top: 16px;
+    }
+
+    .salesHistory {
+        width: 80px;
+        padding-top: 17px;
+    }
+
+    .invoiceBlackDiv {
+        background-color: black;
+        height: 85px;
+        width: 90%;
+        margin: 0 auto;
+        border-radius: 12px;
+        margin-top: 7px;
+        color: white;
+    }
+
+    .invoiceOptionsTable tr th {
+        margin-top: 10px;
+        font-size: 18px;
+    }
+
+    .invoiceOptionsTable tr td {
+        font-size: 15px;
+    }
+}

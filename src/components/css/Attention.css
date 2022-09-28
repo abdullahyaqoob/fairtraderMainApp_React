@@ -1,0 +1,120 @@
+#AttensionTabBody {
+    background-image: linear-gradient(to bottom, rgb(300, 228, 0), #000000);
+}
+
+/* #walletTabBody {
+    background-image: linear-gradient(to bottom, #9900ff, #9900ff, #210929, #000000);
+} */
+.attentionTab {
+    background-color: rgb(236, 206, 34) !important;
+}
+
+.attentionTableHeading tbody tr th {
+    color: yellow;
+}
+
+.attentionRedDiv {
+    background-color: #c20705;
+    height: 85px;
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 20px;
+    margin-top: 8px;
+    color: white;
+}
+
+.overdueTasksHeading tbody tr th {
+    color: white;
+    font-size: 17px;
+    margin-top: 7px;
+}
+
+.overdueTasksHeading tbody tr td {
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.attentionRedDiv .row .col-3 img {
+    width: 90px;
+}
+
+.overdueTaskContainer {
+    background-color: #000000;
+    padding-top: 10px;
+    height: 78vh;
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 12px;
+}
+
+.overdueTasksOrderTxt {
+    width: 90%;
+    margin: 0 auto;
+    font-size: 17px;
+    color: black;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    margin-bottom: -10px;
+}
+
+.respondAllTxt {
+    color: rgb(255, 0, 119);
+    font-size: 16px;
+    margin-left: 5%;
+    margin-bottom: -5px;
+}
+
+.overdueTasksSerchIcon {
+    margin-top: -5px;
+    right: 4px;
+}
+
+.furtherDetailCOntainer {
+    border: 3px solid #009afe;
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 12px;
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.furtherDetailCOntainer span {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.furtherDetailCOntainer .smallerThanSign {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.furtherDetailHR {
+    border-style: dotted none none;
+    border-width: 4px;
+    border-color: white;
+}
+
+.furtherDetailCOntainer .sendMsgTxtLine {
+    color: #53ccf8;
+}
+
+.SendMessageTxtarea {
+    width: 100%;
+    color: black;
+    font-size: 14px;
+    padding: 5px 10px;
+    height: 141px;
+    background-color: #e6e6e6;
+}
+
+.addDocsTxt {
+    font-size: 15px;
+}
+.attachFIle{
+
+    display: flex;
+    justify-content: space-between;
+}
