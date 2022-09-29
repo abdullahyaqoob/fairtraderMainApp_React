@@ -88,10 +88,27 @@ class CreateInvoice extends Component {
       invoicePaymentStopped: false,
       userAccountAddress: "",
       handleViewPDF: false,
+      propHendledData: {}
     };
   }
 
-  componentDidMount() { }
+  componentDidMount() {
+    let propData = this.props.propdata
+    if (propData !== undefined) {
+      this.setState({ propHendledData: propData })
+
+      document.getElementById("createInvoiceName").value = propData.customername
+      document.getElementById("createInvoiceAddr").value = propData.customeraddress
+      document.getElementById("createInvoiceEmail").value = propData.customeremail
+      document.getElementById("createInvoiceAmount").value = propData.Amount
+      // this.setState({ ProfileSelectedFileQual: propData.invoicefile })
+      this.setState({ formatedCalenderValue: propData.payment })
+
+      // console.log("Selected Image File: ", propData.invoicefile);
+      console.log("formatedCalenderValue: ", propData.payment);
+    }
+
+  }
 
   handleSelectDate() {
     var dateObj = this.state.calenderValue;
@@ -123,6 +140,65 @@ class CreateInvoice extends Component {
       console.log("Selected Image File: ", e.target.files[0]);
       this.setState({ ProfileSelectedFileQual: e.target.files[0] });
     }
+  };
+  updateInvoiceHandler = async () => {
+    console.log("update", this.state.propHendledData);
+    if (this.state.ProfileSelectedFileQual === "" || this.state.formatedCalenderValue === "") {
+      this.$toasted.error("Invalid Request");
+    }
+
+
+    //   // requests for sending this selected file
+
+    //   var formData = new FormData();
+    //   formData.append("sellerwalletaddress", userAccountAddress);
+    //   formData.append("customername", createInvoiceName);
+    //   formData.append("customerAmount", createInvoiceAmount);
+    //   formData.append("customeraddress", createInvoiceAddr);
+    //   formData.append("customeremail", createInvoiceEmail);
+    //   // formData.append("customerwalletaddress", createInvoiceWallet);
+    //   formData.append("invoicefile", createAddInvoiceFile);
+    //   formData.append("payment", this.state.formatedCalenderValue);
+    //   // this.state.formatedCalenderValue
+
+    //   axios({
+    //     method: "post",
+    //     url: process.env.REACT_APP_BASE_URL + "invoices/createInvoice",
+    //     data: formData,
+    //     onUploadProgress: (uploadEvent) => {
+    //       this.setState({
+    //         profileImgProgress:
+    //           Math.round((uploadEvent.loaded / uploadEvent.total) * 100) + "%",
+    //       });
+    //     },
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //   })
+    //     .then((res) => {
+    //       console.log("profileImgProgress", this.state.profileImgProgress);
+    //       console.log("File Sended Response: ", res);
+    //       localStorage.setItem(
+    //         userAccountAddress + "invoiceId",
+    //         res.data.invoiceId
+    //       );
+
+    //       setTimeout(() => {
+    //         window.location = "Resolution";
+    //       }, 1000);
+
+    //       toast.success("Successfully Invoice Created", {
+    //         position: "top-right",
+    //       });
+
+    //       // alert("Success, Go to Resolution Tab")
+    //     })
+    //     .catch((err) => {
+    //       // this.$toasted.error("Cannot able to attach this file.");
+    //       console.log("error", err);
+    //       // this.fileSelectionLoading = false;
+    //     });
+    // }
   };
 
   createInvoiceHandler = async (e) => {
@@ -307,12 +383,20 @@ class CreateInvoice extends Component {
             </p>
           </span>
           <span className="alignEnd" style={{ float: "right" }}>
+            {this.state.propHendledData === {} ?
+
               <img
                 src={invoiceNextResolution}
                 onClick={() => this.createInvoiceHandler()}
                 className="floatRight"
                 alt="walletGreaterSign"
               />
+              : <img
+                src={invoiceNextResolution}
+                onClick={() => this.updateInvoiceHandler()}
+                className="floatRight"
+                alt="walletGreaterSign"
+              />}
           </span>
         </div>
       );
@@ -594,12 +678,20 @@ class CreateInvoice extends Component {
                     alt="mapIcon"
                     style={{ marginTop: "-1px", marginRight: "10px" }}
                   />
-                  <input
+                  {this.state.propHendledData === {} ? <input
                     id="createInvoiceName"
                     type="InvoiceinvoiceFields"
                     className="mutualFriendInput invoiceFields"
                     placeholder="enter customer name"
-                  />
+                  /> : <input
+                    id="createInvoiceName"
+                    type="InvoiceinvoiceFields"
+                    className="mutualFriendInput invoiceFields"
+                    placeholder="enter customer name"
+                    disabled
+                  />}
+
+
                 </span>
                 <span
                   className="alignEnd"
@@ -625,12 +717,22 @@ class CreateInvoice extends Component {
                       marginLeft: "2px",
                     }}
                   />
-                  <input
+
+                  {this.state.propHendledData === {} ? <input
                     id="createInvoiceAddr"
                     type="InvoiceinvoiceFields"
                     className="mutualFriendInput invoiceFields"
                     placeholder="enter customer address"
-                  />
+                  /> : <input
+                    id="createInvoiceAddr"
+                    type="InvoiceinvoiceFields"
+                    className="mutualFriendInput invoiceFields"
+                    placeholder="enter customer address"
+                    disabled
+                  />}
+
+
+
                 </span>
                 <span
                   className="alignEnd"
@@ -656,12 +758,24 @@ class CreateInvoice extends Component {
                       marginLeft: "2px",
                     }}
                   />
-                  <input
-                    id="createInvoiceAmount"
-                    type="InvoiceinvoiceFields"
-                    className="mutualFriendInput invoiceFields"
-                    placeholder="Amount in USD"
-                  />
+
+                  {this.state.propHendledData === {} ?
+                    <input
+                      id="createInvoiceAmount"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="Amount in USD"
+                    /> :
+                    <input
+                      id="createInvoiceAmount"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="Amount in USD"
+                      disabled
+                    />}
+
+
+
                 </span>
                 <span
                   className="alignEnd"
@@ -683,12 +797,20 @@ class CreateInvoice extends Component {
                     alt="mapIcon"
                     style={{ marginTop: "-1px", marginRight: "10px" }}
                   />
-                  <input
-                    id="createInvoiceEmail"
-                    type="InvoiceinvoiceFields"
-                    className="mutualFriendInput invoiceFields"
-                    placeholder="enter customer email"
-                  />
+                  {this.state.propHendledData === {} ?
+                    <input
+                      id="createInvoiceEmail"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter customer email"
+                    /> :
+                    <input
+                      id="createInvoiceEmail"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter customer email"
+                      disabled
+                    />}
                 </span>
                 <span
                   className="alignEnd"
