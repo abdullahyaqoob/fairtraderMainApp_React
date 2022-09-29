@@ -93,6 +93,7 @@ class PurchaseHistory extends Component {
       resolutionSelectedPaid: false,
       contractSelectedPaid: false,
       ViewAddNotePaid: false,
+      paymentIsStopped: false
     };
   }
   // handlePayNowFunc1stStep = () => {
@@ -334,26 +335,44 @@ class PurchaseHistory extends Component {
       });
   };
   callStopHandleFunc = async () => {
-    axios
-      .put(`${process.env.REACT_APP_BASE_URL}order/updateOrderStatusStop`, {
-        orderId: this.state.SelectedOrder.id,
-        orderStatus: true,
-      })
+    if (this.state.magnifierViewUser.orderStatusStopeed === false && this.state.paymentIsStopped === false) {
 
-      .then((res) => {
-        console.log(res);
-        // setTimeout(() => {
-        //   window.location = "PurchaseHistory";
-        // }, 2000);
+      // Client side Work
 
-        toast.success("Successfully, Stopped", {
-          position: "top-right",
+      document.getElementById(
+        "invoiceStopPaymentContent"
+      ).style.display = "inherit";
+      this.setState({ paymentIsStopped: true })
+
+
+
+
+      // Server side work
+      axios
+        .put(`${process.env.REACT_APP_BASE_URL}order/updateOrderStatusStop`, {
+          orderId: this.state.SelectedOrder.id,
+          orderStatus: true,
+        })
+
+        .then((res) => {
+          console.log(res);
+          // setTimeout(() => {
+          //   window.location = "PurchaseHistory";
+          // }, 2000);
+
+          toast.success("Successfully, Stopped", {
+            position: "top-right",
+          });
+          // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-        // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
-      })
-      .catch((err) => {
-        console.log(err);
+    } else {
+      toast.error("Already, Stopped", {
+        position: "top-right",
       });
+    }
   };
 
   callSmartContract = async () => {
@@ -642,28 +661,26 @@ class PurchaseHistory extends Component {
             </p>
           </span>
           <span className="alignEnd" style={{ float: "right" }}>
-            <Link to={{ pathname: "" }}>
-              <img
-                src={invoicePaymentStopped}
-                className="floatRight"
-                alt="invoicePaymentStopped"
-                onClick={() => {
-                  this.setState({
-                    purchasehistoryPaidBtn: true,
-                  });
-                  this.setState({
-                    magnifierViewUser: this.state.SelectedOrder,
-                  });
-                  this.setState({
-                    searchUserMagnifierViewPaid: true,
-                  });
+            <img
+              src={invoicePaymentStopped}
+              className="floatRight"
+              alt="invoicePaymentStopped"
+              onClick={() => {
+                this.setState({
+                  purchasehistoryPaidBtn: true,
+                });
+                this.setState({
+                  magnifierViewUser: this.state.SelectedOrder,
+                });
+                this.setState({
+                  searchUserMagnifierViewPaid: true,
+                });
 
-                  this.setState({
-                    invoicePaidBtn: true,
-                  });
-                }}
-              />
-            </Link>
+                this.setState({
+                  invoicePaidBtn: true,
+                });
+              }}
+            />
           </span>
         </div>
       );
@@ -679,10 +696,9 @@ class PurchaseHistory extends Component {
       );
     }
 
-    let invoicePaymentStoppedpayStopPayBtn;
-    let invoicepaymentStopBtnTxt;
-    if (this.state.invoicePaymentStopped === false) {
-      invoicePaymentStoppedpayStopPayBtn = (
+    let invoicePaymentStoppedpayStopPayBtnUI;
+    if ((this.state.magnifierViewUser.orderStatusStopeed === false && this.state.paymentIsStopped === false) || this.state.purchasehistoryPaidBtn === false) {
+      invoicePaymentStoppedpayStopPayBtnUI = (
         <div className="row invoiceProfileRightSection">
           <div className="col-4">
             <img src={invoiceUnpaidAlarm} alt="invoiceUnpaidAlarm" />
@@ -694,7 +710,41 @@ class PurchaseHistory extends Component {
           </div>
         </div>
       );
-      if (this.state.purchasehistoryPaidBtn !== false) {
+    } else {
+      invoicePaymentStoppedpayStopPayBtnUI = (
+        <div className="row invoiceProfileRightSection">
+          <div className="col-4">
+            <img src={invoicePaymentStoppedIcon} alt="invoicePaymentStopped" />
+          </div>
+          <div className="col-8">
+            Payment
+            <br />
+            Stopped
+          </div>
+        </div>
+      );
+    }
+
+
+    let invoicepaymentStopBtnTxt;
+    if (this.state.invoicePaymentStopped === false) {
+
+      if ((this.state.magnifierViewUser.orderStatusStopeed === true || this.state.paymentIsStopped === true) && this.state.purchasehistoryPaidBtn === true) {
+        invoicepaymentStopBtnTxt = (
+          <p
+            className="selectResolutionBtn alignCenter"
+            onClick={() => {
+              toast.warning("Comming Soon!", {
+                position: "top-right",
+              });
+              // this.handlePayNowFunc2ndStep();
+            }}
+            style={{ width: "200px" }}
+          >
+            Start Mediation
+          </p>
+        );
+      } else if (this.state.purchasehistoryPaidBtn !== false) {
         invoicepaymentStopBtnTxt = (
           <p
             className="selectResolutionBtn alignCenter"
@@ -755,18 +805,6 @@ class PurchaseHistory extends Component {
       //   </p>
       // );
     } else {
-      invoicePaymentStoppedpayStopPayBtn = (
-        <div className="row invoiceProfileRightSection">
-          <div className="col-4">
-            <img src={invoicePaymentStoppedIcon} alt="invoicePaymentStopped" />
-          </div>
-          <div className="col-8">
-            Payment
-            <br />
-            Stopped
-          </div>
-        </div>
-      );
       invoicepaymentStopBtnTxt = (
         <p
           className="selectResolutionBtn alignCenter"
@@ -808,13 +846,22 @@ class PurchaseHistory extends Component {
                   className="floatRight"
                   alt="invoicePaymentStopped"
                 />
+              ) : this.state.magnifierViewUser.orderStatusStopeed === true || this.state.paymentIsStopped === true ? (
+                <img
+                  src={invoicePayNow}
+                  onClick={() => {
+                    toast.warning("Comming Soon!", {
+                      position: "top-right",
+                    });
+                    // window.location.reload()
+                  }}
+                  className="floatRight"
+                  alt="invoicePayNow"
+                />
               ) : (
                 <img
                   src={invoicePaymentStopped}
                   onClick={() => {
-                    document.getElementById(
-                      "invoiceStopPaymentContent"
-                    ).style.display = "inherit";
                     this.callStopHandleFunc();
                   }}
                   style={{ marginRight: "0px" }}
@@ -858,19 +905,17 @@ class PurchaseHistory extends Component {
               {this.state.payingStart === false
                 ? "Pay Now"
                 : this.state.payingStart === true
-                ? "Paid"
-                : "Working..."}
+                  ? "Paid"
+                  : "Working..."}
             </p>
           </span>
           <span className="lignEnd" style={{ float: "right" }}>
-            <Link to={{ pathaname: "" }}>
-              <img
-                onClick={() => this.callRejectHandleFunc()}
-                src={invoiceUnpaidReject}
-                className="floatRight"
-                alt="invoiceUnpaidReject"
-              />
-            </Link>
+            <img
+              onClick={() => this.callRejectHandleFunc()}
+              src={invoiceUnpaidReject}
+              className="floatRight"
+              alt="invoiceUnpaidReject"
+            />
           </span>
         </div>
       );
@@ -949,7 +994,7 @@ class PurchaseHistory extends Component {
                 </div>
               </div>
               <div className="col-6">
-                {invoicePaymentStoppedpayStopPayBtn}
+                {invoicePaymentStoppedpayStopPayBtnUI}
 
                 <div
                   className="row invoiceProfileRightSection"
@@ -1074,7 +1119,7 @@ class PurchaseHistory extends Component {
               <div
                 // id="resolutionSelectedPaid"
                 className="resolutionSelected"
-                // style={{ display: "none" }}
+              // style={{ display: "none" }}
               >
                 <div className="row resolutionSelectedRow">
                   <div className="col-9">
@@ -1193,7 +1238,7 @@ class PurchaseHistory extends Component {
               <div
                 // id="ViewAddNotePaid"
                 className="InvoiceAddNote InvoiceAddNotepaid"
-                // style={{ display: "none" }}
+              // style={{ display: "none" }}
               >
                 <div className="row resolutionSelectedRow">
                   <div className="col-9">
@@ -1258,7 +1303,7 @@ class PurchaseHistory extends Component {
               <div
                 // id="contractSelectedPaid"
                 className="contractSelected"
-                // style={{ display: "none" }}
+              // style={{ display: "none" }}
               >
                 <div className="row resolutionSelectedRow">
                   <div className="col-9">
@@ -1583,6 +1628,8 @@ class PurchaseHistory extends Component {
                       this.setState({ ViewAddNotePaid: false });
                       this.setState({ purchasehistoryPaidBtn: true });
                       this.setState({ invoiceUnpaidOrder: false });
+                      this.setState({ invoicePaidBtn: true });
+                      this.setState({ purchasehistoryPaidBtn: true });
                     }}
                   >
                     Paid <span style={{ color: "#059b34" }}>__</span>
@@ -1593,7 +1640,7 @@ class PurchaseHistory extends Component {
                   {this.state.searchUserMagnifierViewUnpaid === false ? (
                     <>
                       {this.state.invoicePurchaseHistoryUnpaidData.length !==
-                      0 ? (
+                        0 ? (
                         <div
                           id="invoiceAllUnpaidBoxes"
                           style={{ marginTop: "-18px" }}
@@ -2027,8 +2074,8 @@ class PurchaseHistory extends Component {
                                 {this.state.SelectedOrder
                                   .orderStatusRejected === false
                                   ? purchaseHitoryDateFormat(
-                                      this.state.SelectedOrder.payment
-                                    )
+                                    this.state.SelectedOrder.payment
+                                  )
                                   : "Rejected"}
                               </b>
                             </p>
@@ -2084,6 +2131,8 @@ class PurchaseHistory extends Component {
                     this.setState({ contractSelectedPaid: false });
                     this.setState({ purchasehistoryPaidBtn: false });
                     this.setState({ invoiceUnpaidOrder: false });
+                    this.setState({ invoicePaidBtn: true });
+                    this.setState({ purchasehistoryPaidBtn: false });
                   }}
                 >
                   Unpaid <span style={{ color: "#059b34" }}>__</span>
@@ -2133,7 +2182,10 @@ class PurchaseHistory extends Component {
                                 <div className="col-5">
                                   <p className="invoiceUnpaidProfileData">
                                     <p style={{ color: "rgb(182, 255, 182)" }}>
-                                      <b>Pay On:</b>
+                                      {!val.orderStatusStopeed ?
+                                        <b>Pay On:</b>
+                                        : <b style={{ color: 'gold' }}>Payment</b>
+                                      }
                                     </p>
                                     <div className="invoiceUnpaidSearch">
                                       <img
@@ -2158,7 +2210,10 @@ class PurchaseHistory extends Component {
                                     </div>
                                     <p style={{ color: "rgb(182, 255, 182)" }}>
                                       {/* <b>02/11/2022</b> */}
-                                      <b>{val.payment}</b>
+                                      {!val.payment ?
+                                        <b>Pay On:</b>
+                                        : <b style={{ color: 'gold' }}>Stopped</b>
+                                      }
                                     </p>
                                     <p>
                                       {/* <b>USD $1120.78</b> */}
