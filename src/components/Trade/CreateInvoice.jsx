@@ -88,13 +88,14 @@ class CreateInvoice extends Component {
       invoicePaymentStopped: false,
       userAccountAddress: "",
       handleViewPDF: false,
-      propHendledData: {}
+      propHendledData: '',
     };
   }
 
   componentDidMount() {
     let propData = this.props.propdata
     if (propData !== undefined) {
+      console.log('entered');
       this.setState({ propHendledData: propData })
 
       document.getElementById("createInvoiceName").value = propData.customername
@@ -141,65 +142,47 @@ class CreateInvoice extends Component {
       this.setState({ ProfileSelectedFileQual: e.target.files[0] });
     }
   };
+
   updateInvoiceHandler = async () => {
-    console.log("update", this.state.propHendledData);
+    let propHendledData = this.state.propHendledData;
+    console.log("update", propHendledData);
     if (this.state.ProfileSelectedFileQual === "" || this.state.formatedCalenderValue === "") {
       this.$toasted.error("Invalid Request");
+    } else {
+      // requests for sending this selected file
+
+      var formData = new FormData();
+      formData.append("orderId", propHendledData.id);
+      formData.append("invoiceId", propHendledData.invoiceId);
+      formData.append("invoicefile", this.state.ProfileSelectedFileQual);
+      formData.append("payment", this.state.formatedCalenderValue);
+
+      axios({
+        method: "post",
+        url: process.env.REACT_APP_BASE_URL + "order/orderAndInvoiceEdit",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+        .then((res) => {
+          console.log("File Sended Response: ", res);
+
+          setTimeout(() => {
+            window.location = "Invoice";
+          }, 1000);
+
+          toast.success("Successfully Invoice Edited", {
+            position: "top-right",
+          });
+
+        })
+        .catch((err) => {
+          this.$toasted.error("Invoice file not edited.");
+          console.log("error", err);
+        });
     }
-
-
-    //   // requests for sending this selected file
-
-    //   var formData = new FormData();
-    //   formData.append("sellerwalletaddress", userAccountAddress);
-    //   formData.append("customername", createInvoiceName);
-    //   formData.append("customerAmount", createInvoiceAmount);
-    //   formData.append("customeraddress", createInvoiceAddr);
-    //   formData.append("customeremail", createInvoiceEmail);
-    //   // formData.append("customerwalletaddress", createInvoiceWallet);
-    //   formData.append("invoicefile", createAddInvoiceFile);
-    //   formData.append("payment", this.state.formatedCalenderValue);
-    //   // this.state.formatedCalenderValue
-
-    //   axios({
-    //     method: "post",
-    //     url: process.env.REACT_APP_BASE_URL + "invoices/createInvoice",
-    //     data: formData,
-    //     onUploadProgress: (uploadEvent) => {
-    //       this.setState({
-    //         profileImgProgress:
-    //           Math.round((uploadEvent.loaded / uploadEvent.total) * 100) + "%",
-    //       });
-    //     },
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   })
-    //     .then((res) => {
-    //       console.log("profileImgProgress", this.state.profileImgProgress);
-    //       console.log("File Sended Response: ", res);
-    //       localStorage.setItem(
-    //         userAccountAddress + "invoiceId",
-    //         res.data.invoiceId
-    //       );
-
-    //       setTimeout(() => {
-    //         window.location = "Resolution";
-    //       }, 1000);
-
-    //       toast.success("Successfully Invoice Created", {
-    //         position: "top-right",
-    //       });
-
-    //       // alert("Success, Go to Resolution Tab")
-    //     })
-    //     .catch((err) => {
-    //       // this.$toasted.error("Cannot able to attach this file.");
-    //       console.log("error", err);
-    //       // this.fileSelectionLoading = false;
-    //     });
-    // }
-  };
+  }
 
   createInvoiceHandler = async (e) => {
     let createInvoiceName = document.getElementById("createInvoiceName").value;
@@ -383,8 +366,7 @@ class CreateInvoice extends Component {
             </p>
           </span>
           <span className="alignEnd" style={{ float: "right" }}>
-            {this.state.propHendledData === {} ?
-
+            {this.state.propHendledData === '' ?
               <img
                 src={invoiceNextResolution}
                 onClick={() => this.createInvoiceHandler()}
@@ -678,18 +660,19 @@ class CreateInvoice extends Component {
                     alt="mapIcon"
                     style={{ marginTop: "-1px", marginRight: "10px" }}
                   />
-                  {this.state.propHendledData === {} ? <input
-                    id="createInvoiceName"
-                    type="InvoiceinvoiceFields"
-                    className="mutualFriendInput invoiceFields"
-                    placeholder="enter customer name"
-                  /> : <input
-                    id="createInvoiceName"
-                    type="InvoiceinvoiceFields"
-                    className="mutualFriendInput invoiceFields"
-                    placeholder="enter customer name"
-                    disabled
-                  />}
+                  {this.state.propHendledData === '' ?
+                    <input
+                      id="createInvoiceName"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter customer name"
+                    /> : <input
+                      id="createInvoiceName"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter customer name"
+                      disabled
+                    />}
 
 
                 </span>
@@ -718,18 +701,19 @@ class CreateInvoice extends Component {
                     }}
                   />
 
-                  {this.state.propHendledData === {} ? <input
-                    id="createInvoiceAddr"
-                    type="InvoiceinvoiceFields"
-                    className="mutualFriendInput invoiceFields"
-                    placeholder="enter customer address"
-                  /> : <input
-                    id="createInvoiceAddr"
-                    type="InvoiceinvoiceFields"
-                    className="mutualFriendInput invoiceFields"
-                    placeholder="enter customer address"
-                    disabled
-                  />}
+                  {this.state.propHendledData === '' ?
+                    <input
+                      id="createInvoiceAddr"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter customer address"
+                    /> : <input
+                      id="createInvoiceAddr"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter customer address"
+                      disabled
+                    />}
 
 
 
@@ -759,7 +743,7 @@ class CreateInvoice extends Component {
                     }}
                   />
 
-                  {this.state.propHendledData === {} ?
+                  {this.state.propHendledData === '' ?
                     <input
                       id="createInvoiceAmount"
                       type="InvoiceinvoiceFields"
@@ -797,7 +781,7 @@ class CreateInvoice extends Component {
                     alt="mapIcon"
                     style={{ marginTop: "-1px", marginRight: "10px" }}
                   />
-                  {this.state.propHendledData === {} ?
+                  {this.state.propHendledData === '' ?
                     <input
                       id="createInvoiceEmail"
                       type="InvoiceinvoiceFields"
