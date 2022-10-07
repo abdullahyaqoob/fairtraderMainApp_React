@@ -83,7 +83,7 @@ function App() {
       // console.log(userAccount);
       // setuserAccountAddr( userAccount );
       // temparary set account
-      let temparayAddr = "adddresssss1";
+      let temparayAddr = "adddresssss12";
       setuserAccountAddr(temparayAddr);
       let userAccount = temparayAddr;
 
@@ -101,20 +101,21 @@ function App() {
           walletaddress: userAccount,
         })
         .then((res) => {
-            if (
+          if (
             res.data.success === false ||
             res.data.data.length === 0 ||
             res.data.data[0].email === "" ||
             res.data.data[0].email === undefined
           ) {
-
-            toast.error("Please first complete your profile", {
-              position: "top-right",
-            });
-            // alert("Please first complete your profile");
-            setTimeout(() => {
-              navigate("/MyProfile");
-            }, 1000);
+            if (localStorage.getItem("userViewTradeOrMediate") !== "mediate") {
+              toast.error("Please first complete your profile", {
+                position: "top-right",
+              });
+              // alert("Please first complete your profile");
+              setTimeout(() => {
+                navigate("/MyProfile");
+              }, 1000);
+            }
           } else if (res.data.data[0].email !== "") {
             setuserAccountEmail(res.data.data[0].email);
           }

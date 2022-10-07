@@ -972,10 +972,10 @@ class PurchaseHistory extends Component {
                     <span>Newtown 3709</span>
                     <br />
                     <br />
-                    <h6 style={{ color: "#c62127" }}>Construction Work</h6>
+                    <h6 style={{ color: "#c62127" }}>{this.state.magnifierViewUser.mediatorIndustry} Work</h6>
                     <h6>
                       Total <span style={{ color: "lightgrey" }}>.</span>
-                      {this.state.magnifierViewUser.Amount}USD
+                      ${this.state.magnifierViewUser.Amount}USD
                     </h6>
                   </div>
                   <div

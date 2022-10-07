@@ -69,15 +69,20 @@ class App extends Component {
       salesHistoryTotalPaid: 0,
       salesHistoryTotalUnPaid: 0,
       userConnectedEmailValue: "",
+      magnifierViewUserViewPDF: false,
       //   furtherDetail: "furtherDetailMessage",
       furtherDetail: false,
       jobSelected: false,
       invoicePaidBtn: true,
+      newCasesAllData: [],
+      selectedNewCase: {}
     };
   }
   async componentWillMount() {
     this.userAddressHandle();
     // this.userConnectedEmail();
+
+    // this.mountedAxiosCalls()
   }
   userConnectedEmail = async () => {
     let connectedUserEmail;
@@ -134,66 +139,637 @@ class App extends Component {
             salesHistoryTotalUnPaid: res.data.salesHistory.data.unpaid,
           });
         })
-        .then((err) => {
+        .catch((err) => {
           console.log(err);
         });
+
+      // New Cases Call
+      axios
+        .post(`${process.env.REACT_APP_BASE_URL}mediate/newCases`, {
+          mediatorWalletAddress: userAddres,
+        })
+
+        .then((res) => {
+          this.setState({ newCasesAllData: res.data.data })
+          console.log(this.state.newCasesAllData);
+        }).catch((err) => {
+          console.log(err);
+        })
     } else {
       setTimeout(this.userAddressHandle, 250);
     }
   };
 
   render() {
-    let invoiceGetOptionsBtn;
-    if (this.state.invoicePaidBtn === true) {
-      invoiceGetOptionsBtn = (
-        <div className="selectResolutionDIv invoiceThreeBtnDiv">
-          <span className="alignStart">
-            <img
-              src={invoiceBack}
-              alt="invoiceBack"
-              onClick={() => {
-                this.setState({ furtherDetail: false });
-              }}
-            />
-          </span>
-          <span className="invoiceThreeBtn">
-            <p
-              className="selectResolutionBtn alignCenter"
-              onClick={() => {
-                this.setState({ invoicePaymentStopped: true });
-              }}
-              style={{ width: "200px" }}
+    let magnifierViewUserUI;
+    if (this.state.magnifierViewUserViewPDF === false) {
+      magnifierViewUserUI = (
+        <div className="hello">
+          <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
+            {/* <div id="invoiceUnpaidSearch" style={{ display: 'inherit', marginTop: '-8px' }}> */}
+
+            <div className="row">
+              <div className="col-6">
+                <div className="profileBox">
+                  <div className="profileBoxHeader">
+                    <span style={{ position: "absolute" }}>No:</span>
+                    <p style={{ textAlign: "end" }}>
+                      #{this.state.selectedNewCase.id}
+                      {/* #1245 */}
+                    </p>
+                  </div>
+
+                  <div className="profileBoxBody">
+                    <span>
+                      <b>{this.state.selectedNewCase.customername}</b>
+                      {/* <b>ABC Services</b> */}
+                    </span>
+                    <br />
+                    <span>
+                      {/* <b>New York</b> */}
+                      {this.state.selectedNewCase.customeraddress}
+                    </span>
+                    <br />
+                    <span>Newtown 3709</span>
+                    <br />
+                    <br />
+                    <h6 style={{ color: "#c62127" }}>
+                      {this.state.selectedNewCase.mediatorIndustry} Work
+                    </h6>
+                    <h6>
+                      Total <span style={{ color: "lightgrey" }}>.</span>
+                      ${this.state.selectedNewCase.Amount}USD
+                    </h6>
+                  </div>
+                  <div className="profileBoxBottom"
+                    onClick={() => {
+                      this.setState({ magnifierViewUserViewPDF: true });
+                    }}>
+                    <h5>view PDF</h5>
+                    <img
+                      className="invoicesearchRed"
+                      src={searchRed}
+                      alt="searchRed"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="row invoiceProfileRightSection">
+                  <div className="col-4">
+                    <img
+                      src={invoiceUnpaidAlarm}
+                      alt="invoiceUnpaidAlarm"
+                    />
+                  </div>
+                  <div className="col-8">
+                    Pay On
+                    <br />
+                    {this.state.selectedNewCase.payment}
+                  </div>
+                </div>
+
+                <div
+                  className="row invoiceProfileRightSection"
+                  onClick={() => {
+                    this.setState({ invoicePaidBtn: false });
+                    document.getElementById(
+                      "contractSelectedPaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "invoiceStopPaymentContent"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "resolutionSelectedPaid"
+                    ).style.display = "inherit";
+                    document.getElementById(
+                      "ViewAddNotePaid"
+                    ).style.display = "none";
+                  }}
+                >
+                  <div className="col-4">
+                    <img
+                      src={invoiceUnpaidResolutionYellow}
+                      style={{ marginLeft: "-8px" }}
+                      alt="invoiceUnpaidResolutionYellow"
+                    />
+                  </div>
+                  <div className="col-8" style={{ color: "#D8C938" }}>
+                    Resolution
+                    <br />
+                    Selected
+                  </div>
+                </div>
+                <div
+                  className="row invoiceProfileRightSection"
+                  onClick={() => {
+                    this.setState({ invoicePaidBtn: false });
+                    document.getElementById(
+                      "resolutionSelectedPaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "invoiceStopPaymentContent"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "contractSelectedPaid"
+                    ).style.display = "inherit";
+                    document.getElementById(
+                      "ViewAddNotePaid"
+                    ).style.display = "none";
+                  }}
+                >
+                  <div className="col-4">
+                    <img
+                      src={invoiceUnpaidContract}
+                      alt="invoiceUnpaidContract"
+                    />
+                  </div>
+                  <div className="col-8" style={{ color: "#FF00B3" }}>
+                    Contract
+                    <br />
+                    Documents
+                  </div>
+                </div>
+                <div
+                  className="row invoiceProfileRightSection"
+                  onClick={() => {
+                    this.setState({ invoicePaidBtn: false });
+                    document.getElementById(
+                      "resolutionSelectedPaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "invoiceStopPaymentContent"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "ViewAddNotePaid"
+                    ).style.display = "inherit";
+                    document.getElementById(
+                      "contractSelectedPaid"
+                    ).style.display = "none";
+                  }}
+                >
+                  <div className="col-4">
+                    <img
+                      src={invoiceTransactionHistory}
+                      alt="invoiceTransactionHistory"
+                    />
+                  </div>
+                  <div className="col-8" style={{ color: "#00CCFF" }}>
+                    Transaction
+                    <br />
+                    History
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="resolutionSelectedPaid"
+              className="resolutionSelected"
+              style={{ display: "none" }}
             >
-              Accept Job
-            </p>
+              <div className="row resolutionSelectedRow">
+                <div className="col-9">
+                  <div className="row">
+                    <div className="col-3">
+                      <img
+                        src={resolutionSelectedResolution}
+                        alt="resolutionSelectedResolution"
+                      />
+                    </div>
+                    <div className="col-9">
+                      <p className="resolutionSelectedTxt">
+                        Resolution <br /> Selected
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="col-3"
+                  onClick={() => {
+                    this.setState({ invoicePaidBtn: true });
+                    document.getElementById(
+                      "resolutionSelectedPaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "ViewAddNotePaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "contractSelectedPaid"
+                    ).style.display = "none";
+                  }}
+                >
+                  <img
+                    src={invoiceAddNoteCross}
+                    alt="invoiceAddNoteCross"
+                  />
+                </div>
+              </div>
+              <div className="ResolutionSelectedBodyTxt">
+                <div className="row">
+                  <div className="col-4">
+                    <h3>
+                      <b>Industry:</b>
+                    </h3>
+                  </div>
+                  <div className="col-8">
+                  <p>{this.state.selectedNewCase.mediatorIndustry}</p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4">
+                    <h3>
+                      <b>Mediator:</b>
+                    </h3>
+                  </div>
+                  <div className="col-8">
+                  <p>{this.state.selectedNewCase.mediator}</p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4">
+                    <h3>
+                      <b>Location:</b>
+                    </h3>
+                  </div>
+                  <div className="col-8">
+                  <p>{this.state.selectedNewCase.customeraddress}</p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4">
+                    <h3>
+                      <b>Language:</b>
+                    </h3>
+                  </div>
+                  <div className="col-8">
+                  <p>{this.state.selectedNewCase.mediatorLanguage}</p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4">
+                    <h3>
+                      <b>Response:</b>
+                    </h3>
+                  </div>
+                  <div className="col-8">
+                  <p>{this.state.selectedNewCase.responsetime} days</p>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-4">
+                    <h3>
+                      <b>Appeal:</b>
+                    </h3>
+                  </div>
+                  <div className="col-8">
+                  <p>{this.state.selectedNewCase.apealtime} days</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="invoiceStopPaymentContent"
+              style={{ display: "none" }}
+            >
+              <p style={{ color: "pink" }}>
+                Pay the Gas fee in your wallet to stop the payment
+                release.
+              </p>
+              <p>
+                It may be better to first try and settle the dispute will
+                the seller before stopping payment release.
+              </p>
+            </div>
+
+            <div
+              id="ViewAddNotePaid"
+              className="InvoiceAddNote InvoiceAddNotepaid"
+              style={{ display: "none" }}
+            >
+              <div className="row resolutionSelectedRow">
+                <div className="col-9">
+                  <div className="row">
+                    <div className="col-3">
+                      <img src={invoiceAddNote} alt="invoiceAddNote" />
+                    </div>
+                    <div className="col-9">
+                      <p className="resolutionSelectedTxt">
+                        Add Note
+                        <br />
+                        <span
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "normal",
+                          }}
+                        >
+                          provide feedback to Seller
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="col-3"
+                  onClick={() => {
+                    this.setState({ invoicePaidBtn: true });
+                    document.getElementById(
+                      "resolutionSelectedPaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "ViewAddNotePaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "contractSelectedPaid"
+                    ).style.display = "none";
+                  }}
+                >
+                  <img
+                    src={invoiceAddNoteCross}
+                    alt="invoiceAddNoteCross"
+                  />
+                </div>
+              </div>
+              <div className="ResolutionSelectedBodyTxt">
+                <h3>
+                  <b>18/02/20222</b>
+                </h3>
+                <textarea
+                  className="viewAddNoteTexterea viewAddNoteTextereaPaid"
+                  name=""
+                  id=""
+                ></textarea>
+              </div>
+            </div>
+
+            <div
+              id="contractSelectedPaid"
+              className="contractSelected"
+              style={{ display: "none" }}
+            >
+              <div className="row resolutionSelectedRow">
+                <div className="col-9">
+                  <div className="row">
+                    <div className="col-3">
+                      <img
+                        src={invoiceContractDocuments}
+                        alt="invoiceContractDocuments"
+                      />
+                    </div>
+                    <div className="col-9">
+                      <p className="resolutionSelectedTxt">
+                        Contract <br /> Documents
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="col-3"
+                  onClick={() => {
+                    this.setState({ invoicePaidBtn: true });
+                    document.getElementById(
+                      "resolutionSelectedPaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "ViewAddNotePaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "contractSelectedPaid"
+                    ).style.display = "none";
+                  }}
+                >
+                  <img
+                    src={invoiceAddNoteCross}
+                    alt="invoiceAddNoteCross"
+                  />
+                </div>
+              </div>
+              <div className="ResolutionSelectedBodyTxt">
+                <div className="row">
+                  <div className="col-6">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF: "contractTerms",
+                        })
+                      }>
+                      <div className="col-3">
+                        <img
+                          src={invoiceContractDocumentsTerms}
+                          alt="invoiceContractDocumentsTerms"
+                        />
+                      </div>
+                      <div className="col-9 invoiceTermsTxt">
+                        Terms & <br />
+                        Conditions
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF:
+                            "contractProductCondition",
+                        })}>
+                      <div className="col-3">
+                        <img
+                          src={invoiceContractDocumentsOther}
+                          alt="invoiceContractDocumentsOther"
+                        />
+                      </div>
+                      <div className="col-9 invoiceTermsTxt">
+                        Product
+                        <br />
+                        Conditions
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="row" style={{ marginTop: "20px" }}>
+                  <div className="col-6">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF: "contractReturnPolicy",
+                        })
+                      }>
+                      <div className="col-3">
+                        <img
+                          src={invoiceContractDocumentsTerms}
+                          alt="invoiceContractDocumentsTerms"
+                        />
+                      </div>
+                      <div className="col-9 invoiceTermsTxt">
+                        Return & <br />
+                        Policy
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-6">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF: "contractViewOthers",
+                        })
+                      }>
+                      <div className="col-3">
+                        <img
+                          src={invoiceContractDocumentsOther}
+                          alt="invoiceContractDocumentsOther"
+                        />
+                      </div>
+                      <div className="col-9 invoiceTermsTxt">
+                        View
+                        <br />
+                        Other
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {this.state.invoicePaidBtn === true ?
+              <div className="selectResolutionDIv invoiceThreeBtnDiv">
+                <span className="alignStart">
+                  <img
+                    src={invoiceBack}
+                    alt="invoiceBack"
+                    onClick={() => {
+                      this.setState({ furtherDetail: false });
+                    }}
+                  />
+                </span>
+                <span className="invoiceThreeBtn">
+                  <p
+                    className="selectResolutionBtn alignCenter"
+                    onClick={() => {
+                      this.setState({ invoicePaymentStopped: true });
+                    }}
+                    style={{ width: "200px" }}
+                  >
+                    Accept Job
+                  </p>
+                </span>
+                <span className="alignEnd" style={{ float: "right" }}>
+                  <Link to={{ pathname: "" }}>
+                    <img
+                      src={medResNewCasesReject}
+                      className="floatRight"
+                      alt="medResNewCasesReject"
+                      onClick={() => {
+                        document.getElementById(
+                          "resolutionSelectedPaid"
+                        ).style.display = "none";
+                        document.getElementById("ViewAddNotePaid").style.display =
+                          "none";
+                        document.getElementById("ViewAddNotePaid").style.display =
+                          "none";
+                        document.getElementById(
+                          "invoiceStopPaymentContent"
+                        ).style.display = "inherit";
+                        this.setState({ invoicePaymentStopped: true });
+                      }}
+                    />
+                  </Link>
+                </span>
+              </div>
+              : ""}
+          </div>
+        </div>
+      )
+
+    } else if (this.state.magnifierViewUserViewPDF === "contractTerms") {
+      magnifierViewUserUI = (
+        <div className="MagnifierViewPDFIFrame">
+          <span
+            onClick={() => {
+              this.setState({ magnifierViewUserViewPDF: true });
+            }}
+          >
+            X
           </span>
-          <span className="alignEnd" style={{ float: "right" }}>
-            <Link to={{ pathname: "" }}>
-              <img
-                src={medResNewCasesReject}
-                className="floatRight"
-                alt="medResNewCasesReject"
-                onClick={() => {
-                  document.getElementById(
-                    "resolutionSelectedPaid"
-                  ).style.display = "none";
-                  document.getElementById("ViewAddNotePaid").style.display =
-                    "none";
-                  document.getElementById("ViewAddNotePaid").style.display =
-                    "none";
-                  document.getElementById(
-                    "invoiceStopPaymentContent"
-                  ).style.display = "inherit";
-                  this.setState({ invoicePaymentStopped: true });
-                }}
-              />
-            </Link>
+          <iframe
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.termsandconditionsfile}`}
+            height="500px"
+            width="100%"
+          />
+        </div>
+      );
+    } else if (
+      this.state.magnifierViewUserViewPDF === "contractProductCondition"
+    ) {
+      magnifierViewUserUI = (
+        <div className="MagnifierViewPDFIFrame">
+          <span
+            onClick={() => {
+              this.setState({ magnifierViewUserViewPDF: true });
+            }}
+          >
+            X
           </span>
+          <iframe
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.attachfiles}`}
+            height="500px"
+            width="100%"
+          />
+        </div>
+      );
+    } else if (this.state.magnifierViewUserViewPDF === "contractReturnPolicy") {
+      magnifierViewUserUI = (
+        <div className="MagnifierViewPDFIFrame">
+          <span
+            onClick={() => {
+              this.setState({ magnifierViewUserViewPDF: true });
+            }}
+          >
+            X
+          </span>
+          <iframe
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.warrantyfile}`}
+            height="500px"
+            width="100%"
+          />
+        </div>
+      );
+    } else if (this.state.magnifierViewUserViewPDF === "contractViewOthers") {
+      magnifierViewUserUI = (
+        <div className="MagnifierViewPDFIFrame">
+          <span
+            onClick={() => {
+              this.setState({ magnifierViewUserViewPDF: true });
+            }}
+          >
+            X
+          </span>
+          <iframe
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.invoicefile}`}
+            height="500px"
+            width="100%"
+          />
         </div>
       );
     } else {
-      invoiceGetOptionsBtn = "";
+      magnifierViewUserUI = (
+        <div className="MagnifierViewPDFIFrame">
+          <span
+            onClick={() => {
+              this.setState({ magnifierViewUserViewPDF: false });
+            }}
+          >
+            X
+          </span>
+          <iframe
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.invoicefile}`}
+            height="500px"
+            width="100%"
+          />
+        </div>
+      );
     }
+
 
     let viewPDF;
     if (this.state.viewPDF === true) {
@@ -249,7 +825,7 @@ class App extends Component {
           <div className="contractTabMenuItems">
             <button className="ResolutioninvoiceTab">
               <Link to={{ pathname: "/Attention" }}>
-              <img src={Attension} alt="Attension" />
+                <img src={Attension} alt="Attension" />
               </Link>
             </button>
             <button className="ResolutionresolutionTab">
@@ -258,7 +834,7 @@ class App extends Component {
               </Link>
             </button>
             <button className="ResolutioncontractTab">
-            <Link to={{ pathname: "/MyFees" }}>
+              <Link to={{ pathname: "/MyFees" }}>
                 <img src={invoice} alt="invoice" />
               </Link>
             </button>
@@ -290,50 +866,51 @@ class App extends Component {
                   </p>
                 </div>
                 {/* <Link to={{ pathname: "/PurchaseHistory" }}> */}
-                <div
-                  className="attentionRedDiv medResBlueDIv"
-                  onClick={() => this.setState({ jobSelected: true })}
-                >
-                  <div className="row">
-                    <div className="col-3">
-                      <img
-                        src={medResRes}
-                        className="purchaseHistory"
-                        alt="medResRes"
-                      />
-                    </div>
-                    <div className="col-7">
-                      <table className="invoiceOptionsTable overdueTasksHeading">
-                        <tbody>
-                          <tr>
-                            <th>Case: #123456789</th>
-                          </tr>
-                          <tr>
-                            <td>Accept Job?</td>
-                          </tr>
-                          <tr>
-                            <td>Time left:</td>
-                            {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
-                            <td>72 hrs</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="col-2 overdueTasksSerchIcon">
-                      <img
-                        src={medResNewCasesSearch}
-                        alt="medResNewCasesSearch"
-                        className="mediatorSearch"
-                        onClick={() => {
-                          this.setState({ furtherDetail: true });
-                        }}
-                      />
+                {this.state.newCasesAllData.map((value, index) => (
+                  <div
+                    className="attentionRedDiv medResBlueDIv"
+                    onClick={() => this.setState({ jobSelected: true })}
+                  >
+                    <div className="row">
+                      <div className="col-3">
+                        <img
+                          src={medResRes}
+                          className="purchaseHistory"
+                          alt="medResRes"
+                        />
+                      </div>
+                      <div className="col-7">
+                        <table className="invoiceOptionsTable overdueTasksHeading">
+                          <tbody>
+                            <tr>
+                              <th>Case: #{value.id}</th>
+                            </tr>
+                            <tr>
+                              <td>Accept Job?</td>
+                            </tr>
+                            <tr>
+                              <td>Time left:</td>
+                              {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
+                              <td>72 hrs</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="col-2 overdueTasksSerchIcon">
+                        <img
+                          src={medResNewCasesSearch}
+                          alt="medResNewCasesSearch"
+                          className="mediatorSearch"
+                          onClick={() => {
+                            this.setState({ selectedNewCase: value })
+                            this.setState({ furtherDetail: true });
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-                {/* </Link> */}
-                {/* <Link to={{ pathname: "/SalesHistory" }}> */}
-                <div
+                ))}
+                {/* <div
                   className="attentionRedDiv medResBlueDIv"
                   onClick={() => this.setState({ jobSelected: true })}
                 >
@@ -356,7 +933,6 @@ class App extends Component {
                           </tr>
                           <tr>
                             <td>Time left:</td>
-                            {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
                             <td>48 hrs</td>
                           </tr>
                         </tbody>
@@ -374,8 +950,6 @@ class App extends Component {
                     </div>
                   </div>
                 </div>
-                {/* </Link> */}
-                {/* <Link to={{ pathname: "/SalesHistory" }}> */}
                 <div
                   className="attentionRedDiv medResBlueDIv"
                   onClick={() => this.setState({ jobSelected: true })}
@@ -399,7 +973,6 @@ class App extends Component {
                           </tr>
                           <tr>
                             <td>Time left:</td>
-                            {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
                             <td>36 hrs</td>
                           </tr>
                         </tbody>
@@ -417,8 +990,6 @@ class App extends Component {
                     </div>
                   </div>
                 </div>
-                {/* </Link> */}
-                {/* <Link to={{ pathname: "/SalesHistory" }}> */}
                 <div
                   className="attentionRedDiv medResBlueDIv"
                   onClick={() => this.setState({ jobSelected: true })}
@@ -442,7 +1013,6 @@ class App extends Component {
                           </tr>
                           <tr>
                             <td>Time left:</td>
-                            {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
                             <td>24 hrs</td>
                           </tr>
                         </tbody>
@@ -459,8 +1029,7 @@ class App extends Component {
                       />
                     </div>
                   </div>
-                </div>
-                {/* </Link> */}
+                </div> */}
                 {this.state.jobSelected === false ? (
                   <div className="selectResolutionDIv invoiceThreeBtnDiv">
                     <span className="alignStart">
@@ -499,453 +1068,7 @@ class App extends Component {
             </div>
           ) : (
             <div className="invoiceBlackContainer invoiceOrderBlackDiv">
-              <div className="hello">
-                <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
-                  {/* <div id="invoiceUnpaidSearch" style={{ display: 'inherit', marginTop: '-8px' }}> */}
-
-                  <div className="row">
-                    <div className="col-6">
-                      <div className="profileBox">
-                        <div className="profileBoxHeader">
-                          <span style={{ position: "absolute" }}>No:</span>
-                          <p style={{ textAlign: "end" }}>
-                            {/* #{this.state.magnifierViewUser.id} */}
-                            #1245
-                          </p>
-                        </div>
-
-                        <div className="profileBoxBody">
-                          <span>
-                            {/* <b>{this.state.magnifierViewUser.customername}</b> */}
-                            <b>ABC Services</b>
-                          </span>
-                          <br />
-                          <span>
-                            <b>New York</b>
-                            {/* {this.state.magnifierViewUser.customeraddress} */}
-                          </span>
-                          <br />
-                          <span>Newtown 3709</span>
-                          <br />
-                          <br />
-                          <h6 style={{ color: "#c62127" }}>
-                            Construction Work
-                          </h6>
-                          <h6>
-                            Total <span style={{ color: "lightgrey" }}>.</span>
-                            $1234.56USD
-                          </h6>
-                        </div>
-                        <div className="profileBoxBottom">
-                          <h5>view PDF</h5>
-                          <img
-                            className="invoicesearchRed"
-                            src={searchRed}
-                            alt="searchRed"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="row invoiceProfileRightSection">
-                        <div className="col-4">
-                          <img
-                            src={invoiceUnpaidAlarm}
-                            alt="invoiceUnpaidAlarm"
-                          />
-                        </div>
-                        <div className="col-8">
-                          Pay On
-                          <br />
-                          18/10/2021
-                        </div>
-                      </div>
-
-                      <div
-                        className="row invoiceProfileRightSection"
-                        onClick={() => {
-                          this.setState({ invoicePaidBtn: false });
-                          document.getElementById(
-                            "contractSelectedPaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "invoiceStopPaymentContent"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "resolutionSelectedPaid"
-                          ).style.display = "inherit";
-                          document.getElementById(
-                            "ViewAddNotePaid"
-                          ).style.display = "none";
-                        }}
-                      >
-                        <div className="col-4">
-                          <img
-                            src={invoiceUnpaidResolutionYellow}
-                            style={{ marginLeft: "-8px" }}
-                            alt="invoiceUnpaidResolutionYellow"
-                          />
-                        </div>
-                        <div className="col-8" style={{ color: "#D8C938" }}>
-                          Resolution
-                          <br />
-                          Selected
-                        </div>
-                      </div>
-                      <div
-                        className="row invoiceProfileRightSection"
-                        onClick={() => {
-                          this.setState({ invoicePaidBtn: false });
-                          document.getElementById(
-                            "resolutionSelectedPaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "invoiceStopPaymentContent"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "contractSelectedPaid"
-                          ).style.display = "inherit";
-                          document.getElementById(
-                            "ViewAddNotePaid"
-                          ).style.display = "none";
-                        }}
-                      >
-                        <div className="col-4">
-                          <img
-                            src={invoiceUnpaidContract}
-                            alt="invoiceUnpaidContract"
-                          />
-                        </div>
-                        <div className="col-8" style={{ color: "#FF00B3" }}>
-                          Contract
-                          <br />
-                          Documents
-                        </div>
-                      </div>
-                      <div
-                        className="row invoiceProfileRightSection"
-                        onClick={() => {
-                          this.setState({ invoicePaidBtn: false });
-                          document.getElementById(
-                            "resolutionSelectedPaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "invoiceStopPaymentContent"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "ViewAddNotePaid"
-                          ).style.display = "inherit";
-                          document.getElementById(
-                            "contractSelectedPaid"
-                          ).style.display = "none";
-                        }}
-                      >
-                        <div className="col-4">
-                          <img
-                            src={invoiceTransactionHistory}
-                            alt="invoiceTransactionHistory"
-                          />
-                        </div>
-                        <div className="col-8" style={{ color: "#00CCFF" }}>
-                          Transaction
-                          <br />
-                          History
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    id="resolutionSelectedPaid"
-                    className="resolutionSelected"
-                    style={{ display: "none" }}
-                  >
-                    <div className="row resolutionSelectedRow">
-                      <div className="col-9">
-                        <div className="row">
-                          <div className="col-3">
-                            <img
-                              src={resolutionSelectedResolution}
-                              alt="resolutionSelectedResolution"
-                            />
-                          </div>
-                          <div className="col-9">
-                            <p className="resolutionSelectedTxt">
-                              Resolution <br /> Selected
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        className="col-3"
-                        onClick={() => {
-                          this.setState({ invoicePaidBtn: true });
-                          document.getElementById(
-                            "resolutionSelectedPaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "ViewAddNotePaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "contractSelectedPaid"
-                          ).style.display = "none";
-                        }}
-                      >
-                        <img
-                          src={invoiceAddNoteCross}
-                          alt="invoiceAddNoteCross"
-                        />
-                      </div>
-                    </div>
-                    <div className="ResolutionSelectedBodyTxt">
-                      <div className="row">
-                        <div className="col-4">
-                          <h3>
-                            <b>Industry:</b>
-                          </h3>
-                        </div>
-                        <div className="col-8">
-                          <p>Software Development</p>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-4">
-                          <h3>
-                            <b>Mediator:</b>
-                          </h3>
-                        </div>
-                        <div className="col-8">
-                          <p>Random</p>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-4">
-                          <h3>
-                            <b>Location:</b>
-                          </h3>
-                        </div>
-                        <div className="col-8">
-                          <p>Melbourne 3000</p>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-4">
-                          <h3>
-                            <b>Language:</b>
-                          </h3>
-                        </div>
-                        <div className="col-8">
-                          <p>Chinese, English</p>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-4">
-                          <h3>
-                            <b>Response:</b>
-                          </h3>
-                        </div>
-                        <div className="col-8">
-                          <p>3 days</p>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-4">
-                          <h3>
-                            <b>Appeal:</b>
-                          </h3>
-                        </div>
-                        <div className="col-8">
-                          <p>7 days</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div
-                    id="invoiceStopPaymentContent"
-                    style={{ display: "none" }}
-                  >
-                    <p style={{ color: "pink" }}>
-                      Pay the Gas fee in your wallet to stop the payment
-                      release.
-                    </p>
-                    <p>
-                      It may be better to first try and settle the dispute will
-                      the seller before stopping payment release.
-                    </p>
-                  </div>
-
-                  <div
-                    id="ViewAddNotePaid"
-                    className="InvoiceAddNote InvoiceAddNotepaid"
-                    style={{ display: "none" }}
-                  >
-                    <div className="row resolutionSelectedRow">
-                      <div className="col-9">
-                        <div className="row">
-                          <div className="col-3">
-                            <img src={invoiceAddNote} alt="invoiceAddNote" />
-                          </div>
-                          <div className="col-9">
-                            <p className="resolutionSelectedTxt">
-                              Add Note
-                              <br />
-                              <span
-                                style={{
-                                  fontSize: "14px",
-                                  fontWeight: "normal",
-                                }}
-                              >
-                                provide feedback to Seller
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        className="col-3"
-                        onClick={() => {
-                          this.setState({ invoicePaidBtn: true });
-                          document.getElementById(
-                            "resolutionSelectedPaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "ViewAddNotePaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "contractSelectedPaid"
-                          ).style.display = "none";
-                        }}
-                      >
-                        <img
-                          src={invoiceAddNoteCross}
-                          alt="invoiceAddNoteCross"
-                        />
-                      </div>
-                    </div>
-                    <div className="ResolutionSelectedBodyTxt">
-                      <h3>
-                        <b>18/02/20222</b>
-                      </h3>
-                      <textarea
-                        className="viewAddNoteTexterea viewAddNoteTextereaPaid"
-                        name=""
-                        id=""
-                      ></textarea>
-                    </div>
-                  </div>
-
-                  <div
-                    id="contractSelectedPaid"
-                    className="contractSelected"
-                    style={{ display: "none" }}
-                  >
-                    <div className="row resolutionSelectedRow">
-                      <div className="col-9">
-                        <div className="row">
-                          <div className="col-3">
-                            <img
-                              src={invoiceContractDocuments}
-                              alt="invoiceContractDocuments"
-                            />
-                          </div>
-                          <div className="col-9">
-                            <p className="resolutionSelectedTxt">
-                              Contract <br /> Documents
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        className="col-3"
-                        onClick={() => {
-                          this.setState({ invoicePaidBtn: true });
-                          document.getElementById(
-                            "resolutionSelectedPaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "ViewAddNotePaid"
-                          ).style.display = "none";
-                          document.getElementById(
-                            "contractSelectedPaid"
-                          ).style.display = "none";
-                        }}
-                      >
-                        <img
-                          src={invoiceAddNoteCross}
-                          alt="invoiceAddNoteCross"
-                        />
-                      </div>
-                    </div>
-                    <div className="ResolutionSelectedBodyTxt">
-                      <div className="row">
-                        <div className="col-6">
-                          <div className="row">
-                            <div className="col-3">
-                              <img
-                                src={invoiceContractDocumentsTerms}
-                                alt="invoiceContractDocumentsTerms"
-                              />
-                            </div>
-                            <div className="col-9 invoiceTermsTxt">
-                              Terms & <br />
-                              Conditions
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="row">
-                            <div className="col-3">
-                              <img
-                                src={invoiceContractDocumentsOther}
-                                alt="invoiceContractDocumentsOther"
-                              />
-                            </div>
-                            <div className="col-9 invoiceTermsTxt">
-                              Product
-                              <br />
-                              Conditions
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row" style={{ marginTop: "20px" }}>
-                        <div className="col-6">
-                          <div className="row">
-                            <div className="col-3">
-                              <img
-                                src={invoiceContractDocumentsTerms}
-                                alt="invoiceContractDocumentsTerms"
-                              />
-                            </div>
-                            <div className="col-9 invoiceTermsTxt">
-                              Return & <br />
-                              Policy
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-6">
-                          <div className="row">
-                            <div className="col-3">
-                              <img
-                                src={invoiceContractDocumentsOther}
-                                alt="invoiceContractDocumentsOther"
-                              />
-                            </div>
-                            <div className="col-9 invoiceTermsTxt">
-                              View
-                              <br />
-                              Other
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {invoiceGetOptionsBtn}
-                </div>
-              </div>
+              {magnifierViewUserUI}
             </div>
           )}
         </div>
