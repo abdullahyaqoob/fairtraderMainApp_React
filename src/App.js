@@ -83,7 +83,7 @@ function App() {
       // console.log(userAccount);
       // setuserAccountAddr( userAccount );
       // temparary set account
-      let temparayAddr = "adddresssss12";
+      let temparayAddr = "adddresssss1";
       setuserAccountAddr(temparayAddr);
       let userAccount = temparayAddr;
 

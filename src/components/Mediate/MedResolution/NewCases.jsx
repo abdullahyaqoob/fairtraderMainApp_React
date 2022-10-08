@@ -160,6 +160,58 @@ class App extends Component {
     }
   };
 
+  handleAcceptJob = () => {
+    axios
+      .put(
+        `${process.env.REACT_APP_BASE_URL}mediate/medUpdateCaseAccept`, {
+        "medCaseId": this.state.selectedNewCase.id,
+        "medCaseIdStatus": true
+      }
+      )
+      .then((res) => {
+        console.log(res);
+        toast.success("Successfully, Job accepted", {
+          position: "top-right",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  };
+
+  handleRejectJob = (e) => {
+    axios
+      .put(
+        `${process.env.REACT_APP_BASE_URL}mediate/medUpdateCaseReject`, {
+        "medCaseId": this.state.selectedNewCase.id,
+        "medCaseIdStatus": true
+      }
+      )
+      .then((res) => {
+        console.log(res);
+        if (e === "magnifiredView") {
+          // UI changes
+          document.getElementById(
+            "resolutionSelectedPaid"
+          ).style.display = "none";
+          document.getElementById("ViewAddNotePaid").style.display =
+            "none";
+          document.getElementById("ViewAddNotePaid").style.display =
+            "none";
+          document.getElementById(
+            "invoiceStopPaymentContent"
+          ).style.display = "inherit";
+        }
+        toast.success("Successfully, Job rejected", {
+          position: "top-right",
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  };
+
+
   render() {
     let magnifierViewUserUI;
     if (this.state.magnifierViewUserViewPDF === false) {
@@ -373,7 +425,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                  <p>{this.state.selectedNewCase.mediatorIndustry}</p>
+                    <p>{this.state.selectedNewCase.mediatorIndustry}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -383,7 +435,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                  <p>{this.state.selectedNewCase.mediator}</p>
+                    <p>{this.state.selectedNewCase.mediator}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -393,7 +445,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                  <p>{this.state.selectedNewCase.customeraddress}</p>
+                    <p>{this.state.selectedNewCase.customeraddress}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -403,7 +455,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                  <p>{this.state.selectedNewCase.mediatorLanguage}</p>
+                    <p>{this.state.selectedNewCase.mediatorLanguage}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -413,7 +465,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                  <p>{this.state.selectedNewCase.responsetime} days</p>
+                    <p>{this.state.selectedNewCase.responsetime} days</p>
                   </div>
                 </div>
                 <div className="row">
@@ -423,7 +475,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                  <p>{this.state.selectedNewCase.apealtime} days</p>
+                    <p>{this.state.selectedNewCase.apealtime} days</p>
                   </div>
                 </div>
               </div>
@@ -646,6 +698,7 @@ class App extends Component {
                   <p
                     className="selectResolutionBtn alignCenter"
                     onClick={() => {
+                      this.handleAcceptJob()
                       this.setState({ invoicePaymentStopped: true });
                     }}
                     style={{ width: "200px" }}
@@ -660,16 +713,8 @@ class App extends Component {
                       className="floatRight"
                       alt="medResNewCasesReject"
                       onClick={() => {
-                        document.getElementById(
-                          "resolutionSelectedPaid"
-                        ).style.display = "none";
-                        document.getElementById("ViewAddNotePaid").style.display =
-                          "none";
-                        document.getElementById("ViewAddNotePaid").style.display =
-                          "none";
-                        document.getElementById(
-                          "invoiceStopPaymentContent"
-                        ).style.display = "inherit";
+                        this.handleRejectJob("magnifiredView")
+
                         this.setState({ invoicePaymentStopped: true });
                       }}
                     />
@@ -770,7 +815,6 @@ class App extends Component {
       );
     }
 
-
     let viewPDF;
     if (this.state.viewPDF === true) {
       viewPDF = (
@@ -857,59 +901,101 @@ class App extends Component {
               {/* <div className="invoiceBlackDivMainContainer" id='invoiceOptions' style={{ display: 'none' }}> */}
               <div
                 className="invoiceBlackDivMainContainer overdueTaskContainer"
-                id="invoiceOptions"
+                id="invoiceOptions" onClick={() => {
+                  if (this.state.jobSelected === true) {
+                    this.setState({ jobSelected: false })
+                  }
+                }}
                 style={{ display: "inherit" }}
               >
                 <div className="respondAllTxt">
                   <p style={{ color: "#00ccff" }}>
-                    There are new jobs waiting fro you
+                    There are new jobs waiting for you
                   </p>
                 </div>
-                {/* <Link to={{ pathname: "/PurchaseHistory" }}> */}
-                {this.state.newCasesAllData.map((value, index) => (
-                  <div
-                    className="attentionRedDiv medResBlueDIv"
-                    onClick={() => this.setState({ jobSelected: true })}
-                  >
-                    <div className="row">
-                      <div className="col-3">
-                        <img
-                          src={medResRes}
-                          className="purchaseHistory"
-                          alt="medResRes"
-                        />
+
+                {this.state.newCasesAllData.length !==
+                  0 ?
+                  <div>
+                    {this.state.newCasesAllData.map((value, index) => (
+                      <div
+                        className="attentionRedDiv medResBlueDIv"
+                        onClick={() => {
+                          this.setState({ selectedNewCase: value })
+                          if (this.state.jobSelected === true) {
+                            this.setState({ jobSelected: false })
+                          } else {
+                            this.setState({ jobSelected: true })
+                          }
+                        }}
+                      >
+                        <div className="row">
+                          <div className="col-3">
+                            <img
+                              src={medResRes}
+                              className="purchaseHistory"
+                              alt="medResRes"
+                            />
+                          </div>
+                          <div className="col-7">
+                            <table className="invoiceOptionsTable overdueTasksHeading">
+                              <tbody>
+                                <tr>
+                                  <th>Case: #{value.id}</th>
+                                </tr>
+                                <tr>
+                                  <td>Accept Job?</td>
+                                </tr>
+                                <tr>
+                                  <td>Time left:</td>
+                                  {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
+                                  <td>72 hrs</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <div className="col-2 overdueTasksSerchIcon">
+                            <img
+                              src={medResNewCasesSearch}
+                              alt="medResNewCasesSearch"
+                              className="mediatorSearch"
+                              onClick={() => {
+                                this.setState({ selectedNewCase: value })
+                                this.setState({ furtherDetail: true });
+                              }}
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <div className="col-7">
-                        <table className="invoiceOptionsTable overdueTasksHeading">
-                          <tbody>
-                            <tr>
-                              <th>Case: #{value.id}</th>
-                            </tr>
-                            <tr>
-                              <td>Accept Job?</td>
-                            </tr>
-                            <tr>
-                              <td>Time left:</td>
-                              {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
-                              <td>72 hrs</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div className="col-2 overdueTasksSerchIcon">
-                        <img
-                          src={medResNewCasesSearch}
-                          alt="medResNewCasesSearch"
-                          className="mediatorSearch"
-                          onClick={() => {
-                            this.setState({ selectedNewCase: value })
-                            this.setState({ furtherDetail: true });
-                          }}
-                        />
-                      </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                  : (
+                    <div
+                      className="attentionRedDiv medResBlueDIv"
+                      style={{ marginTop: "-5px" }}
+                    >
+                      <h2
+                        style={{
+                          textAlign: "center",
+                          paddingTop: "28px",
+                        }}
+                      >
+                        Sorry, You have no records
+                      </h2>
+                    </div>
+                  )}
+
+
+
+
+
+
+
+
+
+
+
+
                 {/* <div
                   className="attentionRedDiv medResBlueDIv"
                   onClick={() => this.setState({ jobSelected: true })}
@@ -1049,18 +1135,22 @@ class App extends Component {
                       <p
                         className="selectResolutionBtn alignCenter"
                         style={{ width: "200px" }}
+                        onClick={() => {
+                          this.handleAcceptJob()
+                        }}
                       >
                         Accept Job
                       </p>
                     </span>
                     <span className="alignEnd" style={{ float: "right" }}>
-                      <Link to={{ pathname: "" }}>
-                        <img
-                          src={invoiceUnpaidReject}
-                          className="floatRight"
-                          alt="invoiceUnpaidReject"
-                        />
-                      </Link>
+                      <img
+                        onClick={() => {
+                          this.handleRejectJob()
+                        }}
+                        src={invoiceUnpaidReject}
+                        className="floatRight"
+                        alt="invoiceUnpaidReject"
+                      />
                     </span>
                   </div>
                 )}
