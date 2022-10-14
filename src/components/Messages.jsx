@@ -60,19 +60,20 @@ class App extends Component {
       defaultView: "All",
       userAccountEmail: "",
       allMessages: "",
-      wantToOpenMsg: ''
+      allMessagesMailer: "",
+      wantToOpenMsgOfUser: ''
     };
   }
   async componentWillMount() {
     this.userConnectedEmail();
   }
-  takeTheSecondPersonEmail(e) {
-    if (e.senderEmail !== this.state.userAccountEmail) {
-      return e.senderEmail;
-    } else if (e.receiverEmail !== this.state.userAccountEmail) {
-      return e.receiverEmail;
-    }
-  }
+  // takeTheSecondPersonEmail(e) {
+  //   if (e.senderEmail !== this.state.userAccountEmail) {
+  //     return e.senderEmail;
+  //   } else if (e.receiverEmail !== this.state.userAccountEmail) {
+  //     return e.receiverEmail;
+  //   }
+  // }
   getMonthName(monthNumber) {
     const date = new Date();
     date.setMonth(monthNumber);
@@ -89,15 +90,19 @@ class App extends Component {
     console.log(nameOfTheMonth);
     return (`${getDate}-${nameOfTheMonth.substring(0, 3)}`);
   }
+
   mountedAxiosCallsForMessages = async () => {
     axios
-      .post(`${process.env.REACT_APP_BASE_URL}message/getMyMsgs`, {
+      .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmails`, {
         userEmail: this.state.userAccountEmail
       })
 
       .then((res) => {
-        this.setState({ allMessages: res.data })
-        console.log(this.state.allMessages);
+        this.setState({ allMessagesMailer: res.data })
+        console.log(this.state.allMessagesMailer);
+        if (res.data.length === 0) {
+          setTimeout(this.mountedAxiosCallsForMessages, 250);
+        }
       }).catch((err) => {
         console.log(err);
       })
@@ -113,9 +118,10 @@ class App extends Component {
       console.log(this.state.userAccountEmail);
 
       this.mountedAxiosCallsForMessages()
+
       setInterval(() => {
         this.mountedAxiosCallsForMessages()
-      }, 30000);
+      }, 50000);
 
     } else {
       setTimeout(this.userConnectedEmail, 250);
@@ -134,7 +140,7 @@ class App extends Component {
         })
 
         .then((res) => {
-          toast.error("Message Sent", {
+          toast.success("Message Sent", {
             position: "top-right",
           });
 
@@ -150,6 +156,29 @@ class App extends Component {
       });
     }
   }
+
+  async showSelectedUserMsgs(e) {
+    console.log(e);
+    await axios
+      .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
+        istEmail: this.state.userAccountEmail,
+        secEmail: e,
+      })
+
+      .then((res) => {
+        console.log(res.data);
+        let respData = res.data
+        respData.sort(function (a, b) { return a.id - b.id });
+        this.setState({ allMessages: respData })
+        if (respData.length === 0) {
+          setTimeout(this.showSelectedUserMsgs, 250);
+        }
+
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
+
   render() {
     let messageBtnUI;
     if (this.state.defaultView === "All") {
@@ -357,10 +386,26 @@ class App extends Component {
           <div>
             <div className="overdueTasksOrderTxt">
               <p style={{ color: "white" }}>My Messages:</p>
-              <p style={{ color: "white" }} onClick={() => { this.setState({ defaultView: "All" }) }}>All</p>
-              <p>Unread</p>
-              <p>Recived</p>
-              <p onClick={() => { this.setState({ defaultView: "Sent" }) }}>Sent</p>
+              {this.state.defaultView === "All" || this.state.defaultView === "View" ?
+                <p style={{ color: "white" }} onClick={() => { this.setState({ defaultView: "All" }) }}>All</p>
+                :
+                <p onClick={() => { this.setState({ defaultView: "All" }) }}>All</p>
+              }
+              <p onClick={() => {
+                toast.warning("Comming Soon", {
+                  position: "top-right"
+                })
+              }}>Unread</p>
+              <p onClick={() => {
+                toast.warning("Comming Soon", {
+                  position: "top-right"
+                })
+              }}>Recived</p>
+              {this.state.defaultView === "Sent" ?
+                <p style={{ color: "white" }} onClick={() => { this.setState({ defaultView: "Sent" }); this.setState({ wantToOpenMsgOfUser: "" }) }}>Sent</p>
+                :
+                <p onClick={() => { this.setState({ defaultView: "Sent" }); this.setState({ wantToOpenMsgOfUser: "" }) }}>Sent</p>
+              }
             </div>
           </div>
           <div
@@ -453,16 +498,22 @@ class App extends Component {
                   </div>
                 }))
                 } */}
-                {this.state.allMessages.length !==
+                {this.state.allMessagesMailer.length !==
                   // 0 ?
                   0 ?
                   <div>
-                    {this.state.allMessages.map(
+                    {this.state.allMessagesMailer.map(
                       (value, i) => (
                         <div>
                           <div className="messagesDiv messagesVl" onClick={() => {
-                            this.setState({ wantToOpenMsg: value })
+                            this.setState({ wantToOpenMsgOfUser: value.user })
                             this.setState({ defaultView: "View" })
+
+                            this.showSelectedUserMsgs(value.user)
+
+                            setInterval(() => {
+                              this.showSelectedUserMsgs(value.user)
+                            }, 50000);
                           }}>
                             <div className="messageindex">
                               <label class="container">
@@ -474,11 +525,12 @@ class App extends Component {
                             </div>
                             <div className="messagefrom">
                               <label htmlFor="messageIndex1">
-                                <span>{this.takeTheSecondPersonEmail(value)}</span>
+                                {/* <span>{this.takeTheSecondPersonEmail(value)}</span> */}
+                                <span>{value.user}</span>
                               </label>
                             </div>
                             <div className="messagedate" style={{ whiteSpace: 'nowrap' }}>
-                              <span>{this.createdAtDate(value.createdAt)}</span>
+                              <span>{this.createdAtDate(value.time)}</span>
                             </div>
                           </div>
                           <hr className="messagesHR" />
@@ -500,9 +552,6 @@ class App extends Component {
                 }
 
                 {/* <hr className="messagesHR" /> */}
-
-
-
               </div>
               : this.state.defaultView === "Sent" ?
                 <div>
@@ -510,10 +559,10 @@ class App extends Component {
                   <div className="messagesDiv" style={{ marginBottom: "5px" }}>
                     <div className="messageindex">To:</div>
                     <div className="messagefrom" style={{ width: '89%' }}>
-                      {this.state.wantToOpenMsg !== "" ?
-                        <input type="text" value={this.takeTheSecondPersonEmail(this.state.wantToOpenMsg)} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
+                      {this.state.wantToOpenMsgOfUser !== "" ?
+                        <input type="InvoiceinvoiceFields" value={this.state.wantToOpenMsgOfUser} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
                         :
-                        <input type="text" placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
+                        <input type="InvoiceinvoiceFields" placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
                       }
                     </div>
                   </div>
@@ -521,7 +570,27 @@ class App extends Component {
                 </div>
                 : <div>
                   <div className="messageView">
-                    {this.state.wantToOpenMsg.message}
+                    {this.state.allMessages.length !== 0 ?
+                      <div>
+                        {this.state.allMessages.map((val, i) => (
+                          <>
+                            {val.senderEmail === this.state.userAccountEmail ?
+                              <>
+                                {/* <span style={{ textAlign: 'end', color: 'silver' }}>Ist Person</span> */}
+                                <h2 style={{ textAlign: 'end', color: 'lightGreen' }}>{val.message}</h2>
+                                <hr className="messagesHR" style={{ marginBottom: '5px' }} />
+                              </>
+                              : <>
+                                {/* <span style={{ textAlign: 'start', color: 'silver' }}>2nd Person</span> */}
+                                <h2 style={{ textAlign: 'start', color: 'yellow' }}>{val.message}</h2>
+                                <hr className="messagesHR" style={{ marginBottom: '5px' }} />
+                              </>
+                            }
+                          </>
+                        ))}
+                      </div>
+                      : ""}
+                    {/* {this.state.wantToOpenMsg.message} */}
                   </div>
                 </div>}
             {messageBtnUI}
