@@ -89,6 +89,20 @@ class App extends Component {
     console.log(nameOfTheMonth);
     return (`${getDate}-${nameOfTheMonth.substring(0, 3)}`);
   }
+  mountedAxiosCallsForMessages = async () => {
+    axios
+      .post(`${process.env.REACT_APP_BASE_URL}message/getMyMsgs`, {
+        userEmail: this.state.userAccountEmail
+      })
+
+      .then((res) => {
+        this.setState({ allMessages: res.data })
+        console.log(this.state.allMessages);
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
+
 
   userConnectedEmail = async () => {
     let connectedUserEmail;
@@ -98,17 +112,10 @@ class App extends Component {
       this.setState({ userAccountEmail: connectedUserEmail })
       console.log(this.state.userAccountEmail);
 
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}message/getMyMsgs`, {
-          userEmail: connectedUserEmail
-        })
-
-        .then((res) => {
-          this.setState({ allMessages: res.data })
-          console.log(this.state.allMessages);
-        }).catch((err) => {
-          console.log(err);
-        })
+      this.mountedAxiosCallsForMessages()
+      setInterval(() => {
+        this.mountedAxiosCallsForMessages()
+      }, 30000);
 
     } else {
       setTimeout(this.userConnectedEmail, 250);
@@ -188,6 +195,7 @@ class App extends Component {
               alt="contractPrev"
               style={{ width: '50px' }}
               onClick={() => {
+                this.setState({ defaultView: "All" })
               }}
             />
           </span>
@@ -223,6 +231,7 @@ class App extends Component {
               alt="contractPrev"
               style={{ width: '50px' }}
               onClick={() => {
+                this.setState({ defaultView: "All" })
               }}
             />
           </span>
