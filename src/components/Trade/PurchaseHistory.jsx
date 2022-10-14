@@ -191,6 +191,9 @@ class PurchaseHistory extends Component {
           toast.error("Please First Select My Payment option", {
             position: "top-right",
           });
+          setTimeout(() => {
+            window.location = "MyPayment"
+          }, 2000);
         } else {
           // const url = 'http://localhost:5000/Images/User/1659596483933.jpg'
           const attachfilesURL = `${process.env.REACT_APP_BASE_URL}${SelectedOrder.attachfiles}`;
@@ -396,13 +399,14 @@ class PurchaseHistory extends Component {
         this.state.ethSwap.methods
           .buyWithBNB(
             SelectedOrder.id,
-            SelectedOrder.invoiceId,
             this.state.selectedOrderWarrantyFileIpfs,
             this.state.selectedOrderTermsFileIpfs,
             SelectedOrder.apealtime,
             SelectedOrder.sellerwalletaddress,
             this.state.selectedOrderInvoiceFileIpfs,
             SelectedOrder.customeremail,
+            SelectedOrder.mediator,
+            false,
             SelectedOrder.friendsemail
           )
           .send({
@@ -432,13 +436,14 @@ class PurchaseHistory extends Component {
                   // Amount
                   // "1000000000000000000",
                   window.web3.utils.toWei(SelectedOrder.Amount, "Ether"),
-                  SelectedOrder.invoiceId,
                   this.state.selectedOrderWarrantyFileIpfs,
                   this.state.selectedOrderTermsFileIpfs,
                   SelectedOrder.apealtime,
                   SelectedOrder.sellerwalletaddress,
                   this.state.selectedOrderInvoiceFileIpfs,
                   SelectedOrder.customeremail,
+                  SelectedOrder.mediator,
+                  false,
                   SelectedOrder.friendsemail
                 )
                 .send({
@@ -467,13 +472,14 @@ class PurchaseHistory extends Component {
                   // Amount
                   // "1000000000000000000",
                   window.web3.utils.toWei(SelectedOrder.Amount, "Ether"),
-                  SelectedOrder.invoiceId,
                   this.state.selectedOrderWarrantyFileIpfs,
                   this.state.selectedOrderTermsFileIpfs,
                   SelectedOrder.apealtime,
                   SelectedOrder.sellerwalletaddress,
                   this.state.selectedOrderInvoiceFileIpfs,
                   SelectedOrder.customeremail,
+                  SelectedOrder.mediator,
+                  false,
                   SelectedOrder.friendsemail
                 )
                 .send({

@@ -5,6 +5,11 @@ import { Link } from "react-router-dom";
 // import { Link, Route, Switch } from 'react-router-dom'
 // import { useNavigate } from "react-router-dom";
 
+import FTPToken from "../../../ABIS_CutFeeGiveOrdrId/FTPToken.json";
+import EthSwap from "../../../ABIS_CutFeeGiveOrdrId/EthSwap.json";
+import Web3 from "web3";
+
+
 // Images
 import fairtraderLogo from "../../../Images/fairtraderLogo.png";
 import searchBtn from "../../../Images/searchBtn.png";
@@ -79,11 +84,76 @@ class App extends Component {
     };
   }
   async componentWillMount() {
+    this.loadBlockchainData();
+
     this.userAddressHandle();
     // this.userConnectedEmail();
 
     // this.mountedAxiosCalls()
   }
+
+  loadBlockchainData = async () => {
+    let MetamaskStatus;
+    if (this.props["props"].MetamaskStatus.metamaskStatus !== "") {
+      MetamaskStatus = this.props["props"].MetamaskStatus.metamaskStatus;
+      console.log(MetamaskStatus);
+      if (MetamaskStatus === true) {
+        // load WEB3
+        if (window.ethereum) {
+          window.web3 = new Web3(window.ethereum);
+          await window.ethereum.enable();
+        } else if (window.web3) {
+          window.web3 = new Web3(window.web3.currentProvider);
+        } else {
+          window.alert(
+            "Non-Ethereum browser detected. You should consider trying MetaMask!"
+          );
+        }
+        // load Blockchain Data
+        const web3 = window.web3;
+
+        const networkId = await web3.eth.net.getId();
+        // this.setState({ networkId })
+        console.log(networkId);
+
+        // Load EthSwap
+        const ethSwapData = EthSwap.networks[networkId];
+        if (ethSwapData) {
+          const ethSwap = new web3.eth.Contract(
+            EthSwap.abi,
+            ethSwapData.address
+          );
+          this.setState({ ethSwap });
+        } else {
+          window.alert(
+            // "Invalid Network Id. Please select ** Binanace ** from Metamask to Continue. Ethereum Comming Soon."
+            "Invalid Network Id. Please select ** Ganache ** from Metamask to Continue. Ethereum Comming Soon."
+          );
+        }
+
+        // Load Token
+        const tokenFTPData = FTPToken.networks[networkId];
+        if (tokenFTPData) {
+          const FTPTokenVar = new web3.eth.Contract(
+            FTPToken.abi,
+            tokenFTPData.address
+          );
+          this.setState({ FTPToken: FTPTokenVar });
+        } else {
+          window.alert(
+            // "Invalid Network Id. Please select ** Binanace ** from Metamask to Continue. Ethereum Comming Soon."
+            "Invalid Network Id. Please select ** Ganache ** from Metamask to Continue. Ethereum Comming Soon."
+          );
+        }
+      }
+    } else {
+      setTimeout(() => {
+        this.loadBlockchainData();
+      }, 250);
+    }
+  };
+
+
   userConnectedEmail = async () => {
     let connectedUserEmail;
     if (this.props["props"].userAccountEmail.userAccountEmail !== "") {
@@ -117,31 +187,32 @@ class App extends Component {
         .userAccountEmail;
       console.log(connectedUserEmail);
 
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}invoices`, {
-          walletaddress: userAddres,
-          email: connectedUserEmail,
-        })
+      // AXIOS CALL FOR HISTORY DATA
+      // axios
+      //   .post(`${process.env.REACT_APP_BASE_URL}invoices`, {
+      //     walletaddress: userAddres,
+      //     email: connectedUserEmail,
+      //   })
 
-        .then((res) => {
-          console.log(res.data);
-          this.setState({ invoiceCoverData: res.data });
-          this.setState({
-            purchaseHistoryTotalPaid: res.data.purchaseHistory.data.MyOrders,
-          });
-          this.setState({
-            purchaseHistoryTotalUnPaid: res.data.purchaseHistory.data.unpaid,
-          });
-          this.setState({
-            salesHistoryTotalPaid: res.data.salesHistory.data.paid,
-          });
-          this.setState({
-            salesHistoryTotalUnPaid: res.data.salesHistory.data.unpaid,
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      //   .then((res) => {
+      //     console.log(res.data);
+      //     this.setState({ invoiceCoverData: res.data });
+      //     this.setState({
+      //       purchaseHistoryTotalPaid: res.data.purchaseHistory.data.MyOrders,
+      //     });
+      //     this.setState({
+      //       purchaseHistoryTotalUnPaid: res.data.purchaseHistory.data.unpaid,
+      //     });
+      //     this.setState({
+      //       salesHistoryTotalPaid: res.data.salesHistory.data.paid,
+      //     });
+      //     this.setState({
+      //       salesHistoryTotalUnPaid: res.data.salesHistory.data.unpaid,
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
 
       // New Cases Call
       axios
@@ -160,7 +231,55 @@ class App extends Component {
     }
   };
 
-  handleAcceptJob = () => {
+  handleAcceptJob = async () => {
+    if (this.state.selectedNewCase.paidstatus === true) {
+      // Calling of smart contract
+      const AllOrdersOfSeller = await this.state.ethSwap.methods
+        .getAllOrdersOfOneUser(this.state.selectedNewCase.sellerwalletaddress)
+        .call();
+
+      console.log("AllOrdersOfSeller", AllOrdersOfSeller);
+
+      let stateSlectedData = this.state.selectedNewCase;
+      let wantToSelectedOrder;
+      let wantToSelectedOrderID;
+
+      AllOrdersOfSeller.filter(function (value, index) {
+        console.log(index);
+
+        if (value._orderId === stateSlectedData.id.toString()) {
+          wantToSelectedOrder = value;
+          wantToSelectedOrderID = index;
+        }
+      })
+
+      console.log('wantToSelectedOrder', wantToSelectedOrder);
+      console.log('wantToSelectedOrder', wantToSelectedOrderID);
+
+      let userAccountt = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      let userAccount = userAccountt[0];
+
+      let _index = Number(wantToSelectedOrderID);
+      let changeThatUserData = await this.state.ethSwap.methods
+        // ****************************************************************************************************************************************************************************
+        .medAcceptNewCases(_index)
+        .send({
+          from: userAccount,
+        })
+        .on("transactionHash", (hash) => {
+          console.log("hash", hash);
+          console.log("changeThatUserData", changeThatUserData);
+          this.handleAcceptJobAxiosReq();
+        });
+    } else {
+      toast.error("This order is not paid", {
+        position: "top-right",
+      });
+    }
+  }
+  handleAcceptJobAxiosReq = () => {
     axios
       .put(
         `${process.env.REACT_APP_BASE_URL}mediate/medUpdateCaseAccept`, {

@@ -79,13 +79,14 @@ function App() {
       let userAccountt = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
-      // let userAccount  = userAccountt[0];
-      // console.log(userAccount);
-      // setuserAccountAddr( userAccount );
+      let userAccount  = userAccountt[0];
+      console.log(userAccount);
+      setuserAccountAddr( userAccount );
+      
       // temparary set account
-      let temparayAddr = "adddresssss1";
-      setuserAccountAddr(temparayAddr);
-      let userAccount = temparayAddr;
+      // let temparayAddr = "adddresssss1";
+      // setuserAccountAddr(temparayAddr);
+      // let userAccount = temparayAddr;
 
       setuserAccountNtw(window.ethereum.networkVersion);
 
