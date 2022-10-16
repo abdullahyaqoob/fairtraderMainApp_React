@@ -67,10 +67,32 @@
   font-size: 18px;
   padding: 7px;
 }
-
+.messageSenderSellToBuy{
+    color: yellow;
+    margin-bottom: 15px;
+}
+.messageSenderSellToBuy h5{
+    font-size: 15px;
+    font-weight: bold;
+}
+.messageSenderSellToBuy h3{
+    font-size: 15px;
+}
+.messageSenderBuyToSell{
+    color: rgb(0, 255, 0);
+    margin-bottom: 15px;
+}
+.messageSenderBuyToSell h5{
+    font-size: 15px;
+    font-weight: bold;
+}
+.messageSenderBuyToSell h3{
+    font-size: 15px;
+}
 .messageView{
     color: white;
     font-size: 18px;
+    padding: 10px;
 }
 
 .messageToTxtFeild {

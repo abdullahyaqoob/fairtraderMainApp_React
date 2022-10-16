@@ -61,7 +61,6 @@ import axios from "axios";
 import "../../css/Invoice.css";
 import "../../css/invoiceCalender.css";
 import "../../css/MedResolution.css";
-// import axios from 'axios';
 class App extends Component {
   constructor(props) {
     super(props);

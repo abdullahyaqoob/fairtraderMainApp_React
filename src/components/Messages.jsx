@@ -67,6 +67,10 @@ class App extends Component {
   async componentWillMount() {
     this.userConnectedEmail();
   }
+  formatTheCreatedAtDate(e) {
+    let newDateDate = new Date(e).toLocaleString()
+    return newDateDate.substring(0, 10)
+  }
   // takeTheSecondPersonEmail(e) {
   //   if (e.senderEmail !== this.state.userAccountEmail) {
   //     return e.senderEmail;
@@ -92,6 +96,7 @@ class App extends Component {
   }
 
   mountedAxiosCallsForMessages = async () => {
+    console.log('getAllSecondPersonEmails', this.state.userAccountEmail);
     axios
       .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmails`, {
         userEmail: this.state.userAccountEmail
@@ -129,26 +134,49 @@ class App extends Component {
   }
 
   sentMessageHandler() {
+    console.log(this.state.wantToOpenMsgOfUser);
+    // return
     if (document.getElementById("messageToTxtFeild").value !== "") {
       let messageToTxtFeild = document.getElementById("messageToTxtFeild").value
       let messageTextareaTxt = document.getElementById("messageTextareaTxt").value
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}message/createMsg`, {
-          senderEmail: this.state.userAccountEmail,
-          receiverEmail: messageToTxtFeild,
-          message: messageTextareaTxt
-        })
+      let options = {
+        senderEmail: this.state.userAccountEmail,
+        receiverEmail: messageToTxtFeild,
+        message: messageTextareaTxt
+      }
 
-        .then((res) => {
-          toast.success("Message Sent", {
-            position: "top-right",
-          });
+      if (this.state.wantToOpenMsgOfUser.mediatorInvolved === false || this.state.wantToOpenMsgOfUser === "") {
+        axios
+          .post(`${process.env.REACT_APP_BASE_URL}message/createMsg`, options)
 
-          document.getElementById("messageTextareaTxt").value = ""
-          document.getElementById("messageToTxtFeild").value = ""
-        }).catch((err) => {
-          console.log(err);
-        })
+          .then((res) => {
+            toast.success("Message Sent", {
+              position: "top-right",
+            });
+
+            document.getElementById("messageTextareaTxt").value = ""
+            document.getElementById("messageToTxtFeild").value = ""
+          }).catch((err) => {
+            console.log(err);
+          })
+      } else {
+        console.log(options);
+
+        axios
+          .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, options)
+
+          .then((res) => {
+            toast.success("Message Sent to Mediator", {
+              position: "top-right",
+            });
+
+            document.getElementById("messageTextareaTxt").value = ""
+            document.getElementById("messageToTxtFeild").value = ""
+          }).catch((err) => {
+            console.log(err);
+          })
+      }
+
 
     } else {
       toast.error("Please first type the recipient email", {
@@ -420,7 +448,7 @@ class App extends Component {
                 <div className="messagesDiv" style={{ marginBottom: "5px" }}>
                   <div className="messageindex"></div>
                   <div className="messagealert">
-                    <img src={messagesAttension} alt="messagesAttension" style={{ marginTop: '-2px' }} />
+                    <img src={messagesAttension} alt="messagesAttension" style={{ marginTop: '-3px' }} />
                   </div>
                   <div className="messagefrom">
                     <span>From</span>
@@ -506,13 +534,13 @@ class App extends Component {
                       (value, i) => (
                         <div>
                           <div className="messagesDiv messagesVl" onClick={() => {
-                            this.setState({ wantToOpenMsgOfUser: value.user })
+                            this.setState({ wantToOpenMsgOfUser: value })
                             this.setState({ defaultView: "View" })
 
                             this.showSelectedUserMsgs(value.user)
 
                             setInterval(() => {
-                              this.showSelectedUserMsgs(value.user)
+                              this.showSelectedUserMsgs(this.state.wantToOpenMsgOfUser.user)
                             }, 50000);
                           }}>
                             <div className="messageindex">
@@ -522,6 +550,9 @@ class App extends Component {
                               </label>
                             </div>
                             <div className="messagealert">
+                              {value.mediatorInvolved === true ?
+                                <img src={messagesAttension} alt="messagesAttension" style={{ marginTop: '-2px' }} />
+                                : ""}
                             </div>
                             <div className="messagefrom">
                               <label htmlFor="messageIndex1">
@@ -559,8 +590,8 @@ class App extends Component {
                   <div className="messagesDiv" style={{ marginBottom: "5px" }}>
                     <div className="messageindex">To:</div>
                     <div className="messagefrom" style={{ width: '89%' }}>
-                      {this.state.wantToOpenMsgOfUser !== "" ?
-                        <input type="InvoiceinvoiceFields" value={this.state.wantToOpenMsgOfUser} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
+                      {this.state.wantToOpenMsgOfUser.user !== "" ?
+                        <input type="InvoiceinvoiceFields" value={this.state.wantToOpenMsgOfUser.user} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
                         :
                         <input type="InvoiceinvoiceFields" placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
                       }
@@ -575,16 +606,22 @@ class App extends Component {
                         {this.state.allMessages.map((val, i) => (
                           <>
                             {val.senderEmail === this.state.userAccountEmail ?
-                              <>
-                                {/* <span style={{ textAlign: 'end', color: 'silver' }}>Ist Person</span> */}
-                                <h2 style={{ textAlign: 'end', color: 'lightGreen' }}>{val.message}</h2>
-                                <hr className="messagesHR" style={{ marginBottom: '5px' }} />
-                              </>
-                              : <>
-                                {/* <span style={{ textAlign: 'start', color: 'silver' }}>2nd Person</span> */}
-                                <h2 style={{ textAlign: 'start', color: 'yellow' }}>{val.message}</h2>
-                                <hr className="messagesHR" style={{ marginBottom: '5px' }} />
-                              </>
+                              <div className="messageSenderBuyToSell">
+                                {val.mediatorInvolved === "1" ?
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Mediator</h5>
+                                  :
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
+                                }
+                                <h3>{val.message}</h3>
+                              </div>
+                              : <div className="messageSenderSellToBuy">
+                                {val.mediatorInvolved === "1" ?
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} Mediator to Buyer</h5>
+                                  :
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
+                                }
+                                <h3>{val.message}</h3>
+                              </div>
                             }
                           </>
                         ))}
