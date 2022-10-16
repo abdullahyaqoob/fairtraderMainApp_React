@@ -67,32 +67,32 @@
   font-size: 18px;
   padding: 7px;
 }
-.messageSenderSellToBuy{
-    color: yellow;
-    margin-bottom: 15px;
+.messageSenderSellToBuy {
+  color: yellow;
+  margin-bottom: 15px;
 }
-.messageSenderSellToBuy h5{
-    font-size: 15px;
-    font-weight: bold;
+.messageSenderSellToBuy h5 {
+  font-size: 15px;
+  font-weight: bold;
 }
-.messageSenderSellToBuy h3{
-    font-size: 15px;
+.messageSenderSellToBuy h3 {
+  font-size: 15px;
 }
-.messageSenderBuyToSell{
-    color: rgb(0, 255, 0);
-    margin-bottom: 15px;
+.messageSenderBuyToSell {
+  color: rgb(0, 255, 0);
+  margin-bottom: 15px;
 }
-.messageSenderBuyToSell h5{
-    font-size: 15px;
-    font-weight: bold;
+.messageSenderBuyToSell h5 {
+  font-size: 15px;
+  font-weight: bold;
 }
-.messageSenderBuyToSell h3{
-    font-size: 15px;
+.messageSenderBuyToSell h3 {
+  font-size: 15px;
 }
-.messageView{
-    color: white;
-    font-size: 18px;
-    padding: 10px;
+.messageView {
+  color: white;
+  font-size: 18px;
+  padding: 10px;
 }
 
 .messageToTxtFeild {
@@ -170,4 +170,24 @@
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+.startMediationSndMsg {
+  border: 5px solid rgb(255, 215, 0);
+  padding: 1px 5px;
+  padding-right: 15px;
+  min-height: 40px;
+}
+.sendMsgToMedDIv {
+  width: 94%;
+  float: right;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-right: 5px;
+}
+.sendMsgToMedDIv p {
+font-size: 15px;
+font-weight: bold;
+color: rgb(255, 238, 0);
+margin-top: -2px;
 }

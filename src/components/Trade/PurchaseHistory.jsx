@@ -39,6 +39,8 @@ import invoicePaymentStopped from "../../Images/Invoice/invoicePaymentStopped.pn
 import invoicePayNow from "../../Images/Invoice/invoicePayNow.png";
 import invoicePaymentStoppedIcon from "../../Images/Invoice/invoicePaymentStoppedIcon.png";
 import navMessage from "../../Images/Menu/navMessage.png";
+import invoiceLink from "../../Images/Invoice/invoiceLink.png";
+import invoiceMap from "../../Images/Invoice/invoiceMap.png";
 
 // Toast
 import { ToastContainer, toast } from "react-toastify";
@@ -93,7 +95,9 @@ class PurchaseHistory extends Component {
       resolutionSelectedPaid: false,
       contractSelectedPaid: false,
       ViewAddNotePaid: false,
-      paymentIsStopped: false
+      paymentIsStopped: false,
+      mediationStarted: false,
+      userAccountEmail: ''
     };
   }
   // handlePayNowFunc1stStep = () => {
@@ -163,6 +167,35 @@ class PurchaseHistory extends Component {
       }, 250);
     }
   };
+  handleSendMessageToMed = () => {
+    let mediatorMsgField = document.getElementById("sendMsgToMed").value
+    if (mediatorMsgField === "") {
+      toast.error("Please type some message", {
+        position: "top-right",
+      });
+    } else {
+      return
+      let axiosRequestformediatorEmail = 'addresss!'
+
+      axios
+      .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
+        senderEmail: this.state.userAccountEmail,
+        receiverEmail: axiosRequestformediatorEmail,
+        message: mediatorMsgField
+      })
+
+      .then((res) => {
+        toast.success("Message Sent to Mediator", {
+          position: "top-right",
+        });
+
+        document.getElementById("sendMsgToMed").value = ""
+      }).catch((err) => {
+        console.log(err);
+      })
+    }
+    // this.setState({ mediationStarted: true })
+  }
 
   handlePayNowFunc1stStep = () => {
     document.getElementById("invoiceUnpaidSelectedOption").style.display =
@@ -394,6 +427,7 @@ class PurchaseHistory extends Component {
 
       console.log(this.state.userAddres);
       let userSelectedCurrency = this.state.userSelectedCurrency;
+      console.log('userSelectedCurrency', userSelectedCurrency);
       //   //  SMART CONTRACT CALL
       if (userSelectedCurrency === "bnbCoin") {
         this.state.ethSwap.methods
@@ -545,6 +579,7 @@ class PurchaseHistory extends Component {
       connectedUserEmail = this.props["props"].userAccountEmail
         .userAccountEmail;
       console.log(connectedUserEmail);
+      this.setState({userAccountEmail: connectedUserEmail})
 
       axios
         .post(
@@ -740,10 +775,7 @@ class PurchaseHistory extends Component {
           <p
             className="selectResolutionBtn alignCenter"
             onClick={() => {
-              toast.warning("Comming Soon!", {
-                position: "top-right",
-              });
-              // this.handlePayNowFunc2ndStep();
+              this.setState({ mediationStarted: true })
             }}
             style={{ width: "200px" }}
           >
@@ -952,592 +984,691 @@ class PurchaseHistory extends Component {
     }
 
     let magnifierViewUserUI;
-    if (this.state.magnifierViewUserViewPDF === false) {
-      magnifierViewUserUI = (
-        <div className="hello">
-          <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
-            {/* <div id="invoiceUnpaidSearch" style={{ display: 'inherit', marginTop: '-8px' }}> */}
-
-            <div className="row">
-              <div className="col-6">
-                <div className="profileBox">
-                  <div className="profileBoxHeader">
-                    <span style={{ position: "absolute" }}>No:</span>
-                    <p style={{ textAlign: "end" }}>
-                      #{this.state.magnifierViewUser.id}
-                    </p>
-                  </div>
-
-                  <div className="profileBoxBody">
-                    <span>
-                      <b>{this.state.magnifierViewUser.customername}</b>
-                    </span>
-                    <br />
-                    <span>{this.state.magnifierViewUser.customeraddress}</span>
-                    <br />
-                    <span>Newtown 3709</span>
-                    <br />
-                    <br />
-                    <h6 style={{ color: "#c62127" }}>{this.state.magnifierViewUser.mediatorIndustry} Work</h6>
-                    <h6>
-                      Total <span style={{ color: "lightgrey" }}>.</span>
-                      ${this.state.magnifierViewUser.Amount}USD
-                    </h6>
-                  </div>
-                  <div
-                    className="profileBoxBottom"
-                    onClick={() => {
-                      this.setState({ magnifierViewUserViewPDF: true });
-                    }}
-                  >
-                    <h5>view PDF</h5>
-                    <img
-                      className="invoicesearchRed"
-                      src={searchRed}
-                      alt="searchRed"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                {invoicePaymentStoppedpayStopPayBtnUI}
-
-                <div
-                  className="row invoiceProfileRightSection"
-                  onClick={() => {
-                    this.setState({ invoicePaidBtn: false });
-                    // document.getElementById(
-                    //   "contractSelectedPaid"
-                    // ).style.display = "none";
-                    this.setState({ contractSelectedPaid: false });
-
-                    document.getElementById(
-                      "invoiceStopPaymentContent"
-                    ).style.display = "none";
-                    // document.getElementById(
-                    //   "resolutionSelectedPaid"
-                    // ).style.display = "inherit";
-                    this.setState({ resolutionSelectedPaid: true });
-
-                    // document.getElementById("ViewAddNotePaid").style.display =
-                    //   "none";
-                    this.setState({ ViewAddNotePaid: false });
-                  }}
-                >
-                  <div className="col-4">
-                    <img
-                      src={invoiceUnpaidResolutionYellow}
-                      style={{ marginLeft: "-8px" }}
-                      alt="invoiceUnpaidResolutionYellow"
-                    />
-                  </div>
-                  <div className="col-8" style={{ color: "#D8C938" }}>
-                    Resolution
-                    <br />
-                    Selected
-                  </div>
-                </div>
-                <div
-                  className="row invoiceProfileRightSection"
-                  onClick={() => {
-                    this.setState({ invoicePaidBtn: false });
-                    this.setState({ resolutionSelectedPaid: false });
-                    // document.getElementById(
-                    //   "resolutionSelectedPaid"
-                    // ).style.display = "none";
-                    document.getElementById(
-                      "invoiceStopPaymentContent"
-                    ).style.display = "none";
-                    // document.getElementById(
-                    //   "contractSelectedPaid"
-                    // ).style.display = "inherit";
-                    this.setState({ contractSelectedPaid: true });
-                    this.setState({ ViewAddNotePaid: false });
-
-                    // document.getElementById("ViewAddNotePaid").style.display =
-                    //   "none";
-                  }}
-                >
-                  <div className="col-4">
-                    <img
-                      src={invoiceUnpaidContract}
-                      alt="invoiceUnpaidContract"
-                    />
-                  </div>
-                  <div className="col-8" style={{ color: "#FF00B3" }}>
-                    Contract
-                    <br />
-                    Documents
-                  </div>
-                </div>
-                <div
-                  className="row invoiceProfileRightSection"
-                  onClick={() => {
-                    this.setState({ invoicePaidBtn: false });
-                    // document.getElementById(
-                    //   "resolutionSelectedPaid"
-                    // ).style.display = "none";
-                    this.setState({ resolutionSelectedPaid: false });
-
-                    document.getElementById(
-                      "invoiceStopPaymentContent"
-                    ).style.display = "none";
-                    // document.getElementById("ViewAddNotePaid").style.display =
-                    //   "inherit";
-                    this.setState({ ViewAddNotePaid: true });
-
-                    // document.getElementById(
-                    //   "contractSelectedPaid"
-                    // ).style.display = "none";
-                    this.setState({ contractSelectedPaid: false });
-                  }}
-                >
-                  {this.state.purchasehistoryPaidBtn === false ? (
-                    <>
-                      <div className="col-4">
-                        <img src={invoiceUnpaidEdit} alt="invoiceUnpaidEdit" />
-                      </div>
-                      <div className="col-8" style={{ color: "#33CC66" }}>
-                        View / Add
-                        <br />
-                        Notes
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="col-4">
-                        <img
-                          src={invoiceTransactionHistory}
-                          alt="invoiceTransactionHistory"
-                        />
-                      </div>
-                      <div className="col-8" style={{ color: "#00CCFF" }}>
-                        Transaction
-                        <br />
-                        History
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-            {this.state.resolutionSelectedPaid === true ? (
-              <div
-                // id="resolutionSelectedPaid"
-                className="resolutionSelected"
-              // style={{ display: "none" }}
-              >
-                <div className="row resolutionSelectedRow">
-                  <div className="col-9">
-                    <div className="row">
-                      <div className="col-3">
-                        <img
-                          src={resolutionSelectedResolution}
-                          alt="resolutionSelectedResolution"
-                        />
-                      </div>
-                      <div className="col-9">
-                        <p className="resolutionSelectedTxt">
-                          Resolution <br /> Selected
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="col-3"
-                    onClick={() => {
-                      this.setState({ invoicePaidBtn: true });
-                      // document.getElementById(
-                      //   "resolutionSelectedPaid"
-                      // ).style.display = "none";
-                      this.setState({ resolutionSelectedPaid: false });
-
-                      // document.getElementById("ViewAddNotePaid").style.display =
-                      //   "none";
-                      this.setState({ ViewAddNotePaid: false });
-
-                      // document.getElementById(
-                      //   "contractSelectedPaid"
-                      // ).style.display = "none";
-                      this.setState({ contractSelectedPaid: false });
-                    }}
-                  >
-                    <img src={invoiceAddNoteCross} alt="invoiceAddNoteCross" />
-                  </div>
-                </div>
-                <div className="ResolutionSelectedBodyTxt">
-                  <div className="row">
-                    <div className="col-4">
-                      <h3>
-                        <b>Industry:</b>
-                      </h3>
-                    </div>
-                    <div className="col-8">
-                      <p>{this.state.magnifierViewUser.mediatorIndustry}</p>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-4">
-                      <h3>
-                        <b>Mediator:</b>
-                      </h3>
-                    </div>
-                    <div className="col-8">
-                      <p>{this.state.magnifierViewUser.mediator}</p>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-4">
-                      <h3>
-                        <b>Location:</b>
-                      </h3>
-                    </div>
-                    <div className="col-8">
-                      <p>{this.state.magnifierViewUser.customeraddress}</p>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-4">
-                      <h3>
-                        <b>Language:</b>
-                      </h3>
-                    </div>
-                    <div className="col-8">
-                      <p>{this.state.magnifierViewUser.mediatorLanguage}</p>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-4">
-                      <h3>
-                        <b>Response:</b>
-                      </h3>
-                    </div>
-                    <div className="col-8">
-                      <p>{this.state.magnifierViewUser.responsetime} days</p>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-4">
-                      <h3>
-                        <b>Appeal:</b>
-                      </h3>
-                    </div>
-                    <div className="col-8">
-                      <p>{this.state.magnifierViewUser.apealtime} days</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-            <div id="invoiceStopPaymentContent" style={{ display: "none" }}>
-              <p style={{ color: "pink" }}>
-                Pay the Gas fee in your wallet to stop the payment release.
-              </p>
-              <p>
-                It may be better to first try and settle the dispute will the
-                seller before stopping payment release.
-              </p>
-            </div>
-            {this.state.ViewAddNotePaid === true ? (
-              <div
-                // id="ViewAddNotePaid"
-                className="InvoiceAddNote InvoiceAddNotepaid"
-              // style={{ display: "none" }}
-              >
-                <div className="row resolutionSelectedRow">
-                  <div className="col-9">
-                    <div className="row">
-                      <div className="col-3">
-                        <img src={invoiceAddNote} alt="invoiceAddNote" />
-                      </div>
-                      <div className="col-9">
-                        <p className="resolutionSelectedTxt">
-                          Add Note
-                          <br />
-                          <span
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "normal",
-                            }}
-                          >
-                            provide feedback to Seller
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="col-3"
-                    onClick={() => {
-                      this.setState({ invoicePaidBtn: true });
-                      // document.getElementById(
-                      //   "resolutionSelectedPaid"
-                      // ).style.display = "none";
-                      this.setState({ resolutionSelectedPaid: false });
-
-                      // document.getElementById("ViewAddNotePaid").style.display =
-                      //   "none";
-                      this.setState({ ViewAddNotePaid: false });
-
-                      // document.getElementById(
-                      //   "contractSelectedPaid"
-                      // ).style.display = "none";
-                      this.setState({ contractSelectedPaid: false });
-                    }}
-                  >
-                    <img src={invoiceAddNoteCross} alt="invoiceAddNoteCross" />
-                  </div>
-                </div>
-                <div className="ResolutionSelectedBodyTxt">
-                  <h3>
-                    <b>18/02/20222</b>
-                  </h3>
-                  <textarea
-                    className="viewAddNoteTexterea viewAddNoteTextereaPaid"
-                    name=""
-                    id=""
-                  ></textarea>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-
-            {this.state.contractSelectedPaid === true ? (
-              <div
-                // id="contractSelectedPaid"
-                className="contractSelected"
-              // style={{ display: "none" }}
-              >
-                <div className="row resolutionSelectedRow">
-                  <div className="col-9">
-                    <div className="row">
-                      <div className="col-3">
-                        <img
-                          src={invoiceContractDocuments}
-                          alt="invoiceContractDocuments"
-                        />
-                      </div>
-                      <div className="col-9">
-                        <p className="resolutionSelectedTxt">
-                          Contract <br /> Documents
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="col-3"
-                    onClick={() => {
-                      this.setState({ invoicePaidBtn: true });
-                      // document.getElementById(
-                      //   "resolutionSelectedPaid"
-                      // ).style.display = "none";
-                      this.setState({ contractSelectedPaid: false });
-
-                      // document.getElementById("ViewAddNotePaid").style.display =
-                      //   "none";
-                      this.setState({ ViewAddNotePaid: false });
-
-                      // document.getElementById(
-                      //   "contractSelectedPaid"
-                      // ).style.display = "none";
-                      this.setState({ resolutionSelectedPaid: false });
-                    }}
-                  >
-                    <img src={invoiceAddNoteCross} alt="invoiceAddNoteCross" />
-                  </div>
-                </div>
-                <div className="ResolutionSelectedBodyTxt">
-                  <div className="row">
-                    <div className="col-6">
-                      <div
-                        className="row"
-                        onClick={() =>
-                          this.setState({
-                            magnifierViewUserViewPDF: "contractTerms",
-                          })
-                        }
-                      >
-                        <div className="col-3">
-                          <img
-                            src={invoiceContractDocumentsTerms}
-                            alt="invoiceContractDocumentsTerms"
-                          />
-                        </div>
-                        <div className="col-9 invoiceTermsTxt">
-                          Terms & <br />
-                          Conditions
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div
-                        className="row"
-                        onClick={() =>
-                          this.setState({
-                            magnifierViewUserViewPDF:
-                              "contractProductCondition",
-                          })
-                        }
-                      >
-                        <div className="col-3">
-                          <img
-                            src={invoiceContractDocumentsOther}
-                            alt="invoiceContractDocumentsOther"
-                          />
-                        </div>
-                        <div className="col-9 invoiceTermsTxt">
-                          Product
-                          <br />
-                          Conditions
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row" style={{ marginTop: "20px" }}>
-                    <div className="col-6">
-                      <div
-                        className="row"
-                        onClick={() =>
-                          this.setState({
-                            magnifierViewUserViewPDF: "contractReturnPolicy",
-                          })
-                        }
-                      >
-                        <div className="col-3">
-                          <img
-                            src={invoiceContractDocumentsTerms}
-                            alt="invoiceContractDocumentsTerms"
-                          />
-                        </div>
-                        <div className="col-9 invoiceTermsTxt">
-                          Return & <br />
-                          Policy
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div
-                        className="row"
-                        onClick={() =>
-                          this.setState({
-                            magnifierViewUserViewPDF: "contractViewOthers",
-                          })
-                        }
-                      >
-                        <div className="col-3">
-                          <img
-                            src={invoiceContractDocumentsOther}
-                            alt="invoiceContractDocumentsOther"
-                          />
-                        </div>
-                        <div className="col-9 invoiceTermsTxt">
-                          View
-                          <br />
-                          Other
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-
-            {invoiceGetOptionsBtn}
+    if (this.state.mediationStarted === true) {
+      magnifierViewUserUI =
+        <>
+          <div className="resolutionOptionstoggle optionChange autoPickedData invoiceFeilds startMediationSndMsg" style={{ marginTop: '-2px' }}>
+            <span className="alignStart">
+              <input
+                id="sendMsgToMed"
+                type="InvoiceinvoiceFields"
+                className="mutualFriendInput invoiceFields"
+                placeholder="Send new message to:"
+              />
+            </span>
+            <span
+              className="alignEnd"
+              style={{ float: "right", marginRight: "-8px" }}
+            >
+              <img
+                src={invoiceLink}
+                style={{ marginTop: "0px" }}
+                className="floatRight"
+                alt="walletGreaterSign"
+              />
+            </span>
           </div>
-        </div>
-      );
-    } else if (this.state.magnifierViewUserViewPDF === "contractTerms") {
-      magnifierViewUserUI = (
-        <div className="MagnifierViewPDFIFrame">
-          <span
-            onClick={() => {
-              this.setState({ magnifierViewUserViewPDF: true });
-            }}
-          >
-            X
-          </span>
-          <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.termsandconditionsfile}`}
-            height="500px"
-            width="100%"
-          />
-        </div>
-      );
-    } else if (
-      this.state.magnifierViewUserViewPDF === "contractProductCondition"
-    ) {
-      magnifierViewUserUI = (
-        <div className="MagnifierViewPDFIFrame">
-          <span
-            onClick={() => {
-              this.setState({ magnifierViewUserViewPDF: true });
-            }}
-          >
-            X
-          </span>
-          <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.attachfiles}`}
-            height="500px"
-            width="100%"
-          />
-        </div>
-      );
-    } else if (this.state.magnifierViewUserViewPDF === "contractReturnPolicy") {
-      magnifierViewUserUI = (
-        <div className="MagnifierViewPDFIFrame">
-          <span
-            onClick={() => {
-              this.setState({ magnifierViewUserViewPDF: true });
-            }}
-          >
-            X
-          </span>
-          <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.warrantyfile}`}
-            height="500px"
-            width="100%"
-          />
-        </div>
-      );
-    } else if (this.state.magnifierViewUserViewPDF === "contractViewOthers") {
-      magnifierViewUserUI = (
-        <div className="MagnifierViewPDFIFrame">
-          <span
-            onClick={() => {
-              this.setState({ magnifierViewUserViewPDF: true });
-            }}
-          >
-            X
-          </span>
-          <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.invoicefile}`}
-            height="500px"
-            width="100%"
-          />
-        </div>
-      );
+          <div className="sendMsgToMedDIv">
+            <p>Timed Response required?</p>
+
+            <div
+              className="onoffswitch"
+              style={{ marginTop: "-1px", marginRight: "-3px" }}
+            >
+              <input
+                type="checkbox"
+                name="onoffswitch"
+                className="onoffswitch-checkbox"
+                id=""
+                tabIndex="0"
+              />
+              <label
+                className="onoffswitch-label onoffswitch-label2"
+                htmlFor="myonoffswitch0"
+                onClick={() => {
+                  toast.warning("Comming Soon!", {
+                    position: "top-right",
+                  });
+                }}
+              >
+                <span className="onoffswitch-inner onoffswitch-inner2"></span>
+                <span className="onoffswitch-switch"></span>
+              </label>
+            </div>
+          </div>
+          <div className="selectResolutionDIv invoiceThreeBtnDiv">
+            <span className="alignStart">
+              <img
+                src={invoiceBack}
+                alt="invoiceBack"
+                onClick={() => {
+                  this.setState({ searchUserMagnifierViewUnpaid: false });
+                  this.setState({ searchUserMagnifierViewPaid: false });
+                  this.setState({ invoiceUnpaidOrder: false });
+                }}
+              />
+            </span>
+            <span className="invoiceThreeBtn">  <p
+              className="selectResolutionBtn alignCenter"
+              onClick={() => {
+                this.handleSendMessageToMed();
+              }}
+              style={{ width: "200px" }}
+            >
+              Send Message
+            </p></span>
+            <span className="alignEnd" style={{ float: "right" }}>
+              <img
+                src={invoicePayNow}
+                onClick={() => {
+                  toast.warning("Comming Soon!", {
+                    position: "top-right",
+                  });
+                  // window.location.reload()
+                }}
+                className="floatRight"
+                alt="invoicePayNow"
+              />
+
+            </span>
+          </div>
+        </>
     } else {
-      magnifierViewUserUI = (
-        <div className="MagnifierViewPDFIFrame">
-          <span
-            onClick={() => {
-              this.setState({ magnifierViewUserViewPDF: false });
-            }}
-          >
-            X
-          </span>
-          <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.invoicefile}`}
-            height="500px"
-            width="100%"
-          />
-        </div>
-      );
+      if (this.state.magnifierViewUserViewPDF === false) {
+        magnifierViewUserUI = (
+          <div className="hello">
+            <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
+              {/* <div id="invoiceUnpaidSearch" style={{ display: 'inherit', marginTop: '-8px' }}> */}
+
+              <div className="row">
+                <div className="col-6">
+                  <div className="profileBox">
+                    <div className="profileBoxHeader">
+                      <span style={{ position: "absolute" }}>No:</span>
+                      <p style={{ textAlign: "end" }}>
+                        #{this.state.magnifierViewUser.id}
+                      </p>
+                    </div>
+
+                    <div className="profileBoxBody">
+                      <span>
+                        <b>{this.state.magnifierViewUser.customername}</b>
+                      </span>
+                      <br />
+                      <span>{this.state.magnifierViewUser.customeraddress}</span>
+                      <br />
+                      <span>Newtown 3709</span>
+                      <br />
+                      <br />
+                      <h6 style={{ color: "#c62127" }}>{this.state.magnifierViewUser.mediatorIndustry} Work</h6>
+                      <h6>
+                        Total <span style={{ color: "lightgrey" }}>.</span>
+                        ${this.state.magnifierViewUser.Amount}USD
+                      </h6>
+                    </div>
+                    <div
+                      className="profileBoxBottom"
+                      onClick={() => {
+                        this.setState({ magnifierViewUserViewPDF: true });
+                      }}
+                    >
+                      <h5>view PDF</h5>
+                      <img
+                        className="invoicesearchRed"
+                        src={searchRed}
+                        alt="searchRed"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6">
+                  {invoicePaymentStoppedpayStopPayBtnUI}
+
+                  <div
+                    className="row invoiceProfileRightSection"
+                    onClick={() => {
+                      this.setState({ invoicePaidBtn: false });
+                      // document.getElementById(
+                      //   "contractSelectedPaid"
+                      // ).style.display = "none";
+                      this.setState({ contractSelectedPaid: false });
+
+                      document.getElementById(
+                        "invoiceStopPaymentContent"
+                      ).style.display = "none";
+                      // document.getElementById(
+                      //   "resolutionSelectedPaid"
+                      // ).style.display = "inherit";
+                      this.setState({ resolutionSelectedPaid: true });
+
+                      // document.getElementById("ViewAddNotePaid").style.display =
+                      //   "none";
+                      this.setState({ ViewAddNotePaid: false });
+                    }}
+                  >
+                    <div className="col-4">
+                      <img
+                        src={invoiceUnpaidResolutionYellow}
+                        style={{ marginLeft: "-8px" }}
+                        alt="invoiceUnpaidResolutionYellow"
+                      />
+                    </div>
+                    {this.state.mediationStarted === false ?
+                      <div className="col-8" style={{ color: "#D8C938" }}>
+                        Resolution
+                        <br />
+                        Selected
+                      </div>
+                      :
+                      <div className="col-8" style={{ color: "#D8C938" }}>
+                        Resolution
+                        <br />
+                        Started
+                      </div>
+                    }
+                  </div>
+                  <div
+                    className="row invoiceProfileRightSection"
+                    onClick={() => {
+                      this.setState({ invoicePaidBtn: false });
+                      this.setState({ resolutionSelectedPaid: false });
+                      // document.getElementById(
+                      //   "resolutionSelectedPaid"
+                      // ).style.display = "none";
+                      document.getElementById(
+                        "invoiceStopPaymentContent"
+                      ).style.display = "none";
+                      // document.getElementById(
+                      //   "contractSelectedPaid"
+                      // ).style.display = "inherit";
+                      this.setState({ contractSelectedPaid: true });
+                      this.setState({ ViewAddNotePaid: false });
+
+                      // document.getElementById("ViewAddNotePaid").style.display =
+                      //   "none";
+                    }}
+                  >
+                    <div className="col-4">
+                      <img
+                        src={invoiceUnpaidContract}
+                        alt="invoiceUnpaidContract"
+                      />
+                    </div>
+                    <div className="col-8" style={{ color: "#FF00B3" }}>
+                      Contract
+                      <br />
+                      Documents
+                    </div>
+                  </div>
+                  <div
+                    className="row invoiceProfileRightSection"
+                    onClick={() => {
+                      this.setState({ invoicePaidBtn: false });
+                      // document.getElementById(
+                      //   "resolutionSelectedPaid"
+                      // ).style.display = "none";
+                      this.setState({ resolutionSelectedPaid: false });
+
+                      document.getElementById(
+                        "invoiceStopPaymentContent"
+                      ).style.display = "none";
+                      // document.getElementById("ViewAddNotePaid").style.display =
+                      //   "inherit";
+                      this.setState({ ViewAddNotePaid: true });
+
+                      // document.getElementById(
+                      //   "contractSelectedPaid"
+                      // ).style.display = "none";
+                      this.setState({ contractSelectedPaid: false });
+                    }}
+                  >
+                    {this.state.purchasehistoryPaidBtn === false ? (
+                      <>
+                        <div className="col-4">
+                          <img src={invoiceUnpaidEdit} alt="invoiceUnpaidEdit" />
+                        </div>
+                        <div className="col-8" style={{ color: "#33CC66" }}>
+                          View / Add
+                          <br />
+                          Notes
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="col-4">
+                          <img
+                            src={invoiceTransactionHistory}
+                            alt="invoiceTransactionHistory"
+                          />
+                        </div>
+                        <div className="col-8" style={{ color: "#00CCFF" }}>
+                          Transaction
+                          <br />
+                          History
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {this.state.resolutionSelectedPaid === true ? (
+                <div
+                  // id="resolutionSelectedPaid"
+                  className="resolutionSelected"
+                // style={{ display: "none" }}
+                >
+                  <div className="row resolutionSelectedRow">
+                    <div className="col-9">
+                      <div className="row">
+                        <div className="col-3">
+                          <img
+                            src={resolutionSelectedResolution}
+                            alt="resolutionSelectedResolution"
+                          />
+                        </div>
+                        <div className="col-9">
+                          <p className="resolutionSelectedTxt">
+                            Resolution <br /> Selected
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="col-3"
+                      onClick={() => {
+                        this.setState({ invoicePaidBtn: true });
+                        // document.getElementById(
+                        //   "resolutionSelectedPaid"
+                        // ).style.display = "none";
+                        this.setState({ resolutionSelectedPaid: false });
+
+                        // document.getElementById("ViewAddNotePaid").style.display =
+                        //   "none";
+                        this.setState({ ViewAddNotePaid: false });
+
+                        // document.getElementById(
+                        //   "contractSelectedPaid"
+                        // ).style.display = "none";
+                        this.setState({ contractSelectedPaid: false });
+                      }}
+                    >
+                      <img src={invoiceAddNoteCross} alt="invoiceAddNoteCross" />
+                    </div>
+                  </div>
+                  <div className="ResolutionSelectedBodyTxt">
+                    <div className="row">
+                      <div className="col-4">
+                        <h3>
+                          <b>Industry:</b>
+                        </h3>
+                      </div>
+                      <div className="col-8">
+                        <p>{this.state.magnifierViewUser.mediatorIndustry}</p>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-4">
+                        <h3>
+                          <b>Mediator:</b>
+                        </h3>
+                      </div>
+                      <div className="col-8">
+                        <p>{this.state.magnifierViewUser.mediator}</p>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-4">
+                        <h3>
+                          <b>Location:</b>
+                        </h3>
+                      </div>
+                      <div className="col-8">
+                        <p>{this.state.magnifierViewUser.customeraddress}</p>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-4">
+                        <h3>
+                          <b>Language:</b>
+                        </h3>
+                      </div>
+                      <div className="col-8">
+                        <p>{this.state.magnifierViewUser.mediatorLanguage}</p>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-4">
+                        <h3>
+                          <b>Response:</b>
+                        </h3>
+                      </div>
+                      <div className="col-8">
+                        <p>{this.state.magnifierViewUser.responsetime} days</p>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-4">
+                        <h3>
+                          <b>Appeal:</b>
+                        </h3>
+                      </div>
+                      <div className="col-8">
+                        <p>{this.state.magnifierViewUser.apealtime} days</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              <div id="invoiceStopPaymentContent" style={{ display: "none" }}>
+                <p style={{ color: "pink" }}>
+                  Pay the Gas fee in your wallet to stop the payment release.
+                </p>
+                <p>
+                  It may be better to first try and settle the dispute will the
+                  seller before stopping payment release.
+                </p>
+              </div>
+              {this.state.ViewAddNotePaid === true ? (
+                <div
+                  // id="ViewAddNotePaid"
+                  className="InvoiceAddNote InvoiceAddNotepaid"
+                // style={{ display: "none" }}
+                >
+                  <div className="row resolutionSelectedRow">
+                    <div className="col-9">
+                      <div className="row">
+                        <div className="col-3">
+                          <img src={invoiceAddNote} alt="invoiceAddNote" />
+                        </div>
+                        <div className="col-9">
+                          <p className="resolutionSelectedTxt">
+                            Add Note
+                            <br />
+                            <span
+                              style={{
+                                fontSize: "14px",
+                                fontWeight: "normal",
+                              }}
+                            >
+                              provide feedback to Seller
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="col-3"
+                      onClick={() => {
+                        this.setState({ invoicePaidBtn: true });
+                        // document.getElementById(
+                        //   "resolutionSelectedPaid"
+                        // ).style.display = "none";
+                        this.setState({ resolutionSelectedPaid: false });
+
+                        // document.getElementById("ViewAddNotePaid").style.display =
+                        //   "none";
+                        this.setState({ ViewAddNotePaid: false });
+
+                        // document.getElementById(
+                        //   "contractSelectedPaid"
+                        // ).style.display = "none";
+                        this.setState({ contractSelectedPaid: false });
+                      }}
+                    >
+                      <img src={invoiceAddNoteCross} alt="invoiceAddNoteCross" />
+                    </div>
+                  </div>
+                  <div className="ResolutionSelectedBodyTxt">
+                    <h3>
+                      <b>18/02/20222</b>
+                    </h3>
+                    <textarea
+                      className="viewAddNoteTexterea viewAddNoteTextereaPaid"
+                      name=""
+                      id=""
+                    ></textarea>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
+              {this.state.contractSelectedPaid === true ? (
+                <div
+                  // id="contractSelectedPaid"
+                  className="contractSelected"
+                // style={{ display: "none" }}
+                >
+                  <div className="row resolutionSelectedRow">
+                    <div className="col-9">
+                      <div className="row">
+                        <div className="col-3">
+                          <img
+                            src={invoiceContractDocuments}
+                            alt="invoiceContractDocuments"
+                          />
+                        </div>
+                        <div className="col-9">
+                          <p className="resolutionSelectedTxt">
+                            Contract <br /> Documents
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="col-3"
+                      onClick={() => {
+                        this.setState({ invoicePaidBtn: true });
+                        // document.getElementById(
+                        //   "resolutionSelectedPaid"
+                        // ).style.display = "none";
+                        this.setState({ contractSelectedPaid: false });
+
+                        // document.getElementById("ViewAddNotePaid").style.display =
+                        //   "none";
+                        this.setState({ ViewAddNotePaid: false });
+
+                        // document.getElementById(
+                        //   "contractSelectedPaid"
+                        // ).style.display = "none";
+                        this.setState({ resolutionSelectedPaid: false });
+                      }}
+                    >
+                      <img src={invoiceAddNoteCross} alt="invoiceAddNoteCross" />
+                    </div>
+                  </div>
+                  <div className="ResolutionSelectedBodyTxt">
+                    <div className="row">
+                      <div className="col-6">
+                        <div
+                          className="row"
+                          onClick={() =>
+                            this.setState({
+                              magnifierViewUserViewPDF: "contractTerms",
+                            })
+                          }
+                        >
+                          <div className="col-3">
+                            <img
+                              src={invoiceContractDocumentsTerms}
+                              alt="invoiceContractDocumentsTerms"
+                            />
+                          </div>
+                          <div className="col-9 invoiceTermsTxt">
+                            Terms & <br />
+                            Conditions
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div
+                          className="row"
+                          onClick={() =>
+                            this.setState({
+                              magnifierViewUserViewPDF:
+                                "contractProductCondition",
+                            })
+                          }
+                        >
+                          <div className="col-3">
+                            <img
+                              src={invoiceContractDocumentsOther}
+                              alt="invoiceContractDocumentsOther"
+                            />
+                          </div>
+                          <div className="col-9 invoiceTermsTxt">
+                            Product
+                            <br />
+                            Conditions
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row" style={{ marginTop: "20px" }}>
+                      <div className="col-6">
+                        <div
+                          className="row"
+                          onClick={() =>
+                            this.setState({
+                              magnifierViewUserViewPDF: "contractReturnPolicy",
+                            })
+                          }
+                        >
+                          <div className="col-3">
+                            <img
+                              src={invoiceContractDocumentsTerms}
+                              alt="invoiceContractDocumentsTerms"
+                            />
+                          </div>
+                          <div className="col-9 invoiceTermsTxt">
+                            Return & <br />
+                            Policy
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-6">
+                        <div
+                          className="row"
+                          onClick={() =>
+                            this.setState({
+                              magnifierViewUserViewPDF: "contractViewOthers",
+                            })
+                          }
+                        >
+                          <div className="col-3">
+                            <img
+                              src={invoiceContractDocumentsOther}
+                              alt="invoiceContractDocumentsOther"
+                            />
+                          </div>
+                          <div className="col-9 invoiceTermsTxt">
+                            View
+                            <br />
+                            Other
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
+              {invoiceGetOptionsBtn}
+            </div>
+          </div>
+        );
+      } else if (this.state.magnifierViewUserViewPDF === "contractTerms") {
+        magnifierViewUserUI = (
+          <div className="MagnifierViewPDFIFrame">
+            <span
+              onClick={() => {
+                this.setState({ magnifierViewUserViewPDF: true });
+              }}
+            >
+              X
+            </span>
+            <iframe
+              src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.termsandconditionsfile}`}
+              height="500px"
+              width="100%"
+            />
+          </div>
+        );
+      } else if (
+        this.state.magnifierViewUserViewPDF === "contractProductCondition"
+      ) {
+        magnifierViewUserUI = (
+          <div className="MagnifierViewPDFIFrame">
+            <span
+              onClick={() => {
+                this.setState({ magnifierViewUserViewPDF: true });
+              }}
+            >
+              X
+            </span>
+            <iframe
+              src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.attachfiles}`}
+              height="500px"
+              width="100%"
+            />
+          </div>
+        );
+      } else if (this.state.magnifierViewUserViewPDF === "contractReturnPolicy") {
+        magnifierViewUserUI = (
+          <div className="MagnifierViewPDFIFrame">
+            <span
+              onClick={() => {
+                this.setState({ magnifierViewUserViewPDF: true });
+              }}
+            >
+              X
+            </span>
+            <iframe
+              src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.warrantyfile}`}
+              height="500px"
+              width="100%"
+            />
+          </div>
+        );
+      } else if (this.state.magnifierViewUserViewPDF === "contractViewOthers") {
+        magnifierViewUserUI = (
+          <div className="MagnifierViewPDFIFrame">
+            <span
+              onClick={() => {
+                this.setState({ magnifierViewUserViewPDF: true });
+              }}
+            >
+              X
+            </span>
+            <iframe
+              src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.invoicefile}`}
+              height="500px"
+              width="100%"
+            />
+          </div>
+        );
+      } else {
+        magnifierViewUserUI = (
+          <div className="MagnifierViewPDFIFrame">
+            <span
+              onClick={() => {
+                this.setState({ magnifierViewUserViewPDF: false });
+              }}
+            >
+              X
+            </span>
+            <iframe
+              src={`${process.env.REACT_APP_BASE_URL}${this.state.magnifierViewUser.invoicefile}`}
+              height="500px"
+              width="100%"
+            />
+          </div>
+        );
+      }
     }
 
     return (
@@ -2119,35 +2250,43 @@ class PurchaseHistory extends Component {
               id="invoiceOptionsPaid"
               style={{ display: "none" }}
             >
-              <p className="invoiceTabsRow">
-                <span>
-                  Order History: <span style={{ color: "#059b34" }}>__</span>
-                </span>
-                <span
-                  style={{ color: "black" }}
-                  onClick={() => {
-                    document.getElementById(
-                      "invoiceOptionsPaid"
-                    ).style.display = "none";
-                    document.getElementById(
-                      "invoicePaidOptions"
-                    ).style.display = "inherit";
-                    this.setState({ resolutionSelectedPaid: false });
-                    this.setState({ ViewAddNotePaid: false });
-                    this.setState({ contractSelectedPaid: false });
-                    this.setState({ purchasehistoryPaidBtn: false });
-                    this.setState({ invoiceUnpaidOrder: false });
-                    this.setState({ invoicePaidBtn: true });
-                    this.setState({ purchasehistoryPaidBtn: false });
-                  }}
-                >
-                  Unpaid <span style={{ color: "#059b34" }}>__</span>
-                </span>
-                <span style={{ color: "white" }}>
-                  Paid <span style={{ color: "#059b34" }}>__</span>
-                </span>
-                <span style={{ color: "black" }}>Disputes</span>
-              </p>
+              {this.state.mediationStarted === true ?
+                <p className="invoiceTabsRow" style={{ marginTop: '-15px', marginBottom: '-20px' }}>
+                  <p style={{ textAlign: 'start', marginLeft: '20px' }}>
+                    Invoice:
+                  </p>
+                </p>
+                :
+                <p className="invoiceTabsRow">
+                  <span>
+                    Order History: <span style={{ color: "#059b34" }}>__</span>
+                  </span>
+                  <span
+                    style={{ color: "black" }}
+                    onClick={() => {
+                      document.getElementById(
+                        "invoiceOptionsPaid"
+                      ).style.display = "none";
+                      document.getElementById(
+                        "invoicePaidOptions"
+                      ).style.display = "inherit";
+                      this.setState({ resolutionSelectedPaid: false });
+                      this.setState({ ViewAddNotePaid: false });
+                      this.setState({ contractSelectedPaid: false });
+                      this.setState({ purchasehistoryPaidBtn: false });
+                      this.setState({ invoiceUnpaidOrder: false });
+                      this.setState({ invoicePaidBtn: true });
+                      this.setState({ purchasehistoryPaidBtn: false });
+                    }}
+                  >
+                    Unpaid <span style={{ color: "#059b34" }}>__</span>
+                  </span>
+                  <span style={{ color: "white" }}>
+                    Paid <span style={{ color: "#059b34" }}>__</span>
+                  </span>
+                  <span style={{ color: "black" }}>Disputes</span>
+                </p>
+              }
               <div className="invoiceBlackContainer invoiceOrderBlackDiv">
                 {this.state.searchUserMagnifierViewPaid === false ? (
                   <div id="invoiceUnPaidSection">
@@ -2216,8 +2355,9 @@ class PurchaseHistory extends Component {
                                     </div>
                                     <p style={{ color: "rgb(182, 255, 182)" }}>
                                       {/* <b>02/11/2022</b> */}
-                                      {!val.payment ?
-                                        <b>Pay On:</b>
+                                      {!val.orderStatusStopeed ?
+                                        // <b>Pay On:</b>
+                                        <b>{val.payment}</b>
                                         : <b style={{ color: 'gold' }}>Stopped</b>
                                       }
                                     </p>

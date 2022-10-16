@@ -6731,12 +6731,12 @@
         }
       },
       "links": {},
-      "address": "0x177eA2155dE73665Fae6Ae760669d4a75f34D59e",
-      "transactionHash": "0x0bfd81270e30e209ee3999cd79c84fa14c72d52479545b76577723723031e313"
+      "address": "0x34B44Bd3966e611ae3F14803212B3e49D9C794aE",
+      "transactionHash": "0x8b5298f4ceb7519b11b29c4ece7bda33d4b2f2b7068674d8a46e35b6b7da3a14"
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-10-11T05:56:29.419Z",
+  "updatedAt": "2022-10-16T07:06:57.154Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
