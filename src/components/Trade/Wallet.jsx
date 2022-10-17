@@ -295,23 +295,24 @@ class App extends Component {
             </div>
             <div className="col-6">
               <p className="alignEnd">
-                <Link to={{ pathname: "/Messages" }}>
-                  <img
-                    src={navMessage}
-                    alt="navMessage"
-                    style={{ marginRight: "17px" }}
-                  />
-                </Link>
-
                 {localStorage.getItem("userViewTradeOrMediate") !==
-                "mediate" ? (
-                  <Link to={{ pathname: "/SearchPage" }}>
-                    <img
-                      src={searchBtn}
-                      alt="searchBtn"
-                      style={{ marginRight: "20px" }}
-                    />
-                  </Link>
+                  "mediate" ? (
+                  <>
+                    <Link to={{ pathname: "/Messages" }}>
+                      <img
+                        src={navMessage}
+                        alt="navMessage"
+                        style={{ marginRight: "17px" }}
+                      />
+                    </Link>
+                    <Link to={{ pathname: "/SearchPage" }}>
+                      <img
+                        src={searchBtn}
+                        alt="searchBtn"
+                        style={{ marginRight: "20px" }}
+                      />
+                    </Link>
+                  </>
                 ) : (
                   ""
                 )}
@@ -350,7 +351,7 @@ class App extends Component {
             <div className="contractTabMenuItems">
               <button className="walletcontractTab AlertTabNoNadius">
                 <Link to={{ pathname: "/Attention" }}>
-                <img src={Attension} alt="Attension" />
+                  <img src={Attension} alt="Attension" />
                 </Link>
               </button>
               <button className="walletResolutionTab">

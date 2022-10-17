@@ -174,27 +174,30 @@ class PurchaseHistory extends Component {
         position: "top-right",
       });
     } else {
-      return
-      let axiosRequestformediatorEmail = 'addresss!'
-
       axios
-      .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
-        senderEmail: this.state.userAccountEmail,
-        receiverEmail: axiosRequestformediatorEmail,
-        message: mediatorMsgField
-      })
-
-      .then((res) => {
-        toast.success("Message Sent to Mediator", {
-          position: "top-right",
-        });
-
-        document.getElementById("sendMsgToMed").value = ""
-      }).catch((err) => {
-        console.log(err);
-      })
+        .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
+          mediatorId: this.state.magnifierViewUser.mediator
+        })
+        .then((res) => {
+          console.log(res.data);
+          axios
+            .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
+              senderEmail: this.state.userAccountEmail,
+              receiverEmail: res.data,
+              message: mediatorMsgField
+            })
+            .then((res) => {
+              toast.success("Message Sent to Mediator", {
+                position: "top-right",
+              });
+              document.getElementById("sendMsgToMed").value = ""
+            }).catch((err) => {
+              console.log(err);
+            })
+        }).catch((err) => {
+          console.log(err);
+        })
     }
-    // this.setState({ mediationStarted: true })
   }
 
   handlePayNowFunc1stStep = () => {
@@ -579,7 +582,7 @@ class PurchaseHistory extends Component {
       connectedUserEmail = this.props["props"].userAccountEmail
         .userAccountEmail;
       console.log(connectedUserEmail);
-      this.setState({userAccountEmail: connectedUserEmail})
+      this.setState({ userAccountEmail: connectedUserEmail })
 
       axios
         .post(
@@ -702,26 +705,41 @@ class PurchaseHistory extends Component {
             </p>
           </span>
           <span className="alignEnd" style={{ float: "right" }}>
-            <img
-              src={invoicePaymentStopped}
-              className="floatRight"
-              alt="invoicePaymentStopped"
-              onClick={() => {
-                this.setState({
-                  purchasehistoryPaidBtn: true,
-                });
-                this.setState({
-                  magnifierViewUser: this.state.SelectedOrder,
-                });
-                this.setState({
-                  searchUserMagnifierViewPaid: true,
-                });
+            {this.state.SelectedOrder.orderStatusStopeed === false ?
+              <img
+                src={invoicePaymentStopped}
+                className="floatRight"
+                alt="invoicePaymentStopped"
+                onClick={() => {
+                  console.log(this.state.SelectedOrder);
+                  this.setState({
+                    purchasehistoryPaidBtn: true,
+                  });
+                  this.setState({
+                    magnifierViewUser: this.state.SelectedOrder,
+                  });
+                  this.setState({
+                    searchUserMagnifierViewPaid: true,
+                  });
 
-                this.setState({
-                  invoicePaidBtn: true,
-                });
-              }}
-            />
+                  this.setState({
+                    invoicePaidBtn: true,
+                  });
+                }}
+              />
+              :
+              <img
+                src={invoicePayNow}
+                onClick={() => {
+                  toast.warning("Comming Soon!", {
+                    position: "top-right",
+                  });
+                  // window.location.reload()
+                }}
+                className="floatRight"
+                alt="invoicePayNow"
+              />
+            }
           </span>
         </div>
       );
@@ -984,7 +1002,7 @@ class PurchaseHistory extends Component {
     }
 
     let magnifierViewUserUI;
-    if (this.state.mediationStarted === true) {
+    if (this.state.mediationStarted === "startRes") {
       magnifierViewUserUI =
         <>
           <div className="resolutionOptionstoggle optionChange autoPickedData invoiceFeilds startMediationSndMsg" style={{ marginTop: '-2px' }}>
@@ -1045,6 +1063,7 @@ class PurchaseHistory extends Component {
                   this.setState({ searchUserMagnifierViewUnpaid: false });
                   this.setState({ searchUserMagnifierViewPaid: false });
                   this.setState({ invoiceUnpaidOrder: false });
+
                 }}
               />
             </span>
@@ -1160,7 +1179,7 @@ class PurchaseHistory extends Component {
                         Selected
                       </div>
                       :
-                      <div className="col-8" style={{ color: "#D8C938" }}>
+                      <div className="col-8" style={{ color: "#D8C938" }} onClick={() => { this.setState({ mediationStarted: "startRes" }) }}>
                         Resolution
                         <br />
                         Started
@@ -2250,7 +2269,7 @@ class PurchaseHistory extends Component {
               id="invoiceOptionsPaid"
               style={{ display: "none" }}
             >
-              {this.state.mediationStarted === true ?
+              {this.state.mediationStarted === "startRes" ?
                 <p className="invoiceTabsRow" style={{ marginTop: '-15px', marginBottom: '-20px' }}>
                   <p style={{ textAlign: 'start', marginLeft: '20px' }}>
                     Invoice:

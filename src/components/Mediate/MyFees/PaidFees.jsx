@@ -152,13 +152,13 @@ class App extends Component {
             </div>
             <div className="col-6">
               <p className="alignEnd">
-                <Link to={{ pathname: "/Messages" }}>
+                {/* <Link to={{ pathname: "/Messages" }}>
                   <img
                     src={navMessage}
                     alt="navMessage"
                     style={{ marginRight: "17px" }}
                   />
-                </Link>
+                </Link> */}
                 <Link to={{ pathname: "/Menu" }}>
                   <img
                     src={toggleBtn}
