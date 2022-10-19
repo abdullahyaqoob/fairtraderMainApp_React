@@ -222,6 +222,8 @@ class CreateInvoice extends Component {
 
       let userAccountAddress = this.props["props"].UserAccountAddr
         .userAccountAddr;
+        let userAccountEmail = this.props["props"].userAccountEmail
+        .userAccountEmail;
 
       var formData = new FormData();
       formData.append("sellerwalletaddress", userAccountAddress);
@@ -229,6 +231,7 @@ class CreateInvoice extends Component {
       formData.append("customerAmount", createInvoiceAmount);
       formData.append("customeraddress", createInvoiceAddr);
       formData.append("customeremail", createInvoiceEmail);
+      formData.append("sellerEmail", userAccountEmail);
       // formData.append("customerwalletaddress", createInvoiceWallet);
       formData.append("invoicefile", createAddInvoiceFile);
       formData.append("payment", this.state.formatedCalenderValue);

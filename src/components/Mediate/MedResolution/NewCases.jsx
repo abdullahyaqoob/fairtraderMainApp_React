@@ -214,6 +214,7 @@ class App extends Component {
       //   });
 
       // New Cases Call
+      console.log(userAddres);
       axios
         .post(`${process.env.REACT_APP_BASE_URL}mediate/newCases`, {
           mediatorWalletAddress: userAddres,
@@ -291,6 +292,9 @@ class App extends Component {
         toast.success("Successfully, Job accepted", {
           position: "top-right",
         });
+        setTimeout(() => {
+          window.location = "MedResolution"
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
@@ -323,6 +327,10 @@ class App extends Component {
         toast.success("Successfully, Job rejected", {
           position: "top-right",
         });
+
+        setTimeout(() => {
+          window.location = "MedResolution"
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);

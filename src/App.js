@@ -182,6 +182,7 @@ function App() {
               props={{
                 MetamaskStatus: { metamaskStatus },
                 UserAccountAddr: { userAccountAddr },
+                userAccountEmail: { userAccountEmail },
               }}
               // props={props}
             />

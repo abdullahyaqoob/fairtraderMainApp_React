@@ -179,12 +179,13 @@ class PurchaseHistory extends Component {
           mediatorId: this.state.magnifierViewUser.mediator
         })
         .then((res) => {
-          console.log(res.data);
+          
           axios
             .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
               senderEmail: this.state.userAccountEmail,
               receiverEmail: res.data,
-              message: mediatorMsgField
+              message: mediatorMsgField,
+              orderNumber: this.state.magnifierViewUser.id
             })
             .then((res) => {
               toast.success("Message Sent to Mediator", {
@@ -352,6 +353,34 @@ class PurchaseHistory extends Component {
         console.log(err);
       });
   };
+  sendMsgToSeller = async () => {
+    let addNoteTextereaValue = document.getElementById("addNoteTexterea").value
+    if (addNoteTextereaValue === "") {
+      toast.error("Please, first add note", {
+        position: "top-right",
+      });
+    } else {
+      console.log(addNoteTextereaValue);
+      console.log(this.state.SelectedOrder);
+      axios
+        .post(`${process.env.REACT_APP_BASE_URL}message/createMsg`, {
+          senderEmail: this.state.userAccountEmail,
+          receiverEmail: this.state.SelectedOrder.sellerEmail,
+          message: addNoteTextereaValue,
+          orderId: this.state.SelectedOrder.id
+        })
+        .then((res) => {
+          console.log(res);
+          toast.success("Message Sent to Seller", {
+            position: "top-right",
+          });
+          document.getElementById("addNoteTexterea").value = ""
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    }
+  }
   callRejectHandleFunc = async () => {
     axios
       .put(`${process.env.REACT_APP_BASE_URL}order/updateOrderStatusRejected`, {
@@ -623,6 +652,15 @@ class PurchaseHistory extends Component {
   };
 
   render() {
+    let currenctDate;
+    let newDate = new Date()
+    let date = newDate.getDate();
+    let month = newDate.getMonth() + 1;
+    let year = newDate.getFullYear();
+
+    currenctDate = `${date}/${month < 10 ? `0${month}` : `${month}`}/${year}`
+
+
     let invoiceUnpaidBtn;
     if (this.state.invoiceUnpaidOrder === true) {
       invoiceUnpaidBtn = (
@@ -1392,7 +1430,7 @@ class PurchaseHistory extends Component {
               {this.state.ViewAddNotePaid === true ? (
                 <div
                   // id="ViewAddNotePaid"
-                  className="InvoiceAddNote InvoiceAddNotepaid"
+                  className="InvoiceAddNote InvoiceAddNotepaid addNoteBackground"
                 // style={{ display: "none" }}
                 >
                   <div className="row resolutionSelectedRow">
@@ -1421,18 +1459,8 @@ class PurchaseHistory extends Component {
                       className="col-3"
                       onClick={() => {
                         this.setState({ invoicePaidBtn: true });
-                        // document.getElementById(
-                        //   "resolutionSelectedPaid"
-                        // ).style.display = "none";
                         this.setState({ resolutionSelectedPaid: false });
-
-                        // document.getElementById("ViewAddNotePaid").style.display =
-                        //   "none";
                         this.setState({ ViewAddNotePaid: false });
-
-                        // document.getElementById(
-                        //   "contractSelectedPaid"
-                        // ).style.display = "none";
                         this.setState({ contractSelectedPaid: false });
                       }}
                     >
@@ -1441,13 +1469,16 @@ class PurchaseHistory extends Component {
                   </div>
                   <div className="ResolutionSelectedBodyTxt">
                     <h3>
-                      <b>18/02/20222</b>
+                      <b>{currenctDate}</b>
                     </h3>
                     <textarea
-                      className="viewAddNoteTexterea viewAddNoteTextereaPaid"
+                      className="viewAddNoteTexterea viewAddNoteTextereaPaid addNoteTexterea"
                       name=""
-                      id=""
+                      id="addNoteTexterea"
                     ></textarea>
+                    <center>
+                      <button onClick={this.sendMsgToSeller}>Send Message</button>
+                    </center>
                   </div>
                 </div>
               ) : (

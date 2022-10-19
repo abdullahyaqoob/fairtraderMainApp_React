@@ -692,13 +692,14 @@ class App extends Component {
                 </p>
               </span>
               <span className="alignEnd" style={{ float: "right" }}>
-                <Link to={{ pathname: "/Resolution" }}>
-                  <img
-                    src={contractNext}
-                    className="floatRight"
-                    alt="walletGreaterSign"
-                  />
-                </Link>
+                {/* <Link to={{ pathname: "/Resolution" }}> */}
+                <img
+                  src={contractNext}
+                  className="floatRight"
+                  alt="walletGreaterSign"
+                  onClick={() => this.contractHandler()}
+                />
+                {/* </Link> */}
               </span>
             </div>
           </div>

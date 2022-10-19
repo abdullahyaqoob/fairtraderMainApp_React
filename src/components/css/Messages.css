@@ -21,6 +21,24 @@
   width: 10%;
   /* width: 20%; */
 }
+.addNoteBackground {
+  background-color: rgb(140, 194, 140);
+}
+.addNoteBackground button {
+  width: 150px;
+  background-color: rgb(54, 53, 53);
+  font-size: 16px;
+  color: white;
+  padding: 3px;
+  border: 3px solid black;
+  border-radius: 10px;
+  margin-top: 5px;
+  outline: none;
+}
+
+.addNoteTexterea {
+  height: 90px;
+}
 
 .messagealert {
   width: 15%;
@@ -186,8 +204,8 @@
   margin-right: 5px;
 }
 .sendMsgToMedDIv p {
-font-size: 15px;
-font-weight: bold;
-color: rgb(255, 238, 0);
-margin-top: -2px;
+  font-size: 15px;
+  font-weight: bold;
+  color: rgb(255, 238, 0);
+  margin-top: -2px;
 }
