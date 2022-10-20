@@ -214,14 +214,16 @@ class App extends Component {
       //   });
 
       // New Cases Call
-      console.log(userAddres);
+      console.log(connectedUserEmail);
       axios
         .post(`${process.env.REACT_APP_BASE_URL}mediate/newCases`, {
-          mediatorWalletAddress: userAddres,
+          mediatorEmail: connectedUserEmail
         })
 
         .then((res) => {
-          this.setState({ newCasesAllData: res.data.data })
+          console.log(res);
+          // this.setState({ newCasesAllData: res.data.data })
+          this.setState({ newCasesAllData: res.data })
           console.log(this.state.newCasesAllData);
         }).catch((err) => {
           console.log(err);
@@ -232,6 +234,8 @@ class App extends Component {
   };
 
   handleAcceptJob = async () => {
+    // this.handleAcceptJobAxiosReq()
+    // return
     if (this.state.selectedNewCase.paidstatus === true) {
       // Calling of smart contract
       const AllOrdersOfSeller = await this.state.ethSwap.methods
@@ -1075,7 +1079,11 @@ class App extends Component {
                                 <tr>
                                   <td>Time left:</td>
                                   {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
-                                  <td>72 hrs</td>
+                                  {value.medJobRejected === "1" ?
+                                  <td>Rejected</td>
+                                  :
+                                  <td>72 hrs</td>                                  
+                                }
                                 </tr>
                               </tbody>
                             </table>

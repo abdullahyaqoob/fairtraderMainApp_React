@@ -86,7 +86,10 @@ class App extends Component {
       judgeCaseBuyerReceiveValue: "100%",
       caseHistoryAllData: '',
       selectedJob: '',
-      allChatOfBuyerSellerMediator: ''
+      allChatOfBuyerSellerMediator: '',
+      allMessages: '',
+      mediatorSendMsgTo: 'Seller',
+      userAccountEmail: ''
     };
   }
   async componentWillMount() {
@@ -101,6 +104,10 @@ class App extends Component {
       this.handleNumberHoursRef.value = "";
     }
   }
+  formatTheCreatedAtDate(e) {
+    let newDateDate = new Date(e).toLocaleString()
+    return newDateDate.substring(0, 10)
+  }
   userAddressHandle = async () => {
     let userAddres;
     let connectedUserEmail;
@@ -114,14 +121,16 @@ class App extends Component {
       connectedUserEmail = this.props["props"].userAccountEmail
         .userAccountEmail;
       console.log(connectedUserEmail);
+      this.setState({ userAccountEmail: connectedUserEmail })
 
       axios
         .post(`${process.env.REACT_APP_BASE_URL}mediate/caseHistory`, {
-          mediatorWalletAddress: userAddres,
+          mediatorEmail: connectedUserEmail
         })
 
         .then((res) => {
-          this.setState({ caseHistoryAllData: res.data.data })
+          console.log(res);
+          this.setState({ caseHistoryAllData: res.data })
           console.log(this.state.caseHistoryAllData);
         }).catch((err) => {
           console.log(err);
@@ -139,67 +148,115 @@ class App extends Component {
     } else {
       console.log(this.state.selectedJob);
 
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
-          mediatorId: this.state.selectedJob.mediator
+      let allMessagesWithoutFilter;
+      await axios
+        .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
+          orderId: this.state.selectedJob.id
         })
-        .then(async (res) => {
-          console.log(res.data);
 
-          let buyerSellerChat;
-          let mediatorSellerChat;
-          let mediatorCustomerChat;
+        .then((res) => {
+          let respData = res.data
 
-          await axios
-            .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
-              istEmail: this.state.selectedJob.sellerEmail,
-              secEmail: this.state.selectedJob.customeremail,
-            })
-
-            .then((res) => {
-              console.log(res.data);
-              buyerSellerChat = res.data
-            }).catch((err) => {
-              console.log(err);
-            })
-
-          await axios
-            .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
-              istEmail: this.state.selectedJob.sellerEmail,
-              secEmail: res.data,
-            })
-
-            .then((res) => {
-              console.log(res.data);
-              mediatorSellerChat = res.data
-            }).catch((err) => {
-              console.log(err);
-            })
+          console.log(respData);
 
 
-          await axios
-            .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
-              istEmail: this.state.selectedJob.customeremail,
-              secEmail: res.data,
-            })
 
-            .then((res) => {
-              console.log(res.data);
-              mediatorCustomerChat = res.data
-            }).catch((err) => {
-              console.log(err);
-            })
+          respData.sort(function (a, b) { return a.id - b.id });
+          allMessagesWithoutFilter = respData;
 
-          Array.prototype.push.apply(buyerSellerChat, mediatorSellerChat, mediatorCustomerChat);
-
-          buyerSellerChat.sort(function (a, b) { return a.id - b.id });
-          console.log(buyerSellerChat);
-
-          this.setState({ allChatOfBuyerSellerMediator: buyerSellerChat })
+          this.setState({ allChatOfBuyerSellerMediator: allMessagesWithoutFilter })
 
         }).catch((err) => {
           console.log(err);
         })
+
+      // await axios
+      //   .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
+      //     mediatorId: this.state.selectedJob.mediator
+      //   })
+
+      //   .then((res) => {
+      //     console.log(res.data);
+      //     this.setState({ mediatorEmail: res.data })
+
+      //     let answerOfMap = [];
+      //     let userAccountEmail = this.state.userAccountEmail;
+      //     if (userAccountEmail !== res.data) {
+      //       allMessagesWithoutFilter.map(function (value, index) {
+      //         if (value.senderEmail === userAccountEmail || value.receiverEmail === userAccountEmail) {
+      //           answerOfMap.push(value)
+      //         }
+      //       })
+      //       this.setState({ allMessages: answerOfMap })
+      //     } else {
+      //     this.setState({ allMessages: allMessagesWithoutFilter })
+      //   }
+      //   }).catch((err) => {
+      //     console.log(err);
+      //   })
+
+
+      // axios
+      //   .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
+      //     mediatorId: this.state.selectedJob.mediator
+      //   })
+      //   .then(async (res) => {
+      //     console.log(res.data);
+
+      //     let buyerSellerChat;
+      //     let mediatorSellerChat;
+      //     let mediatorCustomerChat;
+
+      //     await axios
+      //       .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
+      //         istEmail: this.state.selectedJob.sellerEmail,
+      //         secEmail: this.state.selectedJob.customeremail,
+      //       })
+
+      //       .then((res) => {
+      //         console.log(res.data);
+      //         buyerSellerChat = res.data
+      //       }).catch((err) => {
+      //         console.log(err);
+      //       })
+
+      //     await axios
+      //       .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
+      //         istEmail: this.state.selectedJob.sellerEmail,
+      //         secEmail: res.data,
+      //       })
+
+      //       .then((res) => {
+      //         console.log(res.data);
+      //         mediatorSellerChat = res.data
+      //       }).catch((err) => {
+      //         console.log(err);
+      //       })
+
+
+      //     await axios
+      //       .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
+      //         istEmail: this.state.selectedJob.customeremail,
+      //         secEmail: res.data,
+      //       })
+
+      //       .then((res) => {
+      //         console.log(res.data);
+      //         mediatorCustomerChat = res.data
+      //       }).catch((err) => {
+      //         console.log(err);
+      //       })
+
+      //     Array.prototype.push.apply(buyerSellerChat, mediatorSellerChat, mediatorCustomerChat);
+
+      //     buyerSellerChat.sort(function (a, b) { return a.id - b.id });
+      //     console.log(buyerSellerChat);
+
+      //     this.setState({ allChatOfBuyerSellerMediator: buyerSellerChat })
+
+      //   }).catch((err) => {
+      //     console.log(err);
+      //   })
     }
   }
 
@@ -211,7 +268,42 @@ class App extends Component {
     this.setState({ judgeCaseBuyerReceiveValue: e });
     this.setState({ judgeCaseBuyerReceive: false });
   }
+  handleMediatorSndMsg() {
+    let mediatorMsg = document.getElementById("SendMessageTxtareaForMed").value;
+    let selectedJob = this.state.selectedJob;
+    let mediatorSendMsgTo = this.state.mediatorSendMsgTo;
 
+    if (mediatorMsg !== "") {
+
+      let receiverEmail;
+      if (mediatorSendMsgTo === "Seller") {
+        receiverEmail = selectedJob.sellerEmail
+      } else if (mediatorSendMsgTo === "Buyer") {
+        receiverEmail = selectedJob.customeremail
+      }
+
+      axios
+        .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
+          senderEmail: this.state.userAccountEmail,
+          receiverEmail: receiverEmail,
+          message: mediatorMsg,
+          orderId: selectedJob.id
+        })
+        .then((res) => {
+          toast.success(`Message Sent to ${mediatorSendMsgTo}`, {
+            position: "top-right",
+          });
+          document.getElementById("SendMessageTxtareaForMed").value = ""
+        }).catch((err) => {
+          console.log(err);
+        })
+    } else {
+      toast.error("First type some message", {
+        position: "top-right",
+      });
+    }
+  }
+  // SendMessageTxtareaForMed
   render() {
 
     let magnifierViewUserUI;
@@ -1063,7 +1155,47 @@ class App extends Component {
                 className="invoiceBlackContainer invoiceOrderBlackDiv caseHistoryContainer"
                 style={{ marginTop: "-10px", paddingTop: "-20px" }}
               >
-                <div style={{ marginTop: "-25px", color: "rgb(102, 255, 0)" }}>
+
+                {this.state.allChatOfBuyerSellerMediator.length !== 0 ?
+                  <div>
+                    {this.state.allChatOfBuyerSellerMediator.map((val, i) => (
+                      <>
+                        {this.state.selectedJob.sellerEmail === val.senderEmail ?
+                          <div className="messageSenderSellToBuy">
+                            {val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail === val.senderEmail ?
+                              <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
+                              : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail === val.senderEmail ?
+                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
+                                : val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
+                                  : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail !== val.senderEmail ?
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
+                                    :
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
+                            }
+                            <h3>{val.message}</h3>
+                          </div>
+                          : <div className="messageSenderBuyToSell">
+                            {val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail === val.senderEmail ?
+                              <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
+                              : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail === val.senderEmail ?
+                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
+                                : val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
+                                  : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail !== val.senderEmail ?
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
+                                    :
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
+                            }
+                            <h3>{val.message}</h3>
+                          </div>
+                        }
+                      </>
+                    ))}
+                  </div>
+                  : ""}
+
+                {/* <div style={{ marginTop: "-25px", color: "rgb(102, 255, 0)" }}>
                   <h6>12/01/2022 Buyer to Mediator</h6>
 
                   <p>
@@ -1072,9 +1204,6 @@ class App extends Component {
                     photos.
                   </p>
                 </div>
-
-                {/* <img src={} alt={} />
-                <img src={} alt={} /> */}
                 <div style={{ color: "yellow" }}>
                   <div className="flexSpaceBtw">
                     <h6>12/01/2022 Buyer to Mediator</h6>
@@ -1097,7 +1226,10 @@ class App extends Component {
                     come to work. The job is half ﬁnished please see attached
                     photos.
                   </p>
-                </div>
+                </div> */}
+
+
+
               </div>
 
               <div className="selectResolutionDIv invoiceThreeBtnDiv">
@@ -1140,7 +1272,7 @@ class App extends Component {
             <>
               <div>
                 <div className="overdueTasksOrderTxt">
-                  <p style={{ color: "white" }}>Case: #123456789</p>
+                  <p style={{ color: "white" }}>Case: #{this.state.selectedJob.id}</p>
                   <p
                     onClick={() => {
                       this.setState({ furtherDetail: "firstAction" });
@@ -1217,7 +1349,7 @@ class App extends Component {
           ) : this.state.furtherDetail === "furtherDetailSndMessage" ? (
             <div>
               <div className="overdueTasksOrderTxt">
-                <p style={{ color: "white" }}>Case: #123456789</p>
+                <p style={{ color: "white" }}>Case: #{this.state.selectedJob.id}</p>
                 <p
                   onClick={() => {
                     this.setState({ furtherDetail: "firstAction" });
@@ -1235,18 +1367,38 @@ class App extends Component {
                 <div className="furtherDetailCOntainer">
                   <br />
                   <span className="sendMsgTxtLine">
-                    <span className="smallerThanSign">{">"}</span>{" "}
-                    <span>Send Message to Seller</span>
+
+                    {this.state.mediatorSendMsgTo === "Buyer" ?
+                      <>
+                        <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Seller" }) }} className="smallerThanSign">{">"}</span>{" "}
+                        <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Seller" }) }}>Send Message to Seller</span>
+                      </>
+                      :
+                      <>
+                        <span style={{ color: 'white' }} className="smallerThanSign">{">"}</span>{" "}
+                        <span style={{ color: 'white' }}>Send Message to Seller</span>
+                      </>
+                    }
                   </span>
                   <hr className="furtherDetailHR" />
-                  <span className="smallerThanSign">{">"}</span>{" "}
-                  <span>Send Message to Buyer</span>
+                  {/* <span className="smallerThanSign">{">"}</span>{" "} */}
+                  {this.state.mediatorSendMsgTo === "Seller" ?
+                    <>
+                      <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Buyer" }) }} className="smallerThanSign">{">"}</span>{" "}
+                      <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Buyer" }) }}>Send Message to Buyer</span>
+                    </>
+                    :
+                    <>
+                      <span style={{ color: 'white' }} className="smallerThanSign">{">"}</span>{" "}
+                      <span style={{ color: 'white' }}>Send Message to Buyer</span>
+                    </>
+                  }
                   <br />
                   <br />
                   <textarea
                     className="SendMessageTxtarea"
                     name=""
-                    id=""
+                    id="SendMessageTxtareaForMed"
                   ></textarea>
                   <p className="addDocsTxt">
                     Add document or photos ( 0 of 5 )
@@ -1286,6 +1438,7 @@ class App extends Component {
                     <p
                       className="selectResolutionBtn alignCenter"
                       style={{ width: "200px" }}
+                      onClick={() => { this.handleMediatorSndMsg() }}
                     >
                       Submit
                     </p>
@@ -1306,7 +1459,7 @@ class App extends Component {
             <>
               <div>
                 <div className="overdueTasksOrderTxt">
-                  <p style={{ color: "white" }}>Case: #123456789</p>
+                  <p style={{ color: "white" }}>Case: #{this.state.selectedJob.id}</p>
                   <p
                     onClick={() => {
                       this.setState({ furtherDetail: "firstAction" });
@@ -1460,7 +1613,7 @@ class App extends Component {
           ) : this.state.furtherDetail === "caseHistorySubmited" ? (
             <>
               <div className="overdueTasksOrderTxt">
-                <p>Case: #123456789</p>
+                <p>Case: #{this.state.selectedJob.id}</p>
                 <p style={{ color: "white" }}>Case History</p>
               </div>
               <div
@@ -1523,7 +1676,8 @@ class App extends Component {
             <>
               <div>
                 <div className="overdueTasksOrderTxt">
-                  <p>Case: #123456789</p>
+                  <p>Case: #{this.state.selectedJob.id}</p>
+
                   <p
                     style={{ color: "white" }}
                     onClick={() => {

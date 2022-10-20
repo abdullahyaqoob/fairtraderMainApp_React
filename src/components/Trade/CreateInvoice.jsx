@@ -222,58 +222,63 @@ class CreateInvoice extends Component {
 
       let userAccountAddress = this.props["props"].UserAccountAddr
         .userAccountAddr;
-        let userAccountEmail = this.props["props"].userAccountEmail
+      let userAccountEmail = this.props["props"].userAccountEmail
         .userAccountEmail;
 
-      var formData = new FormData();
-      formData.append("sellerwalletaddress", userAccountAddress);
-      formData.append("customername", createInvoiceName);
-      formData.append("customerAmount", createInvoiceAmount);
-      formData.append("customeraddress", createInvoiceAddr);
-      formData.append("customeremail", createInvoiceEmail);
-      formData.append("sellerEmail", userAccountEmail);
-      // formData.append("customerwalletaddress", createInvoiceWallet);
-      formData.append("invoicefile", createAddInvoiceFile);
-      formData.append("payment", this.state.formatedCalenderValue);
-      // this.state.formatedCalenderValue
+      if (userAccountEmail !== "") {
 
-      axios({
-        method: "post",
-        url: process.env.REACT_APP_BASE_URL + "invoices/createInvoice",
-        data: formData,
-        onUploadProgress: (uploadEvent) => {
-          this.setState({
-            profileImgProgress:
-              Math.round((uploadEvent.loaded / uploadEvent.total) * 100) + "%",
-          });
-        },
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-        .then((res) => {
-          console.log("profileImgProgress", this.state.profileImgProgress);
-          console.log("File Sended Response: ", res);
-          localStorage.setItem(
-            userAccountAddress + "invoiceId",
-            res.data.invoiceId
-          );
+        var formData = new FormData();
+        formData.append("sellerwalletaddress", userAccountAddress);
+        formData.append("customername", createInvoiceName);
+        formData.append("customerAmount", createInvoiceAmount);
+        formData.append("customeraddress", createInvoiceAddr);
+        formData.append("customeremail", createInvoiceEmail);
+        formData.append("sellerEmail", userAccountEmail);
+        // formData.append("customerwalletaddress", createInvoiceWallet);
+        formData.append("invoicefile", createAddInvoiceFile);
+        formData.append("payment", this.state.formatedCalenderValue);
+        // this.state.formatedCalenderValue
 
-          setTimeout(() => {
-            window.location = "Resolution";
-          }, 1000);
-
-          toast.success("Successfully Invoice Created", {
-            position: "top-right",
-          });
-
-          // alert("Success, Go to Resolution Tab")
+        axios({
+          method: "post",
+          url: process.env.REACT_APP_BASE_URL + "invoices/createInvoice",
+          data: formData,
+          onUploadProgress: (uploadEvent) => {
+            this.setState({
+              profileImgProgress:
+                Math.round((uploadEvent.loaded / uploadEvent.total) * 100) + "%",
+            });
+          },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         })
-        .catch((err) => {
-          // this.$toasted.error("Cannot able to attach this file.");
-          console.log("error", err);
-          // this.fileSelectionLoading = false;
-        });
+          .then((res) => {
+            console.log("profileImgProgress", this.state.profileImgProgress);
+            console.log("File Sended Response: ", res);
+            localStorage.setItem(
+              userAccountAddress + "invoiceId",
+              res.data.invoiceId
+            );
+
+            setTimeout(() => {
+              window.location = "Resolution";
+            }, 1000);
+
+            toast.success("Successfully Invoice Created", {
+              position: "top-right",
+            });
+
+            // alert("Success, Go to Resolution Tab")
+          })
+          .catch((err) => {
+            // this.$toasted.error("Cannot able to attach this file.");
+            console.log("error", err);
+            // this.fileSelectionLoading = false;
+          });
+      } else {
+        console.log("seller email is null");
+      }
     }
   };
 

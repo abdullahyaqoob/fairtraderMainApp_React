@@ -65,7 +65,8 @@ class App extends Component {
       replyTo: "",
       replyToWhich: '',
       mediatorEmail: '',
-      orderDetail: ''
+      orderDetail: '',
+      selectedJob: ''
     };
   }
   async componentWillMount() {
@@ -237,6 +238,7 @@ class App extends Component {
       .then(async (res) => {
         console.log(res.data);
         this.setState({ orderDetail: res.data })
+        this.setState({ selectedJob: res.data })
 
 
         await axios
@@ -713,35 +715,16 @@ class App extends Component {
                       <div>
                         {this.state.allMessages.map((val, i) => (
                           <>
-                            {/* {val.senderEmail === this.state.userAccountEmail ?
-                            <div className="messageSenderBuyToSell">
-                              {val.mediatorInvolved === "1" ?
-                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Mediator to Buyer</h5>
-                                :
-                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
-                              }
-                              <h3>{val.message}</h3>
-                            </div>
-                            : <div className="messageSenderSellToBuy">
-                              {val.mediatorInvolved === "1" ?
-                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Mediator</h5>
-                                :
-                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
-                              }
-                              <h3>{val.message}</h3>
-                            </div>
-                          } */}
-
                             {this.state.orderDetail.sellerEmail === val.senderEmail ?
                               <div className="messageSenderSellToBuy">
                                 {val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail === val.senderEmail ?
                                   <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
                                   : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail === val.senderEmail ?
                                     <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
-                                    : val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail ?
-                                      <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
+                                    : val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                      <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
                                       : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
-                                        <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
+                                        <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
                                         :
                                         <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
                                 }
@@ -752,10 +735,10 @@ class App extends Component {
                                   <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
                                   : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail === val.senderEmail ?
                                     <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
-                                    : val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail ?
-                                      <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
+                                    : val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                      <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
                                       : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
-                                        <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
+                                        <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
                                         :
                                         <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
                                 }

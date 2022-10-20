@@ -179,22 +179,23 @@ class PurchaseHistory extends Component {
           mediatorId: this.state.magnifierViewUser.mediator
         })
         .then((res) => {
-          
-          axios
-            .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
-              senderEmail: this.state.userAccountEmail,
-              receiverEmail: res.data,
-              message: mediatorMsgField,
-              orderNumber: this.state.magnifierViewUser.id
-            })
-            .then((res) => {
-              toast.success("Message Sent to Mediator", {
-                position: "top-right",
-              });
-              document.getElementById("sendMsgToMed").value = ""
-            }).catch((err) => {
-              console.log(err);
-            })
+          if (res.data !== "") {
+            axios
+              .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
+                senderEmail: this.state.userAccountEmail,
+                receiverEmail: res.data,
+                message: mediatorMsgField,
+                orderId: this.state.magnifierViewUser.id
+              })
+              .then((res) => {
+                toast.success("Message Sent to Mediator", {
+                  position: "top-right",
+                });
+                document.getElementById("sendMsgToMed").value = ""
+              }).catch((err) => {
+                console.log(err);
+              })
+          }
         }).catch((err) => {
           console.log(err);
         })
@@ -362,23 +363,25 @@ class PurchaseHistory extends Component {
     } else {
       console.log(addNoteTextereaValue);
       console.log(this.state.SelectedOrder);
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}message/createMsg`, {
-          senderEmail: this.state.userAccountEmail,
-          receiverEmail: this.state.SelectedOrder.sellerEmail,
-          message: addNoteTextereaValue,
-          orderId: this.state.SelectedOrder.id
-        })
-        .then((res) => {
-          console.log(res);
-          toast.success("Message Sent to Seller", {
-            position: "top-right",
-          });
-          document.getElementById("addNoteTexterea").value = ""
-        })
-        .catch((err) => {
-          console.log(err);
-        })
+      if (this.state.SelectedOrder.sellerEmail !== "" && this.state.SelectedOrder.id !== "") {
+        axios
+          .post(`${process.env.REACT_APP_BASE_URL}message/createMsg`, {
+            senderEmail: this.state.userAccountEmail,
+            receiverEmail: this.state.SelectedOrder.sellerEmail,
+            message: addNoteTextereaValue,
+            orderId: this.state.SelectedOrder.id
+          })
+          .then((res) => {
+            console.log(res);
+            toast.success("Message Sent to Seller", {
+              position: "top-right",
+            });
+            document.getElementById("addNoteTexterea").value = ""
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      }
     }
   }
   callRejectHandleFunc = async () => {
