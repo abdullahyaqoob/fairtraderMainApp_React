@@ -285,6 +285,9 @@
 .invoiceOrderBlackSubDiv:hover, .invoiceOrderBlackSubDiv:focus {
     background-color: #006633;
 }
+.disputeORdersSubDivs:hover, .disputeORdersSubDivs:focus{
+    background-color: rgb(113, 114, 47);
+}
 
 .invoiceOrderBlackSubDiv .col-2 img {
     margin-left: 12px;

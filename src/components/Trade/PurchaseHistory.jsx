@@ -219,7 +219,7 @@ class PurchaseHistory extends Component {
       .get(
         `${process.env.REACT_APP_BASE_URL}user/showSelectedCurrency/${this.props["props"].UserAccountAddr.userAccountAddr}`
       )
-      .then((res) => {
+      .then(async (res) => {
         userSelectedCurrency = res.data.currencySelected;
         console.log(res.data.currencySelected);
         this.setState({ userSelectedCurrency: res.data.currencySelected });
@@ -239,7 +239,7 @@ class PurchaseHistory extends Component {
           const attachfilesFileName = SelectedOrder.attachfiles;
           let attachfilesFullFile;
 
-          fetch(attachfilesURL).then(async (response) => {
+          await fetch(attachfilesURL).then(async (response) => {
             const contentType = response.headers.get("content-type");
             const blob = await response.blob();
             const file = new File([blob], attachfilesFileName, { contentType });
@@ -253,7 +253,7 @@ class PurchaseHistory extends Component {
             SelectedOrder.termsandconditionsfile;
           let termsandconditionsfileFullFile;
 
-          fetch(termsandconditionsfileURL).then(async (response) => {
+          await fetch(termsandconditionsfileURL).then(async (response) => {
             const contentType = response.headers.get("content-type");
             const blob = await response.blob();
             const file = new File([blob], termsandconditionsfileFileName, {
@@ -268,7 +268,7 @@ class PurchaseHistory extends Component {
           const invoicefileFileName = SelectedOrder.invoicefile;
           let invoicefileFullFile;
 
-          fetch(invoicefileURL).then(async (response) => {
+          await fetch(invoicefileURL).then(async (response) => {
             const contentType = response.headers.get("content-type");
             const blob = await response.blob();
             const file = new File([blob], invoicefileFileName, { contentType });
@@ -405,6 +405,38 @@ class PurchaseHistory extends Component {
         console.log(err);
       });
   };
+
+  handleStartMediation = async () => {
+    if (this.state.magnifierViewUser.mediation === false) {
+
+      // Server side work
+      axios
+        .put(`${process.env.REACT_APP_BASE_URL}order/orderStartMediation`, {
+          orderId: this.state.SelectedOrder.id,
+          mediationStatus: true,
+        })
+
+        .then((res) => {
+          console.log(res);
+          // setTimeout(() => {
+          //   window.location = "PurchaseHistory";
+          // }, 2000);
+
+          toast.success("Successfully, Started", {
+            position: "top-right",
+          });
+          // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      toast.error("Already, Started", {
+        position: "top-right",
+      });
+    }
+  };
+
   callStopHandleFunc = async () => {
     if (this.state.magnifierViewUser.orderStatusStopeed === false && this.state.paymentIsStopped === false) {
 
@@ -565,9 +597,11 @@ class PurchaseHistory extends Component {
   };
 
   fncToPayOrder = async () => {
+    console.log('connected User Address,', this.state.userAddres);
     axios
       .put(`${process.env.REACT_APP_BASE_URL}order/updateOrderStatus`, {
         orderId: this.state.SelectedOrder.id,
+        customerWalletAddress: this.state.userAddres
       })
 
       .then((res) => {
@@ -577,6 +611,9 @@ class PurchaseHistory extends Component {
         toast.success("Successfully, Paid", {
           position: "top-right",
         });
+        setTimeout(() => {
+          window.location = "Invoice"
+        }, 2000);
         // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
       })
       .catch((err) => {
@@ -835,6 +872,9 @@ class PurchaseHistory extends Component {
             className="selectResolutionBtn alignCenter"
             onClick={() => {
               this.setState({ mediationStarted: true })
+
+              // axios call
+              this.handleStartMediation()
             }}
             style={{ width: "200px" }}
           >
@@ -1213,7 +1253,7 @@ class PurchaseHistory extends Component {
                         alt="invoiceUnpaidResolutionYellow"
                       />
                     </div>
-                    {this.state.mediationStarted === false ?
+                    {this.state.magnifierViewUser.mediation === false ?
                       <div className="col-8" style={{ color: "#D8C938" }}>
                         Resolution
                         <br />

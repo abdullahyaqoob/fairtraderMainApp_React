@@ -86,7 +86,7 @@ class App extends Component {
     this.setState({ trustScoreSection: false });
     document.getElementById("trustScoreInput").value = val;
   }
-  async componentWillMount() {}
+  async componentWillMount() { }
 
   searchHandler = async (e) => {
     let searchWalletAddr = document.getElementById("searchWalletAddr").value;
@@ -192,6 +192,17 @@ class App extends Component {
   };
 
   render() {
+    let resolutionMediatorProfileEmail;
+    let resolutionMediatorEmail = this.state.magnifierViewUserData.email
+    if (resolutionMediatorEmail !== '') {
+      resolutionMediatorProfileEmail =
+        <a href={`mailto:${resolutionMediatorEmail}`} target="_blank">
+          <img src={emailIcon} alt="emailIcon" />
+        </a>
+    } else {
+      resolutionMediatorProfileEmail =
+      <img src={emailIcon} alt="emailIcon" />
+    }
     return (
       <>
         <div className="authMainDiv">
@@ -237,7 +248,7 @@ class App extends Component {
               <div className="contractTabMenuItems">
                 <button className="walletcontractTab AlertTabNoNadius">
                   <Link to={{ pathname: "/Attention" }}>
-                  <img src={Attension} alt="Attension" />
+                    <img src={Attension} alt="Attension" />
                   </Link>
                 </button>
                 <button className="walletResolutionTab">
@@ -636,7 +647,7 @@ class App extends Component {
               ) : this.state.searchMediatorPage === true ? (
                 <div className="slcMedBlackContainer serachBasedMediator">
                   {/* <div className="row" style={{backgroundColor: 'red',width: '106.5%'}}> */}
-                  <div className="row mediatorListSearch">
+                  <div className="row" style={{ marginTop: "-20px" }}>
                     {this.state.serachedMediatorList.map((value, index) => (
                       <div className="col-6" style={{ marginTop: "20px" }}>
                         {/* <div className="mediatorBlueDiv" onClick={() => { this.handleSelectMediator('location1') }}> */}
@@ -702,7 +713,7 @@ class App extends Component {
                             <div className="row">
                               <div className="col-6 MediatorCardImg">
                                 {this.state.magnifierViewUserData.image ===
-                                "" ? (
+                                  "" ? (
                                   <img
                                     src={location8}
                                     alt="MediatorCardImg"
@@ -725,7 +736,9 @@ class App extends Component {
                                   alt="faritraderRegisterdSign"
                                 />
                                 <h4 className="alignEnd">
-                                  {this.state.magnifierViewUserData.providing}
+                                  {/* {this.state.magnifierViewUserData.providing} */}
+                                  {this.state.magnifierViewUserData.providing === "" ?
+                                    "Service" : this.state.magnifierViewUserData.providing}
                                   <br />
                                   Provider
                                 </h4>
@@ -871,7 +884,9 @@ class App extends Component {
                     <center>
                       <div className="mediatorSocialLinks">
                         <img src={websiteIcon} alt="websiteIcon" />
-                        <img src={emailIcon} alt="emailIcon" />
+                        {resolutionMediatorProfileEmail}
+
+                        {/* <img src={emailIcon} alt="emailIcon" /> */}
                         <img src={telegramIcon} alt="telegramIcon" />
                       </div>
                     </center>
@@ -905,16 +920,16 @@ class App extends Component {
                 <span className="alignStart">
                   {/* <Link to={{ pathname: '/Menu' }}> */}
                   <img
-                    onClick={() => 
-                      {
-                        if (this.state.searchMediatorPage === true) {
+                    onClick={() => {
+                      if (this.state.searchMediatorPage === true) {
                         this.setState({ searchMediatorPage: false })
-                        } else if (this.state.searchMediatorPage === false) {
-                          window.location = "Menu"
-                        } else if (this.state.searchMediatorPage === "magnifier") {
-                          this.setState({ searchMediatorPage: true })}
-                        }
+                      } else if (this.state.searchMediatorPage === false) {
+                        window.location = "Menu"
+                      } else if (this.state.searchMediatorPage === "magnifier") {
+                        this.setState({ searchMediatorPage: true })
                       }
+                    }
+                    }
                     src={invoiceBack}
                     alt="invoiceBack"
                   />

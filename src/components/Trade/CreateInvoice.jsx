@@ -185,100 +185,110 @@ class CreateInvoice extends Component {
   }
 
   createInvoiceHandler = async (e) => {
-    let createInvoiceName = document.getElementById("createInvoiceName").value;
-    let createInvoiceAddr = document.getElementById("createInvoiceAddr").value;
-    let createInvoiceEmail = document.getElementById("createInvoiceEmail")
-      .value;
-    let createInvoiceAmount = document.getElementById("createInvoiceAmount")
-      .value;
+    console.log('repeated');
+    if (this.props["props"].userAccountEmail.userAccountEmail !== "") {
+      let createInvoiceName = document.getElementById("createInvoiceName").value;
+      let createInvoiceAddr = document.getElementById("createInvoiceAddr").value;
+      let createInvoiceEmail = document.getElementById("createInvoiceEmail")
+        .value;
+      let createInvoiceAmount = document.getElementById("createInvoiceAmount")
+        .value;
 
-    console.log(
-      createInvoiceName,
-      createInvoiceAddr,
-      createInvoiceEmail,
-      createInvoiceAmount
-    );
-    console.log(this.state.calenderValue);
-    console.log("Selected Image File: ", this.state.ProfileSelectedFileQual);
-
-    if (
-      createInvoiceEmail === "" ||
-      createInvoiceName === "" ||
-      createInvoiceAmount === "" ||
-      this.state.formatedCalenderValue === "" ||
-      this.state.ProfileSelectedFileQual === ""
-    ) {
-      toast.error("Please First enter Create Invoice Information", {
-        position: "top-right",
-      });
-    } else {
-      let createAddInvoiceFile = this.state.ProfileSelectedFileQual;
       console.log(
-        "this.state.formatedCalenderValue",
-        this.state.formatedCalenderValue
+        createInvoiceName,
+        createInvoiceAddr,
+        createInvoiceEmail,
+        createInvoiceAmount
       );
+      console.log(this.state.calenderValue);
+      console.log("Selected Image File: ", this.state.ProfileSelectedFileQual);
 
-      // requests for sending this selected file
-
-      let userAccountAddress = this.props["props"].UserAccountAddr
-        .userAccountAddr;
-      let userAccountEmail = this.props["props"].userAccountEmail
-        .userAccountEmail;
-
-      if (userAccountEmail !== "") {
-
-        var formData = new FormData();
-        formData.append("sellerwalletaddress", userAccountAddress);
-        formData.append("customername", createInvoiceName);
-        formData.append("customerAmount", createInvoiceAmount);
-        formData.append("customeraddress", createInvoiceAddr);
-        formData.append("customeremail", createInvoiceEmail);
-        formData.append("sellerEmail", userAccountEmail);
-        // formData.append("customerwalletaddress", createInvoiceWallet);
-        formData.append("invoicefile", createAddInvoiceFile);
-        formData.append("payment", this.state.formatedCalenderValue);
-        // this.state.formatedCalenderValue
-
-        axios({
-          method: "post",
-          url: process.env.REACT_APP_BASE_URL + "invoices/createInvoice",
-          data: formData,
-          onUploadProgress: (uploadEvent) => {
-            this.setState({
-              profileImgProgress:
-                Math.round((uploadEvent.loaded / uploadEvent.total) * 100) + "%",
-            });
-          },
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-          .then((res) => {
-            console.log("profileImgProgress", this.state.profileImgProgress);
-            console.log("File Sended Response: ", res);
-            localStorage.setItem(
-              userAccountAddress + "invoiceId",
-              res.data.invoiceId
-            );
-
-            setTimeout(() => {
-              window.location = "Resolution";
-            }, 1000);
-
-            toast.success("Successfully Invoice Created", {
-              position: "top-right",
-            });
-
-            // alert("Success, Go to Resolution Tab")
-          })
-          .catch((err) => {
-            // this.$toasted.error("Cannot able to attach this file.");
-            console.log("error", err);
-            // this.fileSelectionLoading = false;
-          });
+      if (
+        createInvoiceEmail === "" ||
+        createInvoiceName === "" ||
+        createInvoiceAmount === "" ||
+        this.state.formatedCalenderValue === "" ||
+        this.state.ProfileSelectedFileQual === ""
+      ) {
+        toast.error("Please First enter Create Invoice Information", {
+          position: "top-right",
+        });
       } else {
-        console.log("seller email is null");
+        let createAddInvoiceFile = this.state.ProfileSelectedFileQual;
+        console.log(
+          "this.state.formatedCalenderValue",
+          this.state.formatedCalenderValue
+        );
+
+        // requests for sending this selected file
+
+        let userAccountAddress = this.props["props"].UserAccountAddr
+          .userAccountAddr;
+        let userAccountEmail = this.props["props"].userAccountEmail
+          .userAccountEmail;
+
+        if (userAccountEmail !== "") {
+
+          var formData = new FormData();
+          formData.append("sellerwalletaddress", userAccountAddress);
+          formData.append("customername", createInvoiceName);
+          formData.append("customerAmount", createInvoiceAmount);
+          formData.append("customeraddress", createInvoiceAddr);
+          formData.append("customeremail", createInvoiceEmail);
+          formData.append("sellerEmail", userAccountEmail);
+          // formData.append("customerwalletaddress", createInvoiceWallet);
+          formData.append("invoicefile", createAddInvoiceFile);
+          formData.append("payment", this.state.formatedCalenderValue);
+          // this.state.formatedCalenderValue
+
+          axios({
+            method: "post",
+            url: process.env.REACT_APP_BASE_URL + "invoices/createInvoice",
+            data: formData,
+            onUploadProgress: (uploadEvent) => {
+              this.setState({
+                profileImgProgress:
+                  Math.round((uploadEvent.loaded / uploadEvent.total) * 100) + "%",
+              });
+            },
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+            .then((res) => {
+              console.log("profileImgProgress", this.state.profileImgProgress);
+              console.log("File Sended Response: ", res);
+              localStorage.setItem(
+                userAccountAddress + "invoiceId",
+                res.data.invoiceId
+              );
+
+              setTimeout(() => {
+                window.location = "Resolution";
+              }, 1000);
+
+              toast.success("Successfully Invoice Created", {
+                position: "top-right",
+              });
+
+              // alert("Success, Go to Resolution Tab")
+            })
+            .catch((err) => {
+              // this.$toasted.error("Cannot able to attach this file.");
+              console.log("error", err);
+              // this.fileSelectionLoading = false;
+            });
+        } else {
+          console.log(this.props["props"].userAccountEmail
+            .userAccountEmail);
+          console.log("seller email is null");
+        }
       }
+    } else {
+      window.location.reload()
+      setTimeout(() => {
+        toast.warning('Error in Invoice, Please create again')
+      }, 2000);
     }
   };
 
@@ -756,13 +766,13 @@ class CreateInvoice extends Component {
                       id="createInvoiceAmount"
                       type="InvoiceinvoiceFields"
                       className="mutualFriendInput invoiceFields"
-                      placeholder="Amount in USD"
+                      placeholder="Amount in BNB"
                     /> :
                     <input
                       id="createInvoiceAmount"
                       type="InvoiceinvoiceFields"
                       className="mutualFriendInput invoiceFields"
-                      placeholder="Amount in USD"
+                      placeholder="Amount in BNB"
                       disabled
                     />}
 

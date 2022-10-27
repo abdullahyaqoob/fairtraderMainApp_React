@@ -1,5 +1,7 @@
 .messagesMainContianer {
   padding: 8px;
+  height: 62vh;
+  overflow-y: scroll;
 }
 
 .messagesDiv {
@@ -17,6 +19,11 @@
   background-color: rgb(82, 76, 76);
 }
 
+#messageTabBody{
+  /* background-image: linear-gradient(to bottom, #9900ff, #9900ff, #4c135e, #000000); */
+  background-image: linear-gradient(to bottom, #9900ff, #9900ff, #110316, #000000);
+
+}
 .messageindex {
   width: 10%;
   /* width: 20%; */

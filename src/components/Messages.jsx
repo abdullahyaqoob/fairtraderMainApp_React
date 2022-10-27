@@ -515,7 +515,7 @@ class App extends Component {
           )}
         </section>
 
-        <div className="handleMainPage" id="walletTabBody">
+        <div className="handleMainPage" id="messageTabBody">
           <div>
             <div className="overdueTasksOrderTxt">
               <p style={{ color: "white" }}>My Messages:</p>

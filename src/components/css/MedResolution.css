@@ -1,50 +1,53 @@
 .medResBlueDIv {
     background-color: #009afe;
-}
-
-.medResBlueDIv:hover, .medResBlueDIv:focus {
+  }
+  
+  .medResBlueDIv:hover,
+  .medResBlueDIv:focus {
     background-color: #00ccff;
-}
-
-.medResBlueDIv:hover, .medResBlueDIv:focus {
+  }
+  
+  .medResBlueDIv:hover,
+  .medResBlueDIv:focus {
     background-color: #00ccff;
-}
-
-.caseHistoryHoverRed:hover, .caseHistoryHoverRed:focus {
+  }
+  
+  .caseHistoryHoverRed:hover,
+  .caseHistoryHoverRed:focus {
     background-color: rgb(255, 0, 119);
-}
-
-.caseHistoryContainer {
+  }
+  
+  .caseHistoryContainer {
     font-size: 17px;
-}
-
-.caseHistoryContainer div h6 {
+  }
+  
+  .caseHistoryContainer div h6 {
     font-size: 17px;
     font-weight: bold;
     margin-bottom: 10px;
     margin-top: 15px;
-}
-
-/* .caseHistoryFirstActionRightTxt{
-    margin-top: 20px;
-    position: absolute;
-    right: 40px;
-    margin-top: 20px;
-} */
-.flexSpaceBtw {
+  }
+  
+  /* .caseHistoryFirstActionRightTxt{
+      margin-top: 20px;
+      position: absolute;
+      right: 40px;
+      margin-top: 20px;
+  } */
+  .flexSpaceBtw {
     display: flex;
     justify-content: space-between;
     margin-right: 15px;
-}
-
-.addFeeHeadingTxt {
+  }
+  
+  .addFeeHeadingTxt {
     color: #00ccff;
     font-weight: bold;
     font-size: 16px;
     margin-bottom: 10px;
-}
-
-.addFeeDiv {
+  }
+  
+  .addFeeDiv {
     border: 3px solid #00ccff;
     padding: 10px 5px;
     display: flex;
@@ -52,34 +55,35 @@
     height: 43px;
     margin-bottom: 10px;
     border-radius: 8px;
-}
-.addFeeDiv img {
+  }
+  .addFeeDiv img {
     width: 28px;
     height: 28px;
     margin-top: -5px;
-}
-
-.addFeeBigDiv {
+  }
+  
+  .addFeeBigDiv {
     border: 3px solid #00ccff;
     padding: 10px 10px;
     height: 156px;
     margin-bottom: 10px;
     border-radius: 8px;
-}
-
-.addFeeDiv h6, .addFeeDiv p {
+  }
+  
+  .addFeeDiv h6,
+  .addFeeDiv p {
     font-size: 15px;
-}
-
-.caseHistoryFeePayDiv {
+  }
+  
+  .caseHistoryFeePayDiv {
     color: white !important;
-}
-
-.caseHistoryFeePayDiv span {
+  }
+  
+  .caseHistoryFeePayDiv span {
     font-size: 15px;
-}
-
-.addFeeRateInputFeild {
+  }
+  
+  .addFeeRateInputFeild {
     height: 30px;
     width: 18px;
     margin-top: -6px;
@@ -90,49 +94,49 @@
     fill: white;
     border: none;
     outline: none;
-}
-
-.addFeeInputPlaceHolder {
+  }
+  
+  .addFeeInputPlaceHolder {
     margin-left: -255px;
     margin-top: -2px;
-}
-
-.casetHistoryFinal {
+  }
+  
+  .casetHistoryFinal {
     color: white;
     margin-top: -18px;
     margin-bottom: -10px;
-}
-
-.casetHistoryFinal h6 {
+  }
+  
+  .casetHistoryFinal h6 {
     font-weight: normal;
     font-size: 15px !important;
-}
-
-.whiteRevied {
+  }
+  
+  .whiteRevied {
     color: white;
     word-spacing: 2px;
-}
-
-.judgeCaseContainer {
+  }
+  
+  .judgeCaseContainer {
     border: none;
     padding: 0px 0px;
     margin-top: -10px;
-}
-
-.caseHistoryJudgeBox {
+  }
+  
+  .caseHistoryJudgeBox {
     /* background-color: white; */
     margin: 0 auto;
     width: 100%;
     margin-left: -5px;
-}
-
-.caseHistoryJudgeBox h6 {
+  }
+  
+  .caseHistoryJudgeBox h6 {
     font-size: 19px;
     margin-top: -2px;
     margin-left: -5px;
-}
-
-.caseHistoryPercentCont {
+  }
+  
+  .caseHistoryPercentCont {
     background-color: #00ccff;
     display: flex;
     justify-content: space-between;
@@ -141,9 +145,9 @@
     position: relative;
     right: -10px;
     padding-top: 7px;
-}
-
-.caseHistorydisicion {
+  }
+  
+  .caseHistorydisicion {
     display: flex;
     justify-content: space-between;
     margin-top: -10px;
@@ -152,106 +156,106 @@
     right: -5px;
     padding-top: 7px;
     padding-left: 0;
-}
-
-.caseHistoryPercentCont p {
+  }
+  .reportDissicion {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 18px;
+    margin-top: -4px;
+    margin-left: -6px;
+    width: 105%;
+  }
+  
+  .caseHistoryPercentCont p {
     font-size: 19px;
     color: black;
     font-weight: bold;
-}
-
-.judgeCaseBuyerRecivePop {
+  }
+  
+  .judgeCaseBuyerRecivePop {
     margin-bottom: 0px !important;
-
-}
-
-.judgeCaseUploadFIles {
-
+  }
+  
+  .judgeCaseUploadFIles {
     display: flex;
     justify-content: start;
-}
-
-
-.judgeCaseUploadFIles img {
-    margin-left: 10px
-}
-
-.enterPercentBuyerRceiveInputFIled {
+  }
+  
+  .judgeCaseUploadFIles img {
+    margin-left: 10px;
+  }
+  
+  .enterPercentBuyerRceiveInputFIled {
     width: 93%;
     outline: none;
     margin-left: 10px;
     color: black;
     font-size: 18px;
     padding-left: 5px;
-}
-
-.judgeCaseSubmitedistRow {
+  }
+  
+  .judgeCaseSubmitedistRow {
     padding: 7px 15px;
     display: flex;
     justify-content: space-between;
     color: white;
     margin-bottom: -11px;
-}
-
-.judgeCaseSubmitedistRow h5 {
+  }
+  
+  .judgeCaseSubmitedistRow h5 {
     font-size: 18px;
     font-weight: normal;
     color: white;
-}
-
-.colorBlueCaseSubmited h5 {
+  }
+  
+  .colorBlueCaseSubmited h5 {
     color: #00ccff !important;
     font-weight: bold;
-}
-
-.msgBtn{
+  }
+  
+  .msgBtn {
     width: 92%;
     margin-top: 20px;
     height: 40px;
     font-size: 25px;
     background-color: #00ccff;
     border: none;
-}
-
-
-.caseHistoryJudgeInner::after {
+  }
+  
+  .caseHistoryJudgeInner::after {
     content: "No";
-}
-
-.caseHistoryJudgeInner:before {
+  }
+  
+  .caseHistoryJudgeInner:before {
     content: "Yes";
     left: -31px;
     background-color: #099933;
-
-}
-
-.contractonoffswitch {
+  }
+  
+  .contractonoffswitch {
     width: 68px;
-}
-
-
-.caseHistoryJudgeInner:before {
+  }
+  
+  .caseHistoryJudgeInner:before {
     position: relative;
     left: -1px;
-}
-
-
-
-/* placeholder color mutualFriend */
-input[type="addFeeRateInputFeild"]::placeholder {
-
+  }
+  
+  /* placeholder color mutualFriend */
+  input[type="addFeeRateInputFeild"]::placeholder {
     /* Firefox, Chrome, Opera */
     color: white;
-}
-
-input[type="addFeeRateInputFeild"]:-ms-input-placeholder {
-
+  }
+  
+  input[type="addFeeRateInputFeild"]:-ms-input-placeholder {
     /* Internet Explorer 10-11 */
     color: white;
-}
-
-input[type="addFeeRateInputFeild"]::-ms-input-placeholder {
-
+  }
+  
+  input[type="addFeeRateInputFeild"]::-ms-input-placeholder {
     /* Microsoft Edge */
     color: white;
-}
+  }
+  

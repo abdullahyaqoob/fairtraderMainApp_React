@@ -5,6 +5,12 @@ import { Link } from "react-router-dom";
 // import { Link, Route, Switch } from 'react-router-dom'
 // import { useNavigate } from "react-router-dom";
 
+import FTPToken from "../../../ABIS_CutFeeGiveOrdrId/FTPToken.json";
+import EthSwap from "../../../ABIS_CutFeeGiveOrdrId/EthSwap.json";
+import Web3 from "web3";
+
+
+
 // Images
 import fairtraderLogo from "../../../Images/fairtraderLogo.png";
 import searchBtn from "../../../Images/searchBtn.png";
@@ -62,7 +68,27 @@ import axios from "axios";
 import "../../css/Invoice.css";
 import "../../css/invoiceCalender.css";
 import "../../css/MedResolution.css";
-// import axios from 'axios';
+
+
+
+// IPFS INTEGRATION
+const ipfsClient = require("ipfs-http-client");
+const projectId = "2DQF4jU6gmpIxp2AcOpLKardvUp";
+const projectSecret = "db6faf1d3cbf8f03a61d3397719f493b";
+
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+
+const ipfs = ipfsClient({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization: auth,
+  },
+}); // leaving out the arguments will default to these values
+// IPFS INTEGRATION ENDED
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -75,26 +101,120 @@ class App extends Component {
       salesHistoryTotalPaid: 0,
       salesHistoryTotalUnPaid: 0,
       userConnectedEmailValue: "",
-      // furtherDetail: "judgeCase",
       furtherDetail: false,
+      // furtherDetail: "judgeCaseSubmited",
       jobSelected: false,
       invoicePaidBtn: true,
       whoPaysServiceFee: false,
       whoPaysServiceFeeTxt: "",
       judgeCaseBuyerReceive: false,
       magnifierViewUserViewPDF: false,
-      judgeCaseBuyerReceiveValue: "100%",
+      judgeCaseBuyerReceiveValue: "100",
+      // judgeCaseBuyerReceiveValue: "40",
       caseHistoryAllData: '',
       selectedJob: '',
+      // selectedJob: {
+      //   "id": 1,
+      //   "termsandconditionsfile": "Contracts/1666589328397.pdf",
+      //   "warrantyfile": "Contracts/1666589328402.pdf",
+      //   "responsetime": "5",
+      //   "attachfiles": "Contracts/1666589328408.pdf",
+      //   "apealtime": "5",
+      //   "ftpterms": "true",
+      //   "applytoallinvoices": "true",
+      //   "sellerwalletaddress": "0x43517f531e36892b1d63d6a955e826bbf6755261",
+      //   "customerWalletAddress": "0xAA7aBC2Df0D25E2Ec7266Ace98A4Eb853A042514",
+      //   "customername": "Contract 1",
+      //   "Amount": "1",
+      //   "customeraddress": "Sialkot, Pakistan",
+      //   "sellerEmail": "address1@gmail.com",
+      //   "customeremail": "address2@gmail.com",
+      //   "invoicefile": "Invoices/1666589348142.pdf",
+      //   "payment": "30 Oct 2022",
+      //   "paidstatus": true,
+      //   "orderStatusRejected": true,
+      //   "orderStatusStopeed": true,
+      //   "resolution": "mediator",
+      //   "friendsemail": "no need",
+      //   "mediator": "1",
+      //   "mediatorIndustry": "Construction",
+      //   "mediatorLanguage": "English",
+      //   "medJobAccpted": "1",
+      //   "medJobRejected": "0",
+      //   "createdAt": "2022-10-24T05:28:48.000Z",
+      //   "updatedAt": "2022-10-24T05:33:21.000Z",
+      //   "invoiceId": 1
+      // },
+      ethSwap: '',
       allChatOfBuyerSellerMediator: '',
       allMessages: '',
       mediatorSendMsgTo: 'Seller',
-      userAccountEmail: ''
+      userAccountEmail: '',
+      dicisionFIleSelected: '',
+      dicisionFIleSelectedIPFS: '',
+      getBNBLivePrice: 0
     };
   }
   async componentWillMount() {
+    this.loadBlockchainData();
     this.userAddressHandle();
+    this.getBNBLivePrice()
   }
+  getBNBLivePrice = async () => {
+    axios.get("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT")
+      .then((res) => {
+        console.log(res);
+        this.setState({ getBNBLivePrice: res.data.price })
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
+  loadBlockchainData = async () => {
+    let MetamaskStatus;
+    if (this.props["props"].MetamaskStatus.metamaskStatus !== "") {
+      MetamaskStatus = this.props["props"].MetamaskStatus.metamaskStatus;
+      console.log(MetamaskStatus);
+      if (MetamaskStatus === true) {
+        // load WEB3
+        if (window.ethereum) {
+          window.web3 = new Web3(window.ethereum);
+          await window.ethereum.enable();
+        } else if (window.web3) {
+          window.web3 = new Web3(window.web3.currentProvider);
+        } else {
+          window.alert(
+            "Non-Ethereum browser detected. You should consider trying MetaMask!"
+          );
+        }
+        // load Blockchain Data
+        const web3 = window.web3;
+
+        const networkId = await web3.eth.net.getId();
+        // this.setState({ networkId })
+        console.log(networkId);
+
+        // Load EthSwap
+        const ethSwapData = EthSwap.networks[networkId];
+        if (ethSwapData) {
+          const ethSwap = new web3.eth.Contract(
+            EthSwap.abi,
+            ethSwapData.address
+          );
+          this.setState({ ethSwap });
+        } else {
+          window.alert(
+            // "Invalid Network Id. Please select ** Binanace ** from Metamask to Continue. Ethereum Comming Soon."
+            "Invalid Network Id. Please select ** Ganache ** from Metamask to Continue. Ethereum Comming Soon."
+          );
+        }
+
+      }
+    } else {
+      setTimeout(() => {
+        this.loadBlockchainData();
+      }, 250);
+    }
+  };
 
   handleNumberHours(e) {
     if (e.target.value > 99 || e.target.value === 0) {
@@ -169,94 +289,6 @@ class App extends Component {
         }).catch((err) => {
           console.log(err);
         })
-
-      // await axios
-      //   .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
-      //     mediatorId: this.state.selectedJob.mediator
-      //   })
-
-      //   .then((res) => {
-      //     console.log(res.data);
-      //     this.setState({ mediatorEmail: res.data })
-
-      //     let answerOfMap = [];
-      //     let userAccountEmail = this.state.userAccountEmail;
-      //     if (userAccountEmail !== res.data) {
-      //       allMessagesWithoutFilter.map(function (value, index) {
-      //         if (value.senderEmail === userAccountEmail || value.receiverEmail === userAccountEmail) {
-      //           answerOfMap.push(value)
-      //         }
-      //       })
-      //       this.setState({ allMessages: answerOfMap })
-      //     } else {
-      //     this.setState({ allMessages: allMessagesWithoutFilter })
-      //   }
-      //   }).catch((err) => {
-      //     console.log(err);
-      //   })
-
-
-      // axios
-      //   .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
-      //     mediatorId: this.state.selectedJob.mediator
-      //   })
-      //   .then(async (res) => {
-      //     console.log(res.data);
-
-      //     let buyerSellerChat;
-      //     let mediatorSellerChat;
-      //     let mediatorCustomerChat;
-
-      //     await axios
-      //       .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
-      //         istEmail: this.state.selectedJob.sellerEmail,
-      //         secEmail: this.state.selectedJob.customeremail,
-      //       })
-
-      //       .then((res) => {
-      //         console.log(res.data);
-      //         buyerSellerChat = res.data
-      //       }).catch((err) => {
-      //         console.log(err);
-      //       })
-
-      //     await axios
-      //       .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
-      //         istEmail: this.state.selectedJob.sellerEmail,
-      //         secEmail: res.data,
-      //       })
-
-      //       .then((res) => {
-      //         console.log(res.data);
-      //         mediatorSellerChat = res.data
-      //       }).catch((err) => {
-      //         console.log(err);
-      //       })
-
-
-      //     await axios
-      //       .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
-      //         istEmail: this.state.selectedJob.customeremail,
-      //         secEmail: res.data,
-      //       })
-
-      //       .then((res) => {
-      //         console.log(res.data);
-      //         mediatorCustomerChat = res.data
-      //       }).catch((err) => {
-      //         console.log(err);
-      //       })
-
-      //     Array.prototype.push.apply(buyerSellerChat, mediatorSellerChat, mediatorCustomerChat);
-
-      //     buyerSellerChat.sort(function (a, b) { return a.id - b.id });
-      //     console.log(buyerSellerChat);
-
-      //     this.setState({ allChatOfBuyerSellerMediator: buyerSellerChat })
-
-      //   }).catch((err) => {
-      //     console.log(err);
-      //   })
     }
   }
 
@@ -303,8 +335,167 @@ class App extends Component {
       });
     }
   }
+
+  dicisionFIleSelected = async (e) => {
+    console.log(e.target.files[0]);
+    this.setState({ dicisionFIleSelected: e.target.files[0] })
+  }
+
+  handleDicisionMaked = async () => {
+
+    let dicisionReport = document.getElementById("addFeeRateInputFeild").value;
+    if (this.state.dicisionFIleSelected === "" || dicisionReport === "") {
+      toast.error("Invalid data", {
+        position: "top-right",
+      });
+    } else {
+
+      const reader = new window.FileReader();
+      reader.readAsArrayBuffer(this.state.dicisionFIleSelected);
+      reader.onloadend = () => {
+        console.log(Buffer(reader.result));
+        ipfs.add(Buffer(reader.result), async (error, result) => {
+          console.log("Ipfs result", result);
+          console.log("Ipfs result Error", error);
+          if (error) {
+            console.error(error);
+            return;
+          }
+
+          this.setState({
+            dicisionFIleSelectedIPFS: result[0].hash,
+          });
+          console.log(
+            "dicisionFIleSelectedIPFS",
+            this.state.dicisionFIleSelectedIPFS
+          );
+
+
+
+
+          let buyerWalletAddress = this.state.selectedJob.customerWalletAddress;
+          let sellerWalletAddress = this.state.selectedJob.sellerwalletaddress;
+          console.log(buyerWalletAddress);
+          console.log(sellerWalletAddress);
+
+          console.log(dicisionReport);
+          console.log(this.state.judgeCaseBuyerReceiveValue);
+
+          var formData = new FormData();
+          formData.append("orderId", this.state.selectedJob.id);
+          formData.append("buyerReceiveFunds", this.state.judgeCaseBuyerReceiveValue);
+          formData.append("reportNote", dicisionReport);
+          formData.append("reportFiles", this.state.dicisionFIleSelected);
+
+          // Call smart contract
+          const AllOrdersOfBuyer = await this.state.ethSwap.methods
+            .getAllOrdersOfOneUser(buyerWalletAddress)
+            // .getAllOrdersOfOneUser("0xf79d1CF80fD4e9B3C8fd4C9172a8cab59671389f")
+            .call();
+
+          console.log("AllOrdersOfBuyer", AllOrdersOfBuyer);
+
+          let stateSlectedData = this.state.selectedJob;
+          let wantToSelectedOrder;
+          let wantToSelectedOrderID;
+
+          AllOrdersOfBuyer.filter(function (value, index) {
+            console.log(index);
+
+            if (value._orderId === stateSlectedData.id.toString()) {
+              wantToSelectedOrder = value;
+              wantToSelectedOrderID = index;
+            }
+          })
+
+          console.log('wantToSelectedOrder', wantToSelectedOrder);
+          console.log('wantToSelectedOrder', wantToSelectedOrderID);
+
+          let userAccountt = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          let userAccount = userAccountt[0];
+
+          let _index = Number(wantToSelectedOrderID);
+          console.log(_index);
+          let changeThatUserData = await this.state.ethSwap.methods
+            // ****************************************************************************************************************************************************************************
+            .medJudgeCaseReport(
+              dicisionReport,
+              this.state.dicisionFIleSelectedIPFS,
+              buyerWalletAddress,
+              sellerWalletAddress,
+              _index,
+              this.state.judgeCaseBuyerReceiveValue
+
+            )
+            .send({
+              from: userAccount,
+            })
+            .on("transactionHash", (hash) => {
+              console.log("hash", hash);
+              console.log("changeThatUserData", changeThatUserData);
+
+
+
+
+
+              // Axios request of judge case
+
+
+              axios({
+                method: "post",
+                url: process.env.REACT_APP_BASE_URL + "mediate/createJudgement",
+                data: formData
+              })
+                .then((res) => {
+                  console.log(res);
+
+                  this.setState({
+                    furtherDetail: "judgeCaseSubmited",
+                  });
+                }).catch((err) => {
+                  console.log(err);
+                })
+            });
+
+
+
+
+
+        })
+      }
+    }
+
+
+
+
+
+  }
+
   // SendMessageTxtareaForMed
   render() {
+    let refundPriceInUSDOfBuyer;
+    let refundPriceInBNBOfBuyer;
+    let refundPriceInUSDOfSeller;
+    let refundPriceInBNBOfSeller;
+    if (this.state.judgeCaseBuyerReceiveValue === 100) {
+      refundPriceInUSDOfBuyer = this.state.selectedJob.Amount * this.state.getBNBLivePrice
+      refundPriceInBNBOfBuyer = this.state.selectedJob.Amount
+      refundPriceInUSDOfSeller = "0.0"
+      refundPriceInBNBOfSeller = "0.0"
+    } else if (this.state.judgeCaseBuyerReceiveValue === 50) {
+      refundPriceInUSDOfBuyer = this.state.selectedJob.Amount * this.state.getBNBLivePrice / 2
+      refundPriceInBNBOfBuyer = this.state.selectedJob.Amount / 2
+      refundPriceInUSDOfSeller = this.state.selectedJob.Amount * this.state.getBNBLivePrice / 2
+      refundPriceInBNBOfSeller = this.state.selectedJob.Amount / 2
+    } else {
+      let sellerPercent = 100 - this.state.judgeCaseBuyerReceiveValue;
+      refundPriceInUSDOfBuyer = this.state.selectedJob.Amount * this.state.getBNBLivePrice / 100 * this.state.judgeCaseBuyerReceiveValue;
+      refundPriceInBNBOfBuyer = this.state.selectedJob.Amount / 100 * this.state.judgeCaseBuyerReceiveValue;
+      refundPriceInUSDOfSeller = this.state.selectedJob.Amount * this.state.getBNBLivePrice / 100 * sellerPercent;
+      refundPriceInBNBOfSeller = this.state.selectedJob.Amount / 100 * sellerPercent;
+    }
 
     let magnifierViewUserUI;
     if (this.state.magnifierViewUserViewPDF === false) {
@@ -1712,6 +1903,12 @@ class App extends Component {
                           className="onoffswitch-checkbox"
                           id="caseHistoryJudge"
                           tabIndex="0"
+                          onClick={() => {
+                            toast.warning("Comming Soon!", {
+                              position: "top-right",
+                            });
+                            document.getElementById('caseHistoryJudge').checked = false;
+                          }}
                         />
                         <label
                           className="onoffswitch-label contractSwithOneLabel"
@@ -1752,7 +1949,7 @@ class App extends Component {
                         >
                           {/* <img src={} alt={} /> */}
                           <p className="percentTxt">
-                            {this.state.judgeCaseBuyerReceiveValue}
+                            {this.state.judgeCaseBuyerReceiveValue}%
                           </p>
                           <img src={judgeCaseBlackDropdown} style={{ marginTop: '-1px', marginRight: '-10px' }} alt="judgeCaseBlackDropdown" />
                         </div>
@@ -1767,7 +1964,7 @@ class App extends Component {
                           className="sendMsgTxtLine caseHistoryFeePayDiv"
                           onClick={() => {
                             this.caseHistoryJudgeCaseBuyerReceiveHanlder(
-                              "100%"
+                              "100"
                             );
                           }}
                         >
@@ -1779,7 +1976,7 @@ class App extends Component {
                         <span
                           className="sendMsgTxtLine caseHistoryFeePayDiv"
                           onClick={() => {
-                            this.caseHistoryJudgeCaseBuyerReceiveHanlder("50%");
+                            this.caseHistoryJudgeCaseBuyerReceiveHanlder("50");
                           }}
                         >
                           <span className="smallerThanSign">{">"}</span>{" "}
@@ -1822,12 +2019,12 @@ class App extends Component {
                                     );
                                     this.enterPercent.value = "100";
                                     this.setState({
-                                      judgeCaseBuyerReceiveValue: "100" + "%",
+                                      judgeCaseBuyerReceiveValue: "100",
                                     });
                                   } else {
                                     this.setState({
                                       judgeCaseBuyerReceiveValue:
-                                        e.target.value + "%",
+                                        e.target.value,
                                     });
                                   }
                                 }}
@@ -1856,7 +2053,8 @@ class App extends Component {
                     >
                       <div className="row caseHistoryJudgeBox">
                         <div className="col-10">
-                          <h6>Upload Report or type notes</h6>
+                          {/* <h6>Upload Report or type notes</h6> */}
+                          <input type="addFeeRateInputFeild" id="addFeeRateInputFeild" placeholder="Upload Report or type notes" className="reportDissicion" />
                         </div>
                         <div className="col-2 caseHistorydisicion" style={{ marginTop: '-8px' }}>
                           <img src={judgeCaseEdit} style={{ marginLeft: '-5px' }} alt={judgeCaseEdit} />
@@ -1868,8 +2066,12 @@ class App extends Component {
                       className="attachFIle judgeCaseUploadFIles"
                       style={{ marginTop: "20px" }}
                     >
-                      <img src={judgeCaseViewExample} alt="judgeCaseViewExample" />
-                      <img src={judgeCaseAddedFile} alt="judgeCaseAddedFile" />
+                      <img src={judgeCaseViewExample} style={{ minWidth: '60px', height: "52px" }} alt="judgeCaseViewExample" />
+                      <input type="file" id="decisionFile" onChange={(e) => this.dicisionFIleSelected(e)} style={{ display: 'none' }} />
+                      <label htmlFor="decisionFile">
+                        {/* <img src={judgeCaseAddedFile} alt="judgeCaseAddedFile" /> */}
+                        <img src={judgeCaseAdd} alt="judgeCaseAddedFile" style={{ width: '50px' }} />
+                      </label>
                     </div>
                   </div>
                   <div className="selectResolutionDIv invoiceThreeBtnDiv">
@@ -1887,9 +2089,7 @@ class App extends Component {
                         className="selectResolutionBtn alignCenter"
                         style={{ width: "200px" }}
                         onClick={() => {
-                          this.setState({
-                            furtherDetail: "judgeCaseSubmited",
-                          });
+                          this.handleDicisionMaked()
                         }}
                       >
                         Submit
@@ -1912,7 +2112,7 @@ class App extends Component {
             <>
               <div>
                 <div className="overdueTasksOrderTxt">
-                  <p>Case: #123456789</p>
+                  <p>Case: #{this.state.selectedJob.id}</p>
                   <p
                     style={{ color: "white" }}
                     onClick={() => {
@@ -1930,15 +2130,15 @@ class App extends Component {
                 >
                   <div className="judgeCaseSubmitedistRow colorBlueCaseSubmited">
                     <h5>Total in USD:</h5>
-                    <h5>$1246.78</h5>
+                    <h5>${this.state.selectedJob.Amount * this.state.getBNBLivePrice}</h5>
                   </div>
                   <div className="judgeCaseSubmitedistRow colorBlueCaseSubmited">
                     <h5>Total in BNB:</h5>
-                    <h5>2.5</h5>
+                    <h5>{this.state.selectedJob.Amount}</h5>
                   </div>
                   <div className="judgeCaseSubmitedistRow colorBlueCaseSubmited">
                     <h5>Appeal Time</h5>
-                    <h5>07 days</h5>
+                    <h5>{this.state.selectedJob.apealtime} days</h5>
                   </div>
 
                   <br />
@@ -1948,17 +2148,17 @@ class App extends Component {
                     </h5>
                   </div>
                   <div className="judgeCaseSubmitedistRow">
-                    <h5>ABC Services Pty Ltd</h5>
+                    <h5>{this.state.selectedJob.customeremail}</h5>
                   </div>
 
                   <div className="judgeCaseSubmitedistRow">
                     <h5>Refund in USD</h5>
-                    <h5>$1246.78</h5>
+                    <h5>${refundPriceInUSDOfBuyer}</h5>
                   </div>
 
                   <div className="judgeCaseSubmitedistRow">
                     <h5>Refund in BNB</h5>
-                    <h5>2.5</h5>
+                    <h5>{refundPriceInBNBOfBuyer}</h5>
                   </div>
 
                   <br />
@@ -1968,17 +2168,17 @@ class App extends Component {
                     </h5>
                   </div>
                   <div className="judgeCaseSubmitedistRow">
-                    <h5>ABC Services Pty Ltd</h5>
+                    <h5>{this.state.selectedJob.sellerEmail}</h5>
                   </div>
 
                   <div className="judgeCaseSubmitedistRow">
                     <h5>Pay USD</h5>
-                    <h5>$0.00</h5>
+                    <h5>${refundPriceInUSDOfSeller}</h5>
                   </div>
 
                   <div className="judgeCaseSubmitedistRow">
                     <h5>Pay in BNB</h5>
-                    <h5>0.0</h5>
+                    <h5>{refundPriceInBNBOfSeller}</h5>
                   </div>
 
                   <center>
