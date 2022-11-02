@@ -88,6 +88,7 @@ class PurchaseHistory extends Component {
       FTPToken: {},
       ethSwap: {},
       payingStart: false,
+      magnifierViewUserIndex: '',
       totalAmountVarUnpaid: 0,
       totalAmountVarPaid: 0,
       magnifierViewUserViewPDF: false,
@@ -97,7 +98,10 @@ class PurchaseHistory extends Component {
       ViewAddNotePaid: false,
       paymentIsStopped: false,
       mediationStarted: false,
-      userAccountEmail: ''
+      invoicePurchaseHistoryDisputeData: [],
+      userAccountEmail: '',
+      fivePercentOfInvoiceInFTPCrntPrice: 0,
+      ethSwapAddressWithConnectedNetworkID: ''
     };
   }
   // handlePayNowFunc1stStep = () => {
@@ -130,6 +134,8 @@ class PurchaseHistory extends Component {
         const networkId = await web3.eth.net.getId();
         // this.setState({ networkId })
         console.log(networkId);
+        this.setState({ ethSwapAddressWithConnectedNetworkID: EthSwap.networks[networkId].address })
+
 
         // Load EthSwap
         const ethSwapData = EthSwap.networks[networkId];
@@ -167,6 +173,33 @@ class PurchaseHistory extends Component {
       }, 250);
     }
   };
+  findFeeOfApeal = () => {
+    axios
+      .get(`${process.env.REACT_APP_FTP_Detail_URL}`)
+      .then((ftpDetail) => {
+        console.log('FTP DETAIL', ftpDetail.data);
+        let ftpPrice = ftpDetail.data.lastPrice;
+
+        axios.get("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT")
+          .then((res) => {
+            let orderAmount = this.state.magnifierViewUser.Amount;
+            let orderAmountInUSDT = orderAmount * res.data.price;
+            let orderAmountFivePercent = orderAmountInUSDT / 100 * 5;
+            let ftpInOneDollor = 1 / Number(ftpPrice);
+            let fivePercentOfInvoiceInFTP = ftpInOneDollor * orderAmountFivePercent;
+            this.setState({ fivePercentOfInvoiceInFTPCrntPrice: fivePercentOfInvoiceInFTP.toFixed(0) })
+          }).catch((err) => {
+            console.log(err);
+          })
+
+        console.log(ftpPrice);
+
+
+
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
   handleSendMessageToMed = () => {
     let mediatorMsgField = document.getElementById("sendMsgToMed").value
     if (mediatorMsgField === "") {
@@ -384,6 +417,56 @@ class PurchaseHistory extends Component {
       }
     }
   }
+
+
+  handleSuperMediationInvolved = async () => {
+    this.state.FTPToken.methods
+      .approve(
+        this.state.ethSwapAddressWithConnectedNetworkID,
+        // Amount
+        // window.web3.utils.toWei("1", "Ether")
+        window.web3.utils.toWei(this.state.fivePercentOfInvoiceInFTPCrntPrice, "Ether")
+      )
+      .send({ from: this.state.userAddres })
+      .on("transactionHash", (hash) => {
+        setTimeout(() => {
+          this.state.ethSwap.methods
+            .payFeeForSuperMediator(
+              window.web3.utils.toWei(this.state.fivePercentOfInvoiceInFTPCrntPrice, "Ether"),
+              // window.web3.utils.toWei('1', "Ether"),
+              "buyer",
+              this.state.magnifierViewUserIndex,
+              this.state.magnifierViewUser.customerWalletAddress
+            )
+            .send({
+              from: this.state.userAddres,
+            })
+            .on("transactionHash", (hash) => {
+
+              axios
+                .post(`${process.env.REACT_APP_BASE_URL}mediate/superMediatorInvolved`, {
+                  orderId: this.state.SelectedOrder.id,
+                  whoCalled: "buyer"
+                })
+
+                .then((res) => {
+                  console.log(res);
+                  setTimeout(() => {
+                    window.location = "PurchaseHistory";
+                  }, 2000);
+
+                  toast.success("Successfully, Involved", {
+                    position: "top-right",
+                  });
+                  // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            });
+        }, 2000);
+      })
+  }
   callRejectHandleFunc = async () => {
     axios
       .put(`${process.env.REACT_APP_BASE_URL}order/updateOrderStatusRejected`, {
@@ -418,9 +501,9 @@ class PurchaseHistory extends Component {
 
         .then((res) => {
           console.log(res);
-          // setTimeout(() => {
-          //   window.location = "PurchaseHistory";
-          // }, 2000);
+          setTimeout(() => {
+            window.location = "PurchaseHistory";
+          }, 2000);
 
           toast.success("Successfully, Started", {
             position: "top-right",
@@ -521,7 +604,7 @@ class PurchaseHistory extends Component {
             this.fncToPayOrder();
           });
       } else if (userSelectedCurrency === "ftpCoin") {
-        this.state.token.methods
+        this.state.FTPToken.methods
           .approve(
             this.state.ethSwap.address,
             // Amount
@@ -557,7 +640,7 @@ class PurchaseHistory extends Component {
             }, 2000);
           });
       } else if (userSelectedCurrency === "usdtCoin") {
-        this.state.token.methods
+        this.state.FTPToken.methods
           .approve(
             this.state.ethSwap.address,
             // Amount
@@ -686,6 +769,21 @@ class PurchaseHistory extends Component {
         .catch((err) => {
           console.log(err);
         });
+
+
+      axios
+        .post(`${process.env.REACT_APP_BASE_URL}invoices/purchaseHistory/disputes`, {
+          email: connectedUserEmail,
+        })
+
+        .then((res) => {
+          console.log(res.data.data);
+          this.setState({ invoicePurchaseHistoryDisputeData: res.data.data });
+          res.data.data.map(this.mapFunctionAmountPaid);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       setTimeout(this.userAddressHandle, 250);
     }
@@ -700,6 +798,60 @@ class PurchaseHistory extends Component {
 
     currenctDate = `${date}/${month < 10 ? `0${month}` : `${month}`}/${year}`
 
+
+    let invoiceDisputeOptionsBtn;
+
+    if (this.state.invoiceUnpaidOrder === true) {
+      invoiceDisputeOptionsBtn = (
+        <div className="selectResolutionDIv invoiceThreeBtnDiv">
+          <span className="alignStart">
+            <Link to={{ pathname: "/Invoice" }}>
+              <img src={invoiceBack} alt="invoiceBack" />
+            </Link>
+          </span>
+          <span className="invoiceThreeBtn">
+            <p
+              className="selectResolutionBtn alignCenter"
+              onClick={() => {
+              }}
+              style={{ width: "210px" }}
+            >
+              Apeal Decision?
+            </p>
+          </span>
+          <span className="alignEnd" style={{ float: "right" }}>
+            <img
+              onClick={() => {
+                toast.warning("Comming soon!")
+              }}
+              src={invoiceUnpaidReject}
+              className="floatRight"
+              alt="invoiceUnpaidReject"
+            />
+          </span>
+        </div>
+      );
+    } else if (this.state.invoiceUnpaidOrder === false) {
+      invoiceDisputeOptionsBtn = (
+        <div className="selectResolutionDIv invoiceThreeBtnDiv">
+          <span className="alignStart">
+            <Link to={{ pathname: "/Invoice" }}>
+              <img src={invoiceBack} alt="invoiceBack" />
+            </Link>
+          </span>
+          <span className="invoiceThreeBtn">
+            <p
+              className="selectResolutionBtn alignCenter"
+              onClick={() => {
+              }}
+              style={{ width: "210px" }}
+            >
+              Select Invoice
+            </p>
+          </span>
+        </div>
+      );
+    }
 
     let invoiceUnpaidBtn;
     if (this.state.invoiceUnpaidOrder === true) {
@@ -838,12 +990,22 @@ class PurchaseHistory extends Component {
       invoicePaymentStoppedpayStopPayBtnUI = (
         <div className="row invoiceProfileRightSection">
           <div className="col-4">
-            <img src={invoiceUnpaidAlarm} alt="invoiceUnpaidAlarm" />
+            {!this.state.magnifierViewUser.orderStatusStopeed ?
+              <img src={invoiceUnpaidAlarm} alt="invoiceUnpaidAlarm" />
+              :
+              <img src={invoicePaymentStoppedIcon} alt="invoicePaymentStoppedIcon" />
+            }
           </div>
           <div className="col-8">
-            Pay On
+            {!this.state.magnifierViewUser.orderStatusStopeed ?
+              "Pay On"
+              : "Payment"
+            }
             <br />
-            {this.state.magnifierViewUser.payment}
+            {!this.state.magnifierViewUser.orderStatusStopeed ?
+              this.state.magnifierViewUser.payment
+              : "Stopped"
+            }
           </div>
         </div>
       );
@@ -866,7 +1028,39 @@ class PurchaseHistory extends Component {
     let invoicepaymentStopBtnTxt;
     if (this.state.invoicePaymentStopped === false) {
 
-      if ((this.state.magnifierViewUser.orderStatusStopeed === true || this.state.paymentIsStopped === true) && this.state.purchasehistoryPaidBtn === true) {
+      if (this.state.magnifierViewUser.judgedCase === true) {
+        if (this.state.magnifierViewUser.superMediationInvolved === false) {
+          invoicepaymentStopBtnTxt =
+            <p
+              className="selectResolutionBtn alignCenter"
+              style={{ width: "200px" }}
+              onClick={() => {
+                this.handleSuperMediationInvolved()
+              }}
+            >
+              Pay {this.state.fivePercentOfInvoiceInFTPCrntPrice} FTP Now
+            </p>
+        } else {
+          invoicepaymentStopBtnTxt =
+            <p
+              className="selectResolutionBtn alignCenter"
+              style={{ width: "200px" }}
+              onClick={() => {
+              }}
+            >
+              Super Med Involved
+            </p>
+        }
+      } else if (this.state.magnifierViewUser.mediation === true) {
+        invoicepaymentStopBtnTxt = <p
+          className="selectResolutionBtn alignCenter"
+          style={{ width: "200px" }}
+          onClick={() => {
+          }}
+        >
+          Not judged till
+        </p>
+      } else if ((this.state.magnifierViewUser.orderStatusStopeed === true || this.state.paymentIsStopped === true) && this.state.purchasehistoryPaidBtn === true) {
         invoicepaymentStopBtnTxt = (
           <p
             className="selectResolutionBtn alignCenter"
@@ -924,23 +1118,6 @@ class PurchaseHistory extends Component {
           </p>
         );
       }
-      // invoicepaymentStopBtnTxt = (
-      //   <p
-      //     className="selectResolutionBtn alignCenter"
-      //     onClick={() => {
-      //       this.handlePayNowFunc2ndStep();
-      //     }}
-      //     style={{ width: "200px" }}
-      //   >
-      //     {this.state.purchasehistoryPaidBtn !== false
-      //       ? "View Options"
-      //       : this.state.payingStart === false
-      //       ? "Pay Now"
-      //       : this.state.payingStart === true
-      //       ? "Released"
-      //       : "Working..."}
-      //   </p>
-      // );
     } else {
       invoicepaymentStopBtnTxt = (
         <p
@@ -1032,19 +1209,46 @@ class PurchaseHistory extends Component {
             />
           </span>
           <span className="invoiceThreeBtn">
-            <p
+            {/* <p
               className="selectResolutionBtn alignCenter"
               style={{ width: "200px" }}
               onClick={() => {
                 this.handlePayNowFunc2ndStep();
               }}
             >
-              {this.state.payingStart === false
+             {this.state.payingStart === false
                 ? "Pay Now"
                 : this.state.payingStart === true
                   ? "Paid"
                   : "Working..."}
-            </p>
+            </p> */}
+
+            {this.state.payingStart === false ?
+              <p
+                className="selectResolutionBtn alignCenter"
+                style={{ width: "200px" }}
+                onClick={() => {
+                  this.handlePayNowFunc2ndStep();
+                }}
+              >
+                Pay Now
+              </p>
+              : this.state.payingStart === true ?
+                <p
+                  className="selectResolutionBtn alignCenter"
+                  style={{ width: "200px" }}
+                  onClick={() => {
+                  }}
+                >
+                  Paid
+                </p> : <p
+                  className="selectResolutionBtn alignCenter"
+                  style={{ width: "200px" }}
+                  onClick={() => {
+                  }}
+                >
+                  Working...
+                </p>}
           </span>
           <span className="lignEnd" style={{ float: "right" }}>
             <img
@@ -1851,8 +2055,13 @@ class PurchaseHistory extends Component {
                         "invoicePaidOptions"
                       ).style.display = "none";
                       document.getElementById(
+                        "invoiceOptionDisputes"
+                      ).style.display = "none";
+                      document.getElementById(
                         "invoiceOptionsPaid"
                       ).style.display = "inherit";
+
+
                       this.setState({ resolutionSelectedPaid: false });
                       this.setState({ contractSelectedPaid: false });
                       this.setState({ ViewAddNotePaid: false });
@@ -1860,11 +2069,45 @@ class PurchaseHistory extends Component {
                       this.setState({ invoiceUnpaidOrder: false });
                       this.setState({ invoicePaidBtn: true });
                       this.setState({ purchasehistoryPaidBtn: true });
+
+
+
+
+                      this.setState({
+                        invoicePaidBtn: false,
+                        invoiceUnpaidOrder: false,
+                        searchUserMagnifierViewUnpaid: false,
+                        searchUserMagnifierViewPaid: false,
+                      })
                     }}
                   >
                     Paid <span style={{ color: "#059b34" }}>__</span>
                   </span>
-                  <span style={{ color: "black" }}>Disputes</span>
+                  <span style={{ color: "black" }}
+                    onClick={() => {
+                      document.getElementById(
+                        "invoicePaidOptions"
+                      ).style.display = "none";
+                      document.getElementById(
+                        "invoiceOptionDisputes"
+                      ).style.display = "inherit";
+                      document.getElementById(
+                        "invoiceOptionsPaid"
+                      ).style.display = "none";
+                      this.setState({ resolutionSelectedPaid: false });
+                      this.setState({ ViewAddNotePaid: false });
+                      this.setState({ contractSelectedPaid: false });
+
+
+
+
+                      this.setState({
+                        invoicePaidBtn: false,
+                        invoiceUnpaidOrder: false,
+                        searchUserMagnifierViewUnpaid: false,
+                        searchUserMagnifierViewPaid: false,
+                      })
+                    }}>Disputes</span>
                 </p>
                 <div className="invoiceBlackContainer invoiceOrderBlackDiv">
                   {this.state.searchUserMagnifierViewUnpaid === false ? (
@@ -2042,209 +2285,6 @@ class PurchaseHistory extends Component {
                     <>{magnifierViewUserUI}</>
                   )}
 
-                  {/* <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv"
-                      style={{ marginTop: "-5px" }}
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img
-                            src={invoiceViewYellow}
-                            alt="invoiceViewYellow"
-                          />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>Mr Smith</b>
-                            </p>
-                            <p>#22037</p>
-                            <p>20/08/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>Unpaid</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchYellow}
-                                alt=""
-                                onClick={() => {
-                                  document.getElementById(
-                                    "invoiceAllUnpaidBoxes"
-                                  ).style.display = "none";
-                                  document.getElementById(
-                                    "invoiceUnpaidSearch"
-                                  ).style.display = "inherit";
-                                }}
-                              />
-                            </div>
-                            <p>
-                              <b>Rejected</b>
-                            </p>
-                            <p>
-                              <b>USD $1120.78</b>
-                            </p>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv"
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img
-                            src={invoiceViewYellow}
-                            alt="invoiceViewYellow"
-                          />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>Wong Supplies</b>
-                            </p>
-                            <p>#220449</p>
-                            <p>06/09/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>Unpaid</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchYellow}
-                                alt=""
-                                onClick={() => {
-                                  document.getElementById(
-                                    "invoiceAllUnpaidBoxes"
-                                  ).style.display = "none";
-                                  document.getElementById(
-                                    "invoiceUnpaidSearch"
-                                  ).style.display = "inherit";
-                                }}
-                              />
-                            </div>
-                            <p>
-                              <b>Rejected</b>
-                            </p>
-                            <p>
-                              <b>USD $322.00</b>
-                            </p>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite"
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img src={invoiceViewWhite} alt="invoiceViewYellow" />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p className="colorWhite">
-                              <b>XYZ Goods</b>
-                            </p>
-                            <p className="colorWhite">#223578</p>
-                            <p className="colorWhite">12/10/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p className="colorWhite">
-                              <b>Unpaid</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchWhite}
-                                alt=""
-                                onClick={() => {
-                                  document.getElementById(
-                                    "invoiceAllUnpaidBoxes"
-                                  ).style.display = "none";
-                                  document.getElementById(
-                                    "invoiceUnpaidSearch"
-                                  ).style.display = "inherit";
-                                }}
-                              />
-                            </div>
-                            <p className="colorWhite">
-                              <b>12/10/2022</b>
-                            </p>
-                            <p className="colorWhite">
-                              <b>USD $126.00</b>
-                            </p>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite"
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img src={invoiceViewWhite} alt="invoiceViewYellow" />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p className="colorWhite">
-                              <b>WBP Services</b>
-                            </p>
-                            <p className="colorWhite">#224580</p>
-                            <p className="colorWhite">18/11/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p className="colorWhite">
-                              <b>Unpaid</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchWhite}
-                                alt=""
-                                onClick={() => {
-                                  document.getElementById(
-                                    "invoiceAllUnpaidBoxes"
-                                  ).style.display = "none";
-                                  document.getElementById(
-                                    "invoiceUnpaidSearch"
-                                  ).style.display = "inherit";
-                                }}
-                              />
-                            </div>
-                            <p className="colorWhite">
-                              <b>Delivery</b>
-                            </p>
-                            <p className="colorWhite">
-                              <b>USD $864.50</b>
-                            </p>
-                          </p>
-                        </div>
-                      </div>
-                    </div> */}
-
                   {/* Purchase History unpaid click to paid section */}
                   <div
                     id="invoiceUnpaidSelectedOption"
@@ -2361,6 +2401,9 @@ class PurchaseHistory extends Component {
                         "invoiceOptionsPaid"
                       ).style.display = "none";
                       document.getElementById(
+                        "invoiceOptionDisputes"
+                      ).style.display = "none";
+                      document.getElementById(
                         "invoicePaidOptions"
                       ).style.display = "inherit";
                       this.setState({ resolutionSelectedPaid: false });
@@ -2370,6 +2413,16 @@ class PurchaseHistory extends Component {
                       this.setState({ invoiceUnpaidOrder: false });
                       this.setState({ invoicePaidBtn: true });
                       this.setState({ purchasehistoryPaidBtn: false });
+
+
+
+
+                      this.setState({
+                        invoicePaidBtn: false,
+                        invoiceUnpaidOrder: false,
+                        searchUserMagnifierViewUnpaid: false,
+                        searchUserMagnifierViewPaid: false,
+                      })
                     }}
                   >
                     Unpaid <span style={{ color: "#059b34" }}>__</span>
@@ -2377,7 +2430,31 @@ class PurchaseHistory extends Component {
                   <span style={{ color: "white" }}>
                     Paid <span style={{ color: "#059b34" }}>__</span>
                   </span>
-                  <span style={{ color: "black" }}>Disputes</span>
+                  <span style={{ color: "black" }}
+                    onClick={() => {
+                      document.getElementById(
+                        "invoicePaidOptions"
+                      ).style.display = "none";
+                      document.getElementById(
+                        "invoiceOptionDisputes"
+                      ).style.display = "inherit";
+                      document.getElementById(
+                        "invoiceOptionsPaid"
+                      ).style.display = "none";
+                      this.setState({ resolutionSelectedPaid: false });
+                      this.setState({ ViewAddNotePaid: false });
+                      this.setState({ contractSelectedPaid: false });
+
+
+
+
+                      this.setState({
+                        invoicePaidBtn: false,
+                        invoiceUnpaidOrder: false,
+                        searchUserMagnifierViewUnpaid: false,
+                        searchUserMagnifierViewPaid: false,
+                      })
+                    }}>Disputes</span>
                 </p>
               }
               <div className="invoiceBlackContainer invoiceOrderBlackDiv">
@@ -2492,207 +2569,195 @@ class PurchaseHistory extends Component {
                 ) : (
                   <>{magnifierViewUserUI}</>
                 )}
+              </div>
+            </div>
 
-                {/* <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite"
-                      style={{ marginTop: "-5px" }}
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img src={invoiceViewWhite} alt="invoiceViewYellow" />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>Mr Smith</b>
-                            </p>
-                            <p>#22037</p>
-                            <p>20/08/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p style={{ color: "rgb(182, 255, 182)" }}>
-                              <b>Pay On:</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchWhite}
-                                alt=""
-                                onClick={() => {
-                                  this.setState({ invoicePaidBtn: true });
-                                  document.getElementById(
-                                    "invoicePaidSearchBtn"
-                                  ).style.display = "inherit";
-                                  document.getElementById(
-                                    "invoiceUnPaidSection"
-                                  ).style.display = "none";
-                                }}
-                              />
-                            </div>
-                            <p style={{ color: "rgb(182, 255, 182)" }}>
-                              <b>02/11/2022</b>
-                            </p>
-                            <p>
-                              <b>USD $1120.78</b>
-                            </p>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+            <div
+              className="invoiceBlackDivMainContainer"
+              id="invoiceOptionDisputes"
+              style={{ display: "none" }}
+            >
+              <p className="invoiceTabsRow">
+                <span>
+                  Order History: <span style={{ color: "#059b34" }}>__</span>
+                </span>
+                <span
+                  style={{ color: "black" }}
+                  onClick={() => {
+                    document.getElementById(
+                      "invoiceOptionsPaid"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "invoiceOptionDisputes"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "invoicePaidOptions"
+                    ).style.display = "inherit";
+                    this.setState({ resolutionSelectedPaid: false });
+                    this.setState({ ViewAddNotePaid: false });
+                    this.setState({ contractSelectedPaid: false });
 
-                    <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite"
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img src={invoiceViewWhite} alt="invoiceViewYellow" />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>Wong Supplies</b>
-                            </p>
-                            <p>#220449</p>
-                            <p>06/09/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p style={{ color: "rgb(182, 255, 182)" }}>
-                              <b>Pay On:</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchWhite}
-                                alt=""
-                                onClick={() => {
-                                  this.setState({ invoicePaidBtn: true });
-                                  document.getElementById(
-                                    "invoicePaidSearchBtn"
-                                  ).style.display = "inherit";
-                                  document.getElementById(
-                                    "invoiceUnPaidSection"
-                                  ).style.display = "none";
-                                }}
-                              />
-                            </div>
-                            <p style={{ color: "rgb(182, 255, 182)" }}>
-                              <b>Delivery</b>
-                            </p>
-                            <p>
-                              <b>USD $322.00</b>
-                            </p>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
 
-                    <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite"
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img src={invoiceViewWhite} alt="invoiceViewYellow" />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>XYZ Goods</b>
-                            </p>
-                            <p>#223578</p>
-                            <p>12/10/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p style={{ color: "rgb(182, 255, 182)" }}>
-                              <b>Pay On:</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchWhite}
-                                alt=""
-                                onClick={() => {
-                                  this.setState({ invoicePaidBtn: true });
-                                  document.getElementById(
-                                    "invoicePaidSearchBtn"
-                                  ).style.display = "inherit";
-                                  document.getElementById(
-                                    "invoiceUnPaidSection"
-                                  ).style.display = "none";
-                                }}
-                              />
-                            </div>
-                            <p style={{ color: "rgb(182, 255, 182)" }}>
-                              <b>12/10/2022</b>
-                            </p>
-                            <p>
-                              <b>USD $126.00</b>
-                            </p>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
 
-                    <div
-                      className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite"
-                      onClick={() => {
-                        this.setState({ invoiceUnpaidOrder: true });
-                      }}
-                    >
-                      <div className="row">
-                        <div className="col-2">
-                          <img src={invoiceViewWhite} alt="invoiceViewYellow" />
-                        </div>
-                        <div className="col-5 invoiceUnpaidProfile">
-                          <p className="invoiceUnpaidProfileData">
-                            <p>
-                              <b>WBP Services</b>
-                            </p>
-                            <p>#224580</p>
-                            <p>18/11/2022</p>
-                          </p>
-                        </div>
-                        <div className="col-5">
-                          <p className="invoiceUnpaidProfileData">
-                            <p style={{ color: "gold" }}>
-                              <b>Payment</b>
-                            </p>
-                            <div className="invoiceUnpaidSearch">
-                              <img
-                                src={searchWhite}
-                                alt=""
-                                onClick={() => {
-                                  this.setState({ invoicePaidBtn: true });
-                                  document.getElementById(
-                                    "invoicePaidSearchBtn"
-                                  ).style.display = "inherit";
-                                  document.getElementById(
-                                    "invoiceUnPaidSection"
-                                  ).style.display = "none";
-                                }}
-                              />
+
+                    this.setState({
+                      invoicePaidBtn: false,
+                      invoiceUnpaidOrder: false,
+                      searchUserMagnifierViewUnpaid: false,
+                      searchUserMagnifierViewPaid: false,
+                    })
+                  }}
+                >
+                  Unpaid <span style={{ color: "#059b34" }}>__</span>
+                </span>
+                <span style={{ color: "black" }}
+                  onClick={() => {
+                    document.getElementById(
+                      "invoicePaidOptions"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "invoiceOptionDisputes"
+                    ).style.display = "none";
+                    document.getElementById(
+                      "invoiceOptionsPaid"
+                    ).style.display = "inherit";
+                    this.setState({ resolutionSelectedPaid: false });
+                    this.setState({ ViewAddNotePaid: false });
+                    this.setState({ contractSelectedPaid: false });
+
+
+
+
+                    this.setState({
+                      invoicePaidBtn: false,
+                      invoiceUnpaidOrder: false,
+                      searchUserMagnifierViewUnpaid: false,
+                      searchUserMagnifierViewPaid: false,
+                    })
+                  }}>
+                  Paid <span style={{ color: "#059b34" }}>__</span>
+                </span>
+                <span style={{ color: "white" }}>Disputes</span>
+              </p>
+              <div className="invoiceBlackContainer invoiceOrderBlackDiv">
+                {this.state.searchUserMagnifierViewPaid === false ? (
+                  <div id="invoiceUnPaidSection">
+                    {/* <div id="invoiceAllUnpaidBoxes" style={{ display: 'none' }}> */}
+                    {this.state.invoicePurchaseHistoryDisputeData.length !== 0 ? (
+                      <div
+                        id="invoiceAllUnpaidBoxes"
+                        style={{ marginTop: "-18px" }}
+                      >
+                        {this.state.invoicePurchaseHistoryDisputeData.map(
+                          (val, i) => (
+                            <div
+                              className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite disputeORdersSubDivs"
+                              // style={{ marginTop: "-5px" }}
+                              onClick={() => {
+                                this.setState({ invoiceUnpaidOrder: true });
+                              }}
+                            >
+                              <div className="row">
+                                <div className="col-2">
+                                  <img
+                                    src={invoiceViewWhite}
+                                    alt="invoiceViewYellow"
+                                  />
+                                </div>
+                                <div className="col-5 invoiceUnpaidProfile">
+                                  <p className="invoiceUnpaidProfileData">
+                                    <p>
+                                      <b>{val.customername}</b>
+                                    </p>
+                                    <p>#{val.id}</p>
+                                    <p>
+                                      {purchaseHitoryDateFormat(val.createdAt)}
+                                    </p>
+                                  </p>
+                                </div>
+                                <div className="col-5">
+                                  <p className="invoiceUnpaidProfileData">
+                                    {val.judgedCase === false ?
+                                      <p>
+                                        Review
+                                      </p>
+                                      :
+                                      <p style={{ color: "yellow" }}>
+                                        <b>Finalised</b>
+                                      </p>
+                                    }
+                                    {/* <p style={{ color: "rgb(182, 255, 182)" }}> */}
+
+                                    <div className="invoiceUnpaidSearch">
+                                      <img
+                                        src={searchWhite}
+                                        alt=""
+                                        onClick={() => {
+                                          this.findFeeOfApeal()
+                                          this.setState({ magnifierViewUserIndex: i })
+                                          this.setState({
+                                            magnifierViewUser: val,
+                                          });
+                                          this.setState({
+                                            searchUserMagnifierViewPaid: true,
+                                          });
+
+                                          this.setState({
+                                            invoicePaidBtn: true,
+                                          });
+                                        }}
+                                      />
+                                    </div>
+                                    {val.judgedCase === false ?
+                                      <p style={{ fontSize: '13px' }}>
+                                        in progress
+                                      </p>
+                                      :
+                                      <p style={{ color: "yellow", fontSize: '13px' }}>
+                                        Appeal: {val.apealtime} days
+                                      </p>
+                                    }
+                                    <p>
+                                      {/* <b>USD $1120.78</b> */}
+                                      <b>USD ${val.Amount}</b>
+                                    </p>
+                                  </p>
+                                </div>
+                              </div>
                             </div>
-                            <p style={{ color: "gold" }}>
-                              <b>Stopped</b>
-                            </p>
-                            <p>
-                              <b>USD $864.50</b>
-                            </p>
+                          )
+                        )}
+                        <div className="invoiceUnpaidTotal">
+                          <p className="invoiceUnpaidTotalTxt">
+                            Total (USD){" "}
+                            <span style={{ color: "black" }}>.</span> $
+                            {this.state.totalAmountVarPaid}
                           </p>
                         </div>
+
+                        {invoiceDisputeOptionsBtn}
                       </div>
-                    </div> */}
+                    ) : (
+                      <>
+                        <div
+                          className="invoiceBlackDiv invoiceOrderBlackSubDiv"
+                          style={{ marginTop: "-5px" }}
+                        >
+                          <h2
+                            style={{ textAlign: "center", paddingTop: "28px" }}
+                          >
+                            Sorry, You have no records
+                          </h2>
+                        </div>
+                        {invoicepaidOptionsBtn}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <>{magnifierViewUserUI}</>
+                )}
+
+
               </div>
             </div>
           </div>

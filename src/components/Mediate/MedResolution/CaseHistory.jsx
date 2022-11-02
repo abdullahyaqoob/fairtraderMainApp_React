@@ -152,7 +152,8 @@ class App extends Component {
       userAccountEmail: '',
       dicisionFIleSelected: '',
       dicisionFIleSelectedIPFS: '',
-      getBNBLivePrice: 0
+      getBNBLivePrice: 0,
+      dicisionReport: ''
     };
   }
   async componentWillMount() {
@@ -168,6 +169,16 @@ class App extends Component {
       }).catch((err) => {
         console.log(err);
       })
+    axios.post("http://localhost:5000/order/ableToWithdrawCases", {
+      "userEmail": "address1@gmail.com"
+    })
+      .then((res) => {
+        console.log('ddddddddddddddddddd', res);
+      }).catch((err) => {
+        console.log(err);
+      })
+
+
   }
   loadBlockchainData = async () => {
     let MetamaskStatus;
@@ -341,15 +352,30 @@ class App extends Component {
     this.setState({ dicisionFIleSelected: e.target.files[0] })
   }
 
-  handleDicisionMaked = async () => {
-
+  handleSubmitPreview = async () => {
     let dicisionReport = document.getElementById("addFeeRateInputFeild").value;
+    if (dicisionReport === "") {
+      toast.error("Please type some report", {
+        position: "top-right",
+      });
+    } else if (this.state.dicisionFIleSelected === "") {
+      toast.error("Please attach file", {
+        position: "top-right",
+      });
+    } else {
+      this.setState({ dicisionReport: dicisionReport })
+      this.setState({
+        furtherDetail: "judgeCaseSubmited",
+      });
+    }
+  }
+  handleDicisionMaked = async () => {
+    let dicisionReport = this.state.dicisionReport;
     if (this.state.dicisionFIleSelected === "" || dicisionReport === "") {
       toast.error("Invalid data", {
         position: "top-right",
       });
     } else {
-
       const reader = new window.FileReader();
       reader.readAsArrayBuffer(this.state.dicisionFIleSelected);
       reader.onloadend = () => {
@@ -381,16 +407,11 @@ class App extends Component {
           console.log(dicisionReport);
           console.log(this.state.judgeCaseBuyerReceiveValue);
 
-          var formData = new FormData();
-          formData.append("orderId", this.state.selectedJob.id);
-          formData.append("buyerReceiveFunds", this.state.judgeCaseBuyerReceiveValue);
-          formData.append("reportNote", dicisionReport);
-          formData.append("reportFiles", this.state.dicisionFIleSelected);
 
           // Call smart contract
           const AllOrdersOfBuyer = await this.state.ethSwap.methods
             .getAllOrdersOfOneUser(buyerWalletAddress)
-            // .getAllOrdersOfOneUser("0xf79d1CF80fD4e9B3C8fd4C9172a8cab59671389f")
+            // .getAllOrdersOfOneUser("0xebb9f69f52440AA88a60c759B4849A3D12b2A20A")
             .call();
 
           console.log("AllOrdersOfBuyer", AllOrdersOfBuyer);
@@ -424,15 +445,15 @@ class App extends Component {
               dicisionReport,
               this.state.dicisionFIleSelectedIPFS,
               buyerWalletAddress,
-              sellerWalletAddress,
+              // sellerWalletAddress,
               _index,
-              this.state.judgeCaseBuyerReceiveValue
-
+              this.state.judgeCaseBuyerReceiveValue,
+              this.state.selectedJob.apealtime
             )
             .send({
               from: userAccount,
             })
-            .on("transactionHash", (hash) => {
+            .on("transactionHash", async (hash) => {
               console.log("hash", hash);
               console.log("changeThatUserData", changeThatUserData);
 
@@ -442,8 +463,17 @@ class App extends Component {
 
               // Axios request of judge case
 
+              var formData = new FormData();
+              formData.append("orderId", this.state.selectedJob.id);
+              formData.append("buyerReceiveFunds", this.state.judgeCaseBuyerReceiveValue);
+              formData.append("reportNote", dicisionReport);
+              formData.append("reportFiles", this.state.dicisionFIleSelected);
+              formData.append("datee", new Date());
 
-              axios({
+
+
+
+              await axios({
                 method: "post",
                 url: process.env.REACT_APP_BASE_URL + "mediate/createJudgement",
                 data: formData
@@ -452,24 +482,50 @@ class App extends Component {
                   console.log(res);
 
                   this.setState({
-                    furtherDetail: "judgeCaseSubmited",
+                    dicisionReport: ''
                   });
                 }).catch((err) => {
                   console.log(err);
                 })
+
+
+
+
+              // Axios requst for send message
+
+              await axios
+                .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
+                  senderEmail: this.state.userAccountEmail,
+                  receiverEmail: this.state.selectedJob.sellerEmail,
+                  message: `Order No. ${this.state.selectedJob.id} is judged, You can appeal in apeeal time`,
+                  orderId: this.state.selectedJob.id
+                })
+                .then((res) => {
+                  console.log(res);
+                })
+                .catch((err) => {
+                  console.log(err);
+                })
+              await axios
+                .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
+                  senderEmail: this.state.userAccountEmail,
+                  receiverEmail: this.state.selectedJob.customeremail,
+                  message: `Order No. ${this.state.selectedJob.id} is judged, You can appeal in apeeal time`,
+                  orderId: this.state.selectedJob.id
+                })
+                .then((res) => {
+                  console.log(res);
+                  toast.success("Message Sent", {
+                    position: "top-right",
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                })
             });
-
-
-
-
-
         })
       }
     }
-
-
-
-
 
   }
 
@@ -1012,26 +1068,37 @@ class App extends Component {
                   />
                 </span>
                 <span className="invoiceThreeBtn">
-                  <p
-                    className="selectResolutionBtn alignCenter"
-                    onClick={() => {
-                      this.setState({ furtherDetail: "judgeCase" });
-                    }}
-                    style={{ width: "200px" }}
-                  >
-                    Judge Case
-                  </p>
+                  {this.state.selectedJob.judgedCase === false ?
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      onClick={() => {
+                        this.setState({ furtherDetail: "judgeCase" });
+                      }}
+                      style={{ width: "200px" }}
+                    >
+                      Judge Case
+                    </p>
+                    :
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      style={{ width: "200px" }}
+                    >
+                      Already Judged
+                    </p>
+                  }
                 </span>
                 <span className="alignEnd" style={{ float: "right" }}>
                   <Link to={{ pathname: "" }}>
-                    <img
-                      src={action}
-                      className="floatRight"
-                      alt="action"
-                      onClick={() => {
-                        this.setState({ furtherDetail: "secAction" });
-                      }}
-                    />
+                    {this.state.selectedJob.judgedCase === false ?
+                      <img
+                        src={action}
+                        className="floatRight"
+                        alt="action"
+                        onClick={() => {
+                          this.setState({ furtherDetail: "secAction" });
+                        }}
+                      />
+                      : ""}
                   </Link>
                 </span>
               </div>
@@ -1343,7 +1410,7 @@ class App extends Component {
                 <p style={{ color: "white" }}>Case History</p>
               </div>
               <div
-                className="invoiceBlackContainer invoiceOrderBlackDiv caseHistoryContainer"
+                className="invoiceBlackContainer invoiceOrderBlackDiv caseHistoryContainer messagesMainContianer"
                 style={{ marginTop: "-10px", paddingTop: "-20px" }}
               >
 
@@ -1434,27 +1501,37 @@ class App extends Component {
                   />
                 </span>
                 <span className="invoiceThreeBtn">
-                  <p
-                    className="selectResolutionBtn alignCenter"
-                    onClick={() => {
-                      this.setState({ furtherDetail: "judgeCase" });
-                    }}
-                    // style={{ width: "200px", borderColor: "#1A9AFE", color: '#1A9AFE' }}
-                    style={{ width: "200px" }}
-                  >
-                    Judge Case
-                  </p>
+                  {this.state.selectedJob.judgedCase === false ?
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      onClick={() => {
+                        this.setState({ furtherDetail: "judgeCase" });
+                      }}
+                      style={{ width: "200px" }}
+                    >
+                      Judge Case
+                    </p>
+                    :
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      style={{ width: "200px" }}
+                    >
+                      Already Judged
+                    </p>
+                  }
                 </span>
                 <span className="alignEnd" style={{ float: "right" }}>
                   <Link to={{ pathname: "" }}>
-                    <img
-                      src={action}
-                      className="floatRight"
-                      alt="action"
-                      onClick={() => {
-                        this.setState({ furtherDetail: "secAction" });
-                      }}
-                    />
+                    {this.state.selectedJob.judgedCase === false ?
+                      <img
+                        src={action}
+                        className="floatRight"
+                        alt="action"
+                        onClick={() => {
+                          this.setState({ furtherDetail: "secAction" });
+                        }}
+                      />
+                      : ""}
                   </Link>
                 </span>
               </div>
@@ -1839,15 +1916,24 @@ class App extends Component {
                   />
                 </span>
                 <span className="invoiceThreeBtn">
-                  <p
-                    className="selectResolutionBtn alignCenter"
-                    onClick={() => {
-                      this.setState({ furtherDetail: "judgeCase" });
-                    }}
-                    style={{ width: "200px" }}
-                  >
-                    Judge Case
-                  </p>
+                  {this.state.selectedJob.judgedCase === false ?
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      onClick={() => {
+                        this.setState({ furtherDetail: "judgeCase" });
+                      }}
+                      style={{ width: "200px" }}
+                    >
+                      Judge Case
+                    </p>
+                    :
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      style={{ width: "200px" }}
+                    >
+                      Already Judged
+                    </p>
+                  }
                 </span>
                 <span className="alignEnd" style={{ float: "right" }}>
                   <Link to={{ pathname: "" }}>
@@ -2089,7 +2175,8 @@ class App extends Component {
                         className="selectResolutionBtn alignCenter"
                         style={{ width: "200px" }}
                         onClick={() => {
-                          this.handleDicisionMaked()
+                          this.handleSubmitPreview()
+
                         }}
                       >
                         Submit
@@ -2201,9 +2288,7 @@ class App extends Component {
                         className="selectResolutionBtn alignCenter"
                         style={{ width: "200px" }}
                         onClick={() => {
-                          this.setState({
-                            // furtherDetail: "judgeCaseSubmited",
-                          });
+                          this.handleDicisionMaked()
                         }}
                       >
                         Submit

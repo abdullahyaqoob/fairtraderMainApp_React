@@ -30,6 +30,7 @@ import MyFees from "./components/Mediate/MyFees.jsx";
 import PaidFees from "./components/Mediate/MyFees/PaidFees.jsx";
 
 import Messages from "./components/Messages.jsx";
+import Assets from "./components/Assets.jsx";
 
 // css
 import "./App.css";
@@ -79,10 +80,10 @@ function App() {
       let userAccountt = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
-      let userAccount  = userAccountt[0];
+      let userAccount = userAccountt[0];
       console.log(userAccount);
-      setuserAccountAddr( userAccount );
-      
+      setuserAccountAddr(userAccount);
+
       // temparary set account
       // let temparayAddr = "adddresssss1";
       // setuserAccountAddr(temparayAddr);
@@ -356,6 +357,19 @@ function App() {
           path="/Messages"
           element={
             <Messages
+              props={{
+                MetamaskStatus: { metamaskStatus },
+                UserAccountAddr: { userAccountAddr },
+                userAccountEmail: { userAccountEmail },
+              }}
+              // props={props}
+            />
+          }
+        />
+        <Route
+          path="/Assets"
+          element={
+            <Assets
               props={{
                 MetamaskStatus: { metamaskStatus },
                 UserAccountAddr: { userAccountAddr },

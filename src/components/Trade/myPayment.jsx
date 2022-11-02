@@ -45,11 +45,22 @@ class App extends Component {
     };
   }
   async componentWillMount() {
-    setTimeout(() => {
+    this.userAddressHandle();
+  }
+
+  userAddressHandle = async () => {
+
+    let userAddres;
+    if (
+      this.props["props"].UserAccountAddr.userAccountAddr !== "") {
+      userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
+      console.log(userAddres);
+      this.setState({ userAddres });
+
       console.log(this.props);
       axios
         .get(
-          `${process.env.REACT_APP_BASE_URL}user/showSelectedCurrency/${this.props["props"].UserAccountAddr.userAccountAddr}`
+          `${process.env.REACT_APP_BASE_URL}user/showSelectedCurrency/${userAddres}`
         )
 
         .then((res) => {
@@ -69,9 +80,11 @@ class App extends Component {
         .catch((err) => {
           console.log(err);
         });
-    }, 1000);
-  }
 
+    } else {
+      setTimeout(this.userAddressHandle, 250);
+    }
+  };
   updateUserCurrency = () => {
     axios
       .put(`${process.env.REACT_APP_BASE_URL}user/userSelectedCryptoCurrency`, {
@@ -143,7 +156,7 @@ class App extends Component {
             </div>
             <div className="col-6">
               <p className="alignEnd">
-              {localStorage.getItem("userViewTradeOrMediate") !==
+                {localStorage.getItem("userViewTradeOrMediate") !==
                   "mediate" ? (
                   <>
                     <Link to={{ pathname: "/Messages" }}>
