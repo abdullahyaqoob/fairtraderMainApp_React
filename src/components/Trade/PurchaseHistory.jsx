@@ -2677,7 +2677,7 @@ class PurchaseHistory extends Component {
                                 </div>
                                 <div className="col-5">
                                   <p className="invoiceUnpaidProfileData">
-                                    {val.judgedCase === false ?
+                                    {/* {val.judgedCase === false ?
                                       <p>
                                         Review
                                       </p>
@@ -2685,6 +2685,22 @@ class PurchaseHistory extends Component {
                                       <p style={{ color: "yellow" }}>
                                         <b>Finalised</b>
                                       </p>
+                                    } */}
+                                    {val.judgedCase === false ?
+                                      <p>
+                                        Review
+                                      </p>
+                                      : val.judgedCase === true && val.superMediationInvolved === false ?
+                                        <p style={{ color: "yellow" }}>
+                                          <b>Finalised</b>
+                                        </p>
+                                        : val.superMediationInvolved === true && val.superJudgedCase === false ?
+                                          <p style={{ color: "red" }}>
+                                            <b>Appealed</b>
+                                          </p>
+                                          : <p style={{ color: "yellow" }}>
+                                            <b>Finalised</b>
+                                          </p>
                                     }
                                     {/* <p style={{ color: "rgb(182, 255, 182)" }}> */}
 
@@ -2708,7 +2724,7 @@ class PurchaseHistory extends Component {
                                         }}
                                       />
                                     </div>
-                                    {val.judgedCase === false ?
+                                    {/* {val.judgedCase === false ?
                                       <p style={{ fontSize: '13px' }}>
                                         in progress
                                       </p>
@@ -2716,6 +2732,22 @@ class PurchaseHistory extends Component {
                                       <p style={{ color: "yellow", fontSize: '13px' }}>
                                         Appeal: {val.apealtime} days
                                       </p>
+                                    } */}
+                                    {val.judgedCase === false ?
+                                      <p style={{ fontSize: '13px' }}>
+                                        in progress
+                                      </p>
+                                      : val.judgedCase === true && val.superMediationInvolved === false ?
+                                        <p style={{ color: "yellow", fontSize: '13px' }}>
+                                          Appeal: {val.apealtime} days
+                                        </p>
+                                        : val.superMediationInvolved === true && val.superJudgedCase === false ?
+                                          <p style={{ color: "red", fontSize: '13px' }}>
+                                            Super Med
+                                          </p>
+                                          : <p style={{ color: "yellow", fontSize: '13px' }}>
+                                            Revoked
+                                          </p>
                                     }
                                     <p>
                                       {/* <b>USD $1120.78</b> */}
