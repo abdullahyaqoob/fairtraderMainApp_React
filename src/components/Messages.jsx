@@ -725,8 +725,12 @@ class App extends Component {
                                       <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
                                       : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
                                         <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
-                                        :
-                                        <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
+                                        : val.superMediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                          <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Buyer</h5>
+                                          : val.superMediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
+                                            <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Seller</h5>
+                                            :
+                                            <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
                                 }
                                 <h3>{val.message}</h3>
                               </div>
@@ -739,8 +743,12 @@ class App extends Component {
                                       <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
                                       : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
                                         <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
-                                        :
-                                        <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
+                                        : val.superMediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                          <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Buyer</h5>
+                                          : val.superMediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
+                                            <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Seller</h5>
+                                            :
+                                            <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
                                 }
                                 <h3>{val.message}</h3>
                               </div>

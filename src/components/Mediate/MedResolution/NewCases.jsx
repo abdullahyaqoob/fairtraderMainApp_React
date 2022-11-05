@@ -10,7 +10,6 @@ import EthSwap from "../../../ABIS_CutFeeGiveOrdrId/EthSwap.json";
 import Web3 from "web3";
 
 
-
 // Images
 import fairtraderLogo from "../../../Images/fairtraderLogo.png";
 import searchBtn from "../../../Images/searchBtn.png";
@@ -24,21 +23,20 @@ import purchaseHistory from "../../../Images/Invoice/purchaseHistory.png";
 import salesHistory from "../../../Images/Invoice/salesHistory.png";
 import createinvoice from "../../../Images/Invoice/createinvoice.png";
 import invoiceReports from "../../../Images/Invoice/invoiceReports.png";
-import action from "../../../Images/Invoice/action.png";
+import invoiceDropdown from "../../../Images/Invoice/invoiceDropdown.png";
 import navMessage from "../../../Images/Menu/navMessage.png";
 import invoiceBack from "../../../Images/Invoice/invoiceBack.png";
 import invoiceUnpaidReject from "../../../Images/Invoice/invoiceUnpaidReject.png";
 import mediatorSearch from "../../../Images/resolutionMediator/mediatorSearch.png";
 
-import judgeCaseAddedFile from "../../../Images/Invoice/judgeCaseAddedFile.png";
-import judgeCaseViewExample from "../../../Images/Invoice/judgeCaseViewExample.png";
-import judgeCaseAdd from "../../../Images/Invoice/judgeCaseAdd.png";
-import judgeCaseEdit from "../../../Images/Invoice/judgeCaseEdit.png";
-import judgeCaseBlackDropdown from "../../../Images/Invoice/judgeCaseBlackDropdown.png";
+import invoiceViewYellow from "../../../Images/Invoice/invoiceViewYellow.png";
+import invoiceViewWhite from "../../../Images/Invoice/invoiceViewWhite.png";
+import searchYellow from "../../../Images/Invoice/searchYellow.png";
+import searchWhite from "../../../Images/Invoice/searchWhite.png";
 import searchRed from "../../../Images/Invoice/searchRed.png";
 import invoiceUnpaidResolutionYellow from "../../../Images/Invoice/invoiceUnpaidResolutionYellow.png";
 import invoiceUnpaidContract from "../../../Images/Invoice/invoiceUnpaidContract.png";
-import overdueTasksAddNote from "../../../Images/Invoice/overdueTasksAddNote.png";
+import invoiceUnpaidEdit from "../../../Images/Invoice/invoiceUnpaidEdit.png";
 import invoiceUnpaidAlarm from "../../../Images/Invoice/invoiceUnpaidAlarm.png";
 import resolutionSelectedResolution from "../../../Images/Invoice/resolutionSelectedResolution.png";
 import Attension from "../../../Images/Invoice/Attension.png";
@@ -48,15 +46,10 @@ import invoiceContractDocumentsTerms from "../../../Images/Invoice/invoiceContra
 import invoiceContractDocumentsOther from "../../../Images/Invoice/invoiceContractDocumentsOther.png";
 import invoiceAddNote from "../../../Images/Invoice/invoiceAddNote.png";
 import invoiceTransactionHistory from "../../../Images/Invoice/invoiceTransactionHistory.png";
-import invoicePaymentStopped from "../../../Images/Invoice/invoicePaymentStopped.png";
-import overdueTasksBack from "../../../Images/Invoice/overdueTasksBack.png";
-import addFeeEdit from "../../../Images/Invoice/addFeeEdit.png";
 import medResRes from "../../../Images/Invoice/medResRes.png";
-import medResNewCasesSearch from "../../../Images/Invoice/medResNewCasesSearch.png";
+import invoicePaymentStopped from "../../../Images/Invoice/invoicePaymentStopped.png";
 import medResNewCasesReject from "../../../Images/Invoice/medResNewCasesReject.png";
-import sendMessageCancel from "../../../Images/Invoice/sendMessageCancel.png";
-import sendMessageAdd from "../../../Images/Invoice/sendMessageAdd.png";
-import addedFilesSndMessage from "../../../Images/Invoice/addedFilesSndMessage.png";
+import medResNewCasesSearch from "../../../Images/Invoice/medResNewCasesSearch.png";
 
 // Toast
 import { ToastContainer, toast } from "react-toastify";
@@ -68,27 +61,6 @@ import axios from "axios";
 import "../../css/Invoice.css";
 import "../../css/invoiceCalender.css";
 import "../../css/MedResolution.css";
-
-
-
-// IPFS INTEGRATION
-const ipfsClient = require("ipfs-http-client");
-const projectId = "2DQF4jU6gmpIxp2AcOpLKardvUp";
-const projectSecret = "db6faf1d3cbf8f03a61d3397719f493b";
-
-const auth =
-  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
-
-const ipfs = ipfsClient({
-  host: "ipfs.infura.io",
-  port: 5001,
-  protocol: "https",
-  headers: {
-    authorization: auth,
-  },
-}); // leaving out the arguments will default to these values
-// IPFS INTEGRATION ENDED
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -101,31 +73,24 @@ class App extends Component {
       salesHistoryTotalPaid: 0,
       salesHistoryTotalUnPaid: 0,
       userConnectedEmailValue: "",
-      // furtherDetail: "judgeCase",
+      magnifierViewUserViewPDF: false,
+      //   furtherDetail: "furtherDetailMessage",
       furtherDetail: false,
       jobSelected: false,
       invoicePaidBtn: true,
-      whoPaysServiceFee: false,
-      whoPaysServiceFeeTxt: "",
-      judgeCaseBuyerReceive: false,
-      magnifierViewUserViewPDF: false,
-      judgeCaseBuyerReceiveValue: "100",
-      caseHistoryAllData: '',
-      selectedJob: '',
-      // selectedJob: {customerWalletAddress: '0xf79d1CF80fD4e9B3C8fd4C9172a8cab59671389f', id: 10},
-      ethSwap: '',
-      allChatOfBuyerSellerMediator: '',
-      allMessages: '',
-      mediatorSendMsgTo: 'Seller',
-      userAccountEmail: '',
-      dicisionFIleSelected: '',
-      dicisionFIleSelectedIPFS: ''
+      newCasesAllData: [],
+      selectedNewCase: {}
     };
   }
   async componentWillMount() {
     this.loadBlockchainData();
+
     this.userAddressHandle();
+    // this.userConnectedEmail();
+
+    // this.mountedAxiosCalls()
   }
+
   loadBlockchainData = async () => {
     let MetamaskStatus;
     if (this.props["props"].MetamaskStatus.metamaskStatus !== "") {
@@ -165,6 +130,20 @@ class App extends Component {
           );
         }
 
+        // Load Token
+        const tokenFTPData = FTPToken.networks[networkId];
+        if (tokenFTPData) {
+          const FTPTokenVar = new web3.eth.Contract(
+            FTPToken.abi,
+            tokenFTPData.address
+          );
+          this.setState({ FTPToken: FTPTokenVar });
+        } else {
+          window.alert(
+            // "Invalid Network Id. Please select ** Binanace ** from Metamask to Continue. Ethereum Comming Soon."
+            "Invalid Network Id. Please select ** Ganache ** from Metamask to Continue. Ethereum Comming Soon."
+          );
+        }
       }
     } else {
       setTimeout(() => {
@@ -173,18 +152,26 @@ class App extends Component {
     }
   };
 
-  handleNumberHours(e) {
-    if (e.target.value > 99 || e.target.value === 0) {
-      toast.error("Response time must be between 0-99", {
-        position: "top-right",
-      });
-      this.handleNumberHoursRef.value = "";
+
+  userConnectedEmail = async () => {
+    let connectedUserEmail;
+    if (this.props["props"].userAccountEmail.userAccountEmail !== "") {
+      connectedUserEmail = this.props["props"].userAccountEmail
+        .userAccountEmail;
+      console.log(connectedUserEmail);
+
+      setTimeout(() => {
+        this.setState({ userConnectedEmailValue: connectedUserEmail });
+      }, 500);
+    } else {
+      setTimeout(this.userConnectedEmail, 250);
     }
-  }
-  formatTheCreatedAtDate(e) {
-    let newDateDate = new Date(e).toLocaleString()
-    return newDateDate.substring(0, 10)
-  }
+
+    // setInterval(() => {
+    //   console.log(this.props["props"].userAccountEmail.userAccountEmail);
+    // }, 500);
+  };
+
   userAddressHandle = async () => {
     let userAddres;
     let connectedUserEmail;
@@ -198,17 +185,46 @@ class App extends Component {
       connectedUserEmail = this.props["props"].userAccountEmail
         .userAccountEmail;
       console.log(connectedUserEmail);
-      this.setState({ userAccountEmail: connectedUserEmail })
 
+      // AXIOS CALL FOR HISTORY DATA
+      // axios
+      //   .post(`${process.env.REACT_APP_BASE_URL}invoices`, {
+      //     walletaddress: userAddres,
+      //     email: connectedUserEmail,
+      //   })
+
+      //   .then((res) => {
+      //     console.log(res.data);
+      //     this.setState({ invoiceCoverData: res.data });
+      //     this.setState({
+      //       purchaseHistoryTotalPaid: res.data.purchaseHistory.data.MyOrders,
+      //     });
+      //     this.setState({
+      //       purchaseHistoryTotalUnPaid: res.data.purchaseHistory.data.unpaid,
+      //     });
+      //     this.setState({
+      //       salesHistoryTotalPaid: res.data.salesHistory.data.paid,
+      //     });
+      //     this.setState({
+      //       salesHistoryTotalUnPaid: res.data.salesHistory.data.unpaid,
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+
+      // New Cases Call
+      console.log(connectedUserEmail);
       axios
-        .post(`${process.env.REACT_APP_BASE_URL}mediate/caseHistory`, {
+        .post(`${process.env.REACT_APP_BASE_URL}mediate/newCases`, {
           mediatorEmail: connectedUserEmail
         })
 
         .then((res) => {
           console.log(res);
-          this.setState({ caseHistoryAllData: res.data })
-          console.log(this.state.caseHistoryAllData);
+          // this.setState({ newCasesAllData: res.data.data })
+          this.setState({ newCasesAllData: res.data })
+          console.log(this.state.newCasesAllData);
         }).catch((err) => {
           console.log(err);
         })
@@ -217,222 +233,119 @@ class App extends Component {
     }
   };
 
-  async takeAllChatOfBuyerSellerMediator() {
-    if (this.state.selectedJob === "") {
-      setTimeout(() => {
-        this.takeAllChatOfBuyerSellerMediator()
-      }, 250);
+  handleAcceptJob = async () => {
+    let buyerWalletAddress = this.state.selectedNewCase.customerWalletAddress;
+    console.log(buyerWalletAddress);
+
+    if (this.state.selectedNewCase.paidstatus === true) {
+      // Calling of smart contract
+      const AllOrdersOfSeller = await this.state.ethSwap.methods
+        .getAllOrdersOfOneUser(buyerWalletAddress)
+        // .getAllOrdersOfOneUser("0xAA7aBC2Df0D25E2Ec7266Ace98A4Eb853A042514")
+        .call();
+
+      console.log("AllOrdersOfSeller", AllOrdersOfSeller);
+
+      let stateSlectedData = this.state.selectedNewCase;
+      let wantToSelectedOrder;
+      let wantToSelectedOrderID;
+
+      AllOrdersOfSeller.filter(function (value, index) {
+        console.log(index);
+
+        if (value._orderId === stateSlectedData.id.toString()) {
+          wantToSelectedOrder = value;
+          wantToSelectedOrderID = index;
+        }
+      })
+
+      console.log('wantToSelectedOrder', wantToSelectedOrder);
+      console.log('wantToSelectedOrder', wantToSelectedOrderID);
+
+      let userAccountt = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      let userAccount = userAccountt[0];
+
+      let _index = Number(wantToSelectedOrderID);
+      console.log(_index);
+      let changeThatUserData = await this.state.ethSwap.methods
+        // ****************************************************************************************************************************************************************************
+        .medAcceptNewCases(_index, buyerWalletAddress)
+        .send({
+          from: userAccount,
+        })
+        .on("transactionHash", (hash) => {
+          console.log("hash", hash);
+          console.log("changeThatUserData", changeThatUserData);
+          this.handleAcceptJobAxiosReq();
+        });
     } else {
-      console.log(this.state.selectedJob);
-
-      let allMessagesWithoutFilter;
-      await axios
-        .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
-          orderId: this.state.selectedJob.id
-        })
-
-        .then((res) => {
-          let respData = res.data
-
-          console.log(respData);
-
-
-
-          respData.sort(function (a, b) { return a.id - b.id });
-          allMessagesWithoutFilter = respData;
-
-          this.setState({ allChatOfBuyerSellerMediator: allMessagesWithoutFilter })
-
-        }).catch((err) => {
-          console.log(err);
-        })
-    }
-  }
-
-  caseHistoryFeePayHandle(e) {
-    this.setState({ whoPaysServiceFeeTxt: e });
-    this.setState({ whoPaysServiceFee: false });
-  }
-  caseHistoryJudgeCaseBuyerReceiveHanlder(e) {
-    this.setState({ judgeCaseBuyerReceiveValue: e });
-    this.setState({ judgeCaseBuyerReceive: false });
-  }
-  handleMediatorSndMsg() {
-    let mediatorMsg = document.getElementById("SendMessageTxtareaForMed").value;
-    let selectedJob = this.state.selectedJob;
-    let mediatorSendMsgTo = this.state.mediatorSendMsgTo;
-
-    if (mediatorMsg !== "") {
-
-      let receiverEmail;
-      if (mediatorSendMsgTo === "Seller") {
-        receiverEmail = selectedJob.sellerEmail
-      } else if (mediatorSendMsgTo === "Buyer") {
-        receiverEmail = selectedJob.customeremail
-      }
-
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
-          senderEmail: this.state.userAccountEmail,
-          receiverEmail: receiverEmail,
-          message: mediatorMsg,
-          orderId: selectedJob.id
-        })
-        .then((res) => {
-          toast.success(`Message Sent to ${mediatorSendMsgTo}`, {
-            position: "top-right",
-          });
-          document.getElementById("SendMessageTxtareaForMed").value = ""
-        }).catch((err) => {
-          console.log(err);
-        })
-    } else {
-      toast.error("First type some message", {
+      toast.error("This order is not paid", {
         position: "top-right",
       });
     }
   }
-
-  dicisionFIleSelected = async (e) => {
-    console.log(e.target.files[0]);
-    this.setState({ dicisionFIleSelected: e.target.files[0] })
-  }
-
-  handleDicisionMaked = async () => {
-
-    let dicisionReport = document.getElementById("addFeeRateInputFeild").value;
-    if (this.state.dicisionFIleSelected === "" || dicisionReport === "") {
-      toast.error("Invalid data", {
-        position: "top-right",
-      });
-    } else {
-
-      const reader = new window.FileReader();
-      reader.readAsArrayBuffer(this.state.dicisionFIleSelected);
-      reader.onloadend = () => {
-        console.log(Buffer(reader.result));
-        ipfs.add(Buffer(reader.result), async (error, result) => {
-          console.log("Ipfs result", result);
-          console.log("Ipfs result Error", error);
-          if (error) {
-            console.error(error);
-            return;
-          }
-
-          this.setState({
-            dicisionFIleSelectedIPFS: result[0].hash,
-          });
-          console.log(
-            "dicisionFIleSelectedIPFS",
-            this.state.dicisionFIleSelectedIPFS
-          );
-
-
-
-
-          let buyerWalletAddress = this.state.selectedJob.customerWalletAddress;
-          let sellerWalletAddress = this.state.selectedJob.sellerwalletaddress;
-          console.log(buyerWalletAddress);
-          console.log(sellerWalletAddress);
-
-          console.log(dicisionReport);
-          console.log(this.state.judgeCaseBuyerReceiveValue);
-
-          var formData = new FormData();
-          formData.append("orderId", this.state.selectedJob.id);
-          formData.append("buyerReceiveFunds", this.state.judgeCaseBuyerReceiveValue);
-          formData.append("reportNote", dicisionReport);
-          formData.append("reportFiles", this.state.dicisionFIleSelected);
-
-          // Call smart contract
-          const AllOrdersOfBuyer = await this.state.ethSwap.methods
-            .getAllOrdersOfOneUser(buyerWalletAddress)
-            // .getAllOrdersOfOneUser("0xf79d1CF80fD4e9B3C8fd4C9172a8cab59671389f")
-            .call();
-
-          console.log("AllOrdersOfBuyer", AllOrdersOfBuyer);
-
-          let stateSlectedData = this.state.selectedJob;
-          let wantToSelectedOrder;
-          let wantToSelectedOrderID;
-
-          AllOrdersOfBuyer.filter(function (value, index) {
-            console.log(index);
-
-            if (value._orderId === stateSlectedData.id.toString()) {
-              wantToSelectedOrder = value;
-              wantToSelectedOrderID = index;
-            }
-          })
-
-          console.log('wantToSelectedOrder', wantToSelectedOrder);
-          console.log('wantToSelectedOrder', wantToSelectedOrderID);
-
-          let userAccountt = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          });
-          let userAccount = userAccountt[0];
-
-          let _index = Number(wantToSelectedOrderID);
-          console.log(_index);
-          let changeThatUserData = await this.state.ethSwap.methods
-            // ****************************************************************************************************************************************************************************
-            .medJudgeCaseReport(
-              dicisionReport,
-              this.state.dicisionFIleSelectedIPFS,
-              buyerWalletAddress,
-              sellerWalletAddress,
-              _index,
-              this.state.judgeCaseBuyerReceiveValue
-
-            )
-            .send({
-              from: userAccount,
-            })
-            .on("transactionHash", (hash) => {
-              console.log("hash", hash);
-              console.log("changeThatUserData", changeThatUserData);
-
-
-
-
-
-              // Axios request of judge case
-
-
-              axios({
-                method: "post",
-                url: process.env.REACT_APP_BASE_URL + "mediate/createJudgement",
-                data: formData
-              })
-                .then((res) => {
-                  console.log(res);
-
-                  this.setState({
-                    furtherDetail: "judgeCaseSubmited",
-                  });
-                }).catch((err) => {
-                  console.log(err);
-                })
-            });
-
-
-
-
-
-        })
+  handleAcceptJobAxiosReq = () => {
+    axios
+      .put(
+        `${process.env.REACT_APP_BASE_URL}mediate/medUpdateCaseAccept`, {
+        "medCaseId": this.state.selectedNewCase.id,
+        "medCaseIdStatus": true
       }
-    }
+      )
+      .then((res) => {
+        console.log(res);
+        toast.success("Successfully, Job accepted", {
+          position: "top-right",
+        });
+        setTimeout(() => {
+          window.location = "MedResolution"
+        }, 2000);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  };
+
+  handleRejectJob = (e) => {
+    axios
+      .put(
+        `${process.env.REACT_APP_BASE_URL}mediate/medUpdateCaseReject`, {
+        "medCaseId": this.state.selectedNewCase.id,
+        "medCaseIdStatus": true
+      }
+      )
+      .then((res) => {
+        console.log(res);
+        if (e === "magnifiredView") {
+          // UI changes
+          document.getElementById(
+            "resolutionSelectedPaid"
+          ).style.display = "none";
+          document.getElementById("ViewAddNotePaid").style.display =
+            "none";
+          document.getElementById("ViewAddNotePaid").style.display =
+            "none";
+          document.getElementById(
+            "invoiceStopPaymentContent"
+          ).style.display = "inherit";
+        }
+        toast.success("Successfully, Job rejected", {
+          position: "top-right",
+        });
+
+        setTimeout(() => {
+          window.location = "MedResolution"
+        }, 2000);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  };
 
 
-
-
-
-  }
-
-  // SendMessageTxtareaForMed
   render() {
-
     let magnifierViewUserUI;
     if (this.state.magnifierViewUserViewPDF === false) {
       magnifierViewUserUI = (
@@ -446,32 +359,31 @@ class App extends Component {
                   <div className="profileBoxHeader">
                     <span style={{ position: "absolute" }}>No:</span>
                     <p style={{ textAlign: "end" }}>
-                      {/* #{this.state.magnifierViewUser.id} */}
-                      #{this.state.selectedJob.id}
+                      #{this.state.selectedNewCase.id}
+                      {/* #1245 */}
                     </p>
                   </div>
 
                   <div className="profileBoxBody">
                     <span>
-                      {/* <b>{this.state.magnifierViewUser.customername}</b> */}
-                      <b>{this.state.selectedJob.customername}</b>
+                      <b>{this.state.selectedNewCase.customername}</b>
+                      {/* <b>ABC Services</b> */}
                     </span>
                     <br />
                     <span>
-                      <b>{this.state.selectedJob.customeraddress}</b>
-                      {/* {this.state.magnifierViewUser.customeraddress} */}
+                      {/* <b>New York</b> */}
+                      {this.state.selectedNewCase.customeraddress}
                     </span>
                     <br />
                     <span>Newtown 3709</span>
                     <br />
                     <br />
                     <h6 style={{ color: "#c62127" }}>
-                      {this.state.selectedJob.mediatorIndustry} Work
+                      {this.state.selectedNewCase.mediatorIndustry} Work
                     </h6>
                     <h6>
-                      Total{" "}
-                      <span style={{ color: "lightgrey" }}>.</span>
-                      ${this.state.selectedJob.Amount}USD
+                      Total <span style={{ color: "lightgrey" }}>.</span>
+                      ${this.state.selectedNewCase.Amount}USD
                     </h6>
                   </div>
                   <div className="profileBoxBottom"
@@ -498,7 +410,7 @@ class App extends Component {
                   <div className="col-8">
                     Pay On
                     <br />
-                    {this.state.selectedJob.payment}
+                    {this.state.selectedNewCase.payment}
                   </div>
                 </div>
 
@@ -646,7 +558,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                    <p>Software Development</p>
+                    <p>{this.state.selectedNewCase.mediatorIndustry}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -656,7 +568,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                    <p>Random</p>
+                    <p>{this.state.selectedNewCase.mediator}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -666,7 +578,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                    <p>Melbourne 3000</p>
+                    <p>{this.state.selectedNewCase.customeraddress}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -676,7 +588,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                    <p>Chinese, English</p>
+                    <p>{this.state.selectedNewCase.mediatorLanguage}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -686,7 +598,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                    <p>3 days</p>
+                    <p>{this.state.selectedNewCase.responsetime} days</p>
                   </div>
                 </div>
                 <div className="row">
@@ -696,7 +608,7 @@ class App extends Component {
                     </h3>
                   </div>
                   <div className="col-8">
-                    <p>7 days</p>
+                    <p>{this.state.selectedNewCase.apealtime} days</p>
                   </div>
                 </div>
               </div>
@@ -711,8 +623,8 @@ class App extends Component {
                 release.
               </p>
               <p>
-                It may be better to first try and settle the dispute
-                will the seller before stopping payment release.
+                It may be better to first try and settle the dispute will
+                the seller before stopping payment release.
               </p>
             </div>
 
@@ -821,7 +733,12 @@ class App extends Component {
               <div className="ResolutionSelectedBodyTxt">
                 <div className="row">
                   <div className="col-6">
-                    <div className="row">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF: "contractTerms",
+                        })
+                      }>
                       <div className="col-3">
                         <img
                           src={invoiceContractDocumentsTerms}
@@ -835,7 +752,12 @@ class App extends Component {
                     </div>
                   </div>
                   <div className="col-6">
-                    <div className="row">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF:
+                            "contractProductCondition",
+                        })}>
                       <div className="col-3">
                         <img
                           src={invoiceContractDocumentsOther}
@@ -852,7 +774,12 @@ class App extends Component {
                 </div>
                 <div className="row" style={{ marginTop: "20px" }}>
                   <div className="col-6">
-                    <div className="row">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF: "contractReturnPolicy",
+                        })
+                      }>
                       <div className="col-3">
                         <img
                           src={invoiceContractDocumentsTerms}
@@ -866,7 +793,12 @@ class App extends Component {
                     </div>
                   </div>
                   <div className="col-6">
-                    <div className="row">
+                    <div className="row"
+                      onClick={() =>
+                        this.setState({
+                          magnifierViewUserViewPDF: "contractViewOthers",
+                        })
+                      }>
                       <div className="col-3">
                         <img
                           src={invoiceContractDocumentsOther}
@@ -883,59 +815,7 @@ class App extends Component {
                 </div>
               </div>
             </div>
-            {this.state.invoicePaidBtn === true ?
-              <div style={{ fontSize: "15px", marginLeft: '5px', lineHeight: '10px', marginTop: '10px' }}>
-                <div className="row">
-                  <div className="col-4">
-                    <p><b>Seller:</b></p>
-                  </div>
-                  <div className="col-5">
-                    <p>{this.state.selectedJob.sellerEmail}</p>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-4">
-                    <p>Country:</p>
-                  </div>
-                  <div className="col-5">
-                    <p>{this.state.selectedJob.customeraddress}</p>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-4">
-                    <p>Trust Score:</p>
-                  </div>
-                  <div className="col-5">
-                    <p>88%</p>
-                  </div>
-                </div>
-                <br />
-                <div className="row">
-                  <div className="col-4">
-                    <p><b>Buyer:</b></p>
-                  </div>
-                  <div className="col-5">
-                    <p>{this.state.selectedJob.customeremail}</p>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-4">
-                    <p>Country:</p>
-                  </div>
-                  <div className="col-5">
-                    <p>{this.state.selectedJob.customeraddress}</p>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-4">
-                    <p>Trust Score:</p>
-                  </div>
-                  <div className="col-5">
-                    <p>88%</p>
-                  </div>
-                </div>
-              </div>
-              : ""}
+
             {this.state.invoicePaidBtn === true ?
               <div className="selectResolutionDIv invoiceThreeBtnDiv">
                 <span className="alignStart">
@@ -951,21 +831,24 @@ class App extends Component {
                   <p
                     className="selectResolutionBtn alignCenter"
                     onClick={() => {
-                      this.setState({ furtherDetail: "judgeCase" });
+                      this.handleAcceptJob()
+                      this.setState({ invoicePaymentStopped: true });
                     }}
                     style={{ width: "200px" }}
                   >
-                    Judge Case
+                    Accept Job
                   </p>
                 </span>
                 <span className="alignEnd" style={{ float: "right" }}>
                   <Link to={{ pathname: "" }}>
                     <img
-                      src={action}
+                      src={medResNewCasesReject}
                       className="floatRight"
-                      alt="action"
+                      alt="medResNewCasesReject"
                       onClick={() => {
-                        this.setState({ furtherDetail: "secAction" });
+                        this.handleRejectJob("magnifiredView")
+
+                        this.setState({ invoicePaymentStopped: true });
                       }}
                     />
                   </Link>
@@ -1006,7 +889,7 @@ class App extends Component {
             X
           </span>
           <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedJob.attachfiles}`}
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.attachfiles}`}
             height="500px"
             width="100%"
           />
@@ -1023,7 +906,7 @@ class App extends Component {
             X
           </span>
           <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedJob.warrantyfile}`}
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.warrantyfile}`}
             height="500px"
             width="100%"
           />
@@ -1040,7 +923,7 @@ class App extends Component {
             X
           </span>
           <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedJob.invoicefile}`}
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.invoicefile}`}
             height="500px"
             width="100%"
           />
@@ -1057,16 +940,13 @@ class App extends Component {
             X
           </span>
           <iframe
-            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedJob.invoicefile}`}
+            src={`${process.env.REACT_APP_BASE_URL}${this.state.selectedNewCase.invoicefile}`}
             height="500px"
             width="100%"
           />
         </div>
       );
     }
-
-
-
 
     let viewPDF;
     if (this.state.viewPDF === true) {
@@ -1148,41 +1028,38 @@ class App extends Component {
           {this.state.furtherDetail === false ? (
             <div>
               <div className="overdueTasksOrderTxt">
-                <p>Overdue</p>
-                <p style={{ color: "white" }}>To Action</p>
-                <p>Newest</p>
+                <p style={{ color: "white" }}>Newest</p>
                 <p>Oldest</p>
               </div>
               {/* <div className="invoiceBlackDivMainContainer" id='invoiceOptions' style={{ display: 'none' }}> */}
               <div
                 className="invoiceBlackDivMainContainer overdueTaskContainer"
-                id="invoiceOptions"
+                id="invoiceOptions" onClick={() => {
+                  if (this.state.jobSelected === true) {
+                    this.setState({ jobSelected: false })
+                  }
+                }}
                 style={{ display: "inherit" }}
               >
                 <div className="respondAllTxt">
-                  {this.state.caseHistoryAllData.length !== 0 ?
-                    <p style={{ color: "#00ccff" }}>
-                      There are {this.state.caseHistoryAllData.length} Active cases
-                    </p>
-                    :
-                    <p style={{ color: "#00ccff" }}>
-                      There are 0 Active cases
-                    </p>
-
-                  }
-                  {/* There are new jobs waiting fro you */}
+                  <p style={{ color: "#00ccff" }}>
+                    There are new jobs waiting for you
+                  </p>
                 </div>
-                {/* <Link to={{ pathname: "/PurchaseHistory" }}> */}
 
-                {this.state.caseHistoryAllData.length !==
+                {this.state.newCasesAllData.length !==
                   0 ?
                   <div>
-                    {this.state.caseHistoryAllData.map((value, index) => (
+                    {this.state.newCasesAllData.map((value, index) => (
                       <div
-                        className="attentionRedDiv medResBlueDIv caseHistoryHoverRed"
+                        className="attentionRedDiv medResBlueDIv"
                         onClick={() => {
-                          this.setState({ jobSelected: true })
-                          this.setState({ selectedJob: value })
+                          this.setState({ selectedNewCase: value })
+                          if (this.state.jobSelected === true) {
+                            this.setState({ jobSelected: false })
+                          } else {
+                            this.setState({ jobSelected: true })
+                          }
                         }}
                       >
                         <div className="row">
@@ -1200,12 +1077,16 @@ class App extends Component {
                                   <th>Case: #{value.id}</th>
                                 </tr>
                                 <tr>
-                                  <td>Reply to Seller</td>
+                                  <td>Accept Job?</td>
                                 </tr>
                                 <tr>
                                   <td>Time left:</td>
                                   {/* <td>{this.state.purchaseHistoryTotalUnPaid}</td> */}
-                                  <td>72 hrs</td>
+                                  {value.medJobRejected === "1" ?
+                                  <td>Rejected</td>
+                                  :
+                                  <td>72 hrs</td>                                  
+                                }
                                 </tr>
                               </tbody>
                             </table>
@@ -1216,8 +1097,7 @@ class App extends Component {
                               alt="medResNewCasesSearch"
                               className="mediatorSearch"
                               onClick={() => {
-                                this.takeAllChatOfBuyerSellerMediator()
-
+                                this.setState({ selectedNewCase: value })
                                 this.setState({ furtherDetail: true });
                               }}
                             />
@@ -1242,926 +1122,181 @@ class App extends Component {
                     </div>
                   )}
 
-                <div className="selectResolutionDIv invoiceThreeBtnDiv">
-                  <span className="alignStart">
-                    <Link to={{ pathname: "/MedResolution" }}>
-                      <img src={invoiceBack} alt="invoiceBack" />
-                    </Link>
-                  </span>
-                </div>
-              </div>
-            </div>
-          ) : this.state.furtherDetail === true ? (
-            <>
-              <div className="overdueTasksOrderTxt">
-                <p>Case: #{this.state.selectedJob.id}</p>
-                <p
-                  style={{ color: "white" }}
-                  onClick={() => {
-                    this.setState({ furtherDetail: "firstAction" });
-                  }}
+
+
+
+
+
+
+
+
+
+
+
+                {/* <div
+                  className="attentionRedDiv medResBlueDIv"
+                  onClick={() => this.setState({ jobSelected: true })}
                 >
-                  Case History
-                </p>
-              </div>
-              <div
-                className="invoiceBlackContainer invoiceOrderBlackDiv"
-                style={{ marginTop: "-10px" }}
-              >
-                {magnifierViewUserUI}
-
-              </div>
-            </>
-          ) : this.state.furtherDetail === "firstAction" ? (
-            <>
-              <div className="overdueTasksOrderTxt">
-                <p>Case: #{this.state.selectedJob.id}</p>
-                <p style={{ color: "white" }}>Case History</p>
-              </div>
-              <div
-                className="invoiceBlackContainer invoiceOrderBlackDiv caseHistoryContainer"
-                style={{ marginTop: "-10px", paddingTop: "-20px" }}
-              >
-
-                {this.state.allChatOfBuyerSellerMediator.length !== 0 ?
-                  <div>
-                    {this.state.allChatOfBuyerSellerMediator.map((val, i) => (
-                      <>
-                        {this.state.selectedJob.sellerEmail === val.senderEmail ?
-                          <div className="messageSenderSellToBuy">
-                            {val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail === val.senderEmail ?
-                              <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
-                              : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail === val.senderEmail ?
-                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
-                                : val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
-                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
-                                  : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail !== val.senderEmail ?
-                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
-                                    :
-                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
-                            }
-                            <h3>{val.message}</h3>
-                          </div>
-                          : <div className="messageSenderBuyToSell">
-                            {val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail === val.senderEmail ?
-                              <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
-                              : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail === val.senderEmail ?
-                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
-                                : val.mediatorInvolved === "1" && this.state.selectedJob.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
-                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
-                                  : val.mediatorInvolved === "1" && this.state.selectedJob.customeremail !== val.senderEmail ?
-                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
-                                    :
-                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
-                            }
-                            <h3>{val.message}</h3>
-                          </div>
-                        }
-                      </>
-                    ))}
+                  <div className="row">
+                    <div className="col-3">
+                      <img
+                        src={medResRes}
+                        className="purchaseHistory"
+                        alt="medResRes"
+                      />
+                    </div>
+                    <div className="col-7">
+                      <table className="invoiceOptionsTable overdueTasksHeading">
+                        <tbody>
+                          <tr>
+                            <th>Case: #123456799</th>
+                          </tr>
+                          <tr>
+                            <td>Accept Job?</td>
+                          </tr>
+                          <tr>
+                            <td>Time left:</td>
+                            <td>48 hrs</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="col-2 overdueTasksSerchIcon">
+                      <img
+                        src={medResNewCasesSearch}
+                        alt="medResNewCasesSearch"
+                        className="mediatorSearch"
+                        onClick={() => {
+                          this.setState({ furtherDetail: true });
+                        }}
+                      />
+                    </div>
                   </div>
-                  : ""}
-
-                {/* <div style={{ marginTop: "-25px", color: "rgb(102, 255, 0)" }}>
-                  <h6>12/01/2022 Buyer to Mediator</h6>
-
-                  <p>
-                    Please help. Seller stopped taking my calls and will not
-                    come to work. The job is half ﬁnished please see attached
-                    photos.
-                  </p>
                 </div>
-                <div style={{ color: "yellow" }}>
-                  <div className="flexSpaceBtw">
-                    <h6>12/01/2022 Buyer to Mediator</h6>
-                    <h6 className="caseHistoryFirstActionRightTxt">- 03hr</h6>
+                <div
+                  className="attentionRedDiv medResBlueDIv"
+                  onClick={() => this.setState({ jobSelected: true })}
+                >
+                  <div className="row">
+                    <div className="col-3">
+                      <img
+                        src={medResRes}
+                        className="purchaseHistory"
+                        alt="medResRes"
+                      />
+                    </div>
+                    <div className="col-7">
+                      <table className="invoiceOptionsTable overdueTasksHeading">
+                        <tbody>
+                          <tr>
+                            <th>Case: #123456799</th>
+                          </tr>
+                          <tr>
+                            <td>Accept Job?</td>
+                          </tr>
+                          <tr>
+                            <td>Time left:</td>
+                            <td>36 hrs</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="col-2 overdueTasksSerchIcon">
+                      <img
+                        src={medResNewCasesSearch}
+                        alt="medResNewCasesSearch"
+                        className="mediatorSearch"
+                        onClick={() => {
+                          this.setState({ furtherDetail: true });
+                        }}
+                      />
+                    </div>
                   </div>
-                  <p>
-                    Please help. Seller stopped taking my calls and will not
-                    come to work. The job is half ﬁnished please see attached
-                    photos.
-                  </p>
                 </div>
-                <div style={{ color: "rgb(255, 0, 119)" }}>
-                  <div className="flexSpaceBtw">
-                    <h6>12/01/2022 Buyer to Mediator</h6>
-                    <h6>- 03hr</h6>
+                <div
+                  className="attentionRedDiv medResBlueDIv"
+                  onClick={() => this.setState({ jobSelected: true })}
+                >
+                  <div className="row">
+                    <div className="col-3">
+                      <img
+                        src={medResRes}
+                        className="purchaseHistory"
+                        alt="medResRes"
+                      />
+                    </div>
+                    <div className="col-7">
+                      <table className="invoiceOptionsTable overdueTasksHeading">
+                        <tbody>
+                          <tr>
+                            <th>Case: #123456799</th>
+                          </tr>
+                          <tr>
+                            <td>Accept Job?</td>
+                          </tr>
+                          <tr>
+                            <td>Time left:</td>
+                            <td>24 hrs</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="col-2 overdueTasksSerchIcon">
+                      <img
+                        src={medResNewCasesSearch}
+                        alt="medResNewCasesSearch"
+                        className="mediatorSearch"
+                        onClick={() => {
+                          this.setState({ furtherDetail: true });
+                        }}
+                      />
+                    </div>
                   </div>
-
-                  <p>
-                    Please help. Seller stopped taking my calls and will not
-                    come to work. The job is half ﬁnished please see attached
-                    photos.
-                  </p>
                 </div> */}
-
-
-
-              </div>
-
-              <div className="selectResolutionDIv invoiceThreeBtnDiv">
-                <span className="alignStart">
-                  <img
-                    src={invoiceBack}
-                    alt="invoiceBack"
-                    onClick={() => {
-                      this.setState({ furtherDetail: true });
-                    }}
-                  />
-                </span>
-                <span className="invoiceThreeBtn">
-                  <p
-                    className="selectResolutionBtn alignCenter"
-                    onClick={() => {
-                      this.setState({ furtherDetail: "judgeCase" });
-                    }}
-                    // style={{ width: "200px", borderColor: "#1A9AFE", color: '#1A9AFE' }}
-                    style={{ width: "200px" }}
-                  >
-                    Judge Case
-                  </p>
-                </span>
-                <span className="alignEnd" style={{ float: "right" }}>
-                  <Link to={{ pathname: "" }}>
-                    <img
-                      src={action}
-                      className="floatRight"
-                      alt="action"
-                      onClick={() => {
-                        this.setState({ furtherDetail: "secAction" });
-                      }}
-                    />
-                  </Link>
-                </span>
-              </div>
-            </>
-          ) : this.state.furtherDetail === "secAction" ? (
-            <>
-              <div>
-                <div className="overdueTasksOrderTxt">
-                  <p style={{ color: "white" }}>Case: #{this.state.selectedJob.id}</p>
-                  <p
-                    onClick={() => {
-                      this.setState({ furtherDetail: "firstAction" });
-                    }}
-                  >
-                    Case History
-                  </p>
-                </div>
-                {/* <div className="invoiceBlackDivMainContainer" id='invoiceOptions' style={{ display: 'none' }}> */}
-                <div
-                  className="invoiceBlackDivMainContainer overdueTaskContainer"
-                  id="invoiceOptions"
-                  style={{ display: "inherit" }}
-                >
-                  <div className="furtherDetailCOntainer">
-                    <br />
-                    <span
-                      className="sendMsgTxtLine"
-                      style={{ color: "white" }}
-                      onClick={() => {
-                        this.setState({
-                          furtherDetail: "furtherDetailSndMessage",
-                        });
-                      }}
-                    >
-                      <span className="smallerThanSign">{">"}</span>{" "}
-                      <span>Send Message</span>
-                    </span>
-                    <hr className="furtherDetailHR" />
-                    <span
-                      onClick={() => {
-                        this.setState({
-                          furtherDetail: "furtherDetailAddFee",
-                        });
-                      }}
-                    >
-                      <span className="smallerThanSign">{">"}</span>{" "}
-                      <span>Add Fee for service</span>
-                    </span>
-                    <br />
-                    <br />
-                  </div>
+                {this.state.jobSelected === false ? (
                   <div className="selectResolutionDIv invoiceThreeBtnDiv">
                     <span className="alignStart">
-                      <img
-                        src={invoiceBack}
-                        alt="invoiceBack"
-                        onClick={() => {
-                          this.setState({ furtherDetail: true });
-                        }}
-                      />
+                      <Link to={{ pathname: "/MedResolution" }}>
+                        <img src={invoiceBack} alt="invoiceBack" />
+                      </Link>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="selectResolutionDIv invoiceThreeBtnDiv">
+                    <span className="alignStart">
+                      <Link to={{ pathname: "/MedResolution" }}>
+                        <img src={invoiceBack} alt="invoiceBack" />
+                      </Link>
                     </span>
                     <span className="invoiceThreeBtn">
                       <p
                         className="selectResolutionBtn alignCenter"
                         style={{ width: "200px" }}
+                        onClick={() => {
+                          this.handleAcceptJob()
+                        }}
                       >
-                        Submit
+                        Accept Job
                       </p>
                     </span>
                     <span className="alignEnd" style={{ float: "right" }}>
-                      <Link to={{ pathname: "" }}>
-                        <img
-                          src={invoiceUnpaidReject}
-                          className="floatRight"
-                          alt="invoiceUnpaidReject"
-                        />
-                      </Link>
+                      <img
+                        onClick={() => {
+                          this.handleRejectJob()
+                        }}
+                        src={invoiceUnpaidReject}
+                        className="floatRight"
+                        alt="invoiceUnpaidReject"
+                      />
                     </span>
                   </div>
-                </div>
-              </div>
-            </>
-          ) : this.state.furtherDetail === "furtherDetailSndMessage" ? (
-            <div>
-              <div className="overdueTasksOrderTxt">
-                <p style={{ color: "white" }}>Case: #{this.state.selectedJob.id}</p>
-                <p
-                  onClick={() => {
-                    this.setState({ furtherDetail: "firstAction" });
-                  }}
-                >
-                  Case History
-                </p>
-              </div>
-              {/* <div className="invoiceBlackDivMainContainer" id='invoiceOptions' style={{ display: 'none' }}> */}
-              <div
-                className="invoiceBlackDivMainContainer overdueTaskContainer"
-                id="invoiceOptions"
-                style={{ display: "inherit" }}
-              >
-                <div className="furtherDetailCOntainer">
-                  <br />
-                  <span className="sendMsgTxtLine">
-
-                    {this.state.mediatorSendMsgTo === "Buyer" ?
-                      <>
-                        <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Seller" }) }} className="smallerThanSign">{">"}</span>{" "}
-                        <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Seller" }) }}>Send Message to Seller</span>
-                      </>
-                      :
-                      <>
-                        <span style={{ color: 'white' }} className="smallerThanSign">{">"}</span>{" "}
-                        <span style={{ color: 'white' }}>Send Message to Seller</span>
-                      </>
-                    }
-                  </span>
-                  <hr className="furtherDetailHR" />
-                  {/* <span className="smallerThanSign">{">"}</span>{" "} */}
-                  {this.state.mediatorSendMsgTo === "Seller" ?
-                    <>
-                      <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Buyer" }) }} className="smallerThanSign">{">"}</span>{" "}
-                      <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Buyer" }) }}>Send Message to Buyer</span>
-                    </>
-                    :
-                    <>
-                      <span style={{ color: 'white' }} className="smallerThanSign">{">"}</span>{" "}
-                      <span style={{ color: 'white' }}>Send Message to Buyer</span>
-                    </>
-                  }
-                  <br />
-                  <br />
-                  <textarea
-                    className="SendMessageTxtarea"
-                    name=""
-                    id="SendMessageTxtareaForMed"
-                  ></textarea>
-                  <p className="addDocsTxt">
-                    Add document or photos ( 0 of 5 )
-                  </p>
-                  <div className="attachFIle">
-                    <img src={sendMessageAdd} alt="sendMessageAdd" />
-                    <img
-                      src={addedFilesSndMessage}
-                      alt="addedFilesSndMessage"
-                    />
-                    <img
-                      src={addedFilesSndMessage}
-                      alt="addedFilesSndMessage"
-                    />
-                    <img
-                      src={addedFilesSndMessage}
-                      alt="addedFilesSndMessage"
-                    />
-                    <img
-                      src={addedFilesSndMessage}
-                      alt="addedFilesSndMessage"
-                    />
-                  </div>
-                  <br />
-                </div>
-                <div className="selectResolutionDIv invoiceThreeBtnDiv">
-                  <span className="alignStart">
-                    <img
-                      src={invoiceBack}
-                      alt="invoiceBack"
-                      onClick={() => {
-                        this.setState({ furtherDetail: "secAction" });
-                      }}
-                    />
-                  </span>
-                  <span className="invoiceThreeBtn">
-                    <p
-                      className="selectResolutionBtn alignCenter"
-                      style={{ width: "200px" }}
-                      onClick={() => { this.handleMediatorSndMsg() }}
-                    >
-                      Submit
-                    </p>
-                  </span>
-                  <span className="alignEnd" style={{ float: "right" }}>
-                    <Link to={{ pathname: "" }}>
-                      <img
-                        src={sendMessageCancel}
-                        className="floatRight"
-                        alt="sendMessageCancel"
-                      />
-                    </Link>
-                  </span>
-                </div>
+                )}
               </div>
             </div>
-          ) : this.state.furtherDetail === "furtherDetailAddFee" ? (
-            <>
-              <div>
-                <div className="overdueTasksOrderTxt">
-                  <p style={{ color: "white" }}>Case: #{this.state.selectedJob.id}</p>
-                  <p
-                    onClick={() => {
-                      this.setState({ furtherDetail: "firstAction" });
-                    }}
-                  >
-                    Case History
-                  </p>
-                </div>
-                {/* <div className="invoiceBlackDivMainContainer" id='invoiceOptions' style={{ display: 'none' }}> */}
-                <div
-                  className="invoiceBlackDivMainContainer overdueTaskContainer"
-                  id="invoiceOptions"
-                  style={{ display: "inherit" }}
-                >
-                  <div className="furtherDetailCOntainer">
-                    <br />
-                    <h5 className="addFeeHeadingTxt">Add Fee for service</h5>
-                    <div
-                      className="addFeeDiv"
-                      onClick={() => {
-                        this.setState({ whoPaysServiceFee: true });
-                      }}
-                    >
-                      {this.state.whoPaysServiceFeeTxt === "" ? (
-                        <h6>Who Pays the service fee?</h6>
-                      ) : (
-                        <h6>{this.state.whoPaysServiceFeeTxt}</h6>
-                      )}
-                      <img src={addFeeEdit} alt={addFeeEdit} />
-                    </div>
-                    {this.state.whoPaysServiceFee === false ? (
-                      <>
-                        <div className="addFeeDiv">
-                          <input
-                            placeholder="0"
-                            type="addFeeRateInputFeild"
-                            name=""
-                            id="addFeeRateInputFeild"
-                            className="addFeeRateInputFeild"
-                            onChange={(e) => {
-                              this.handleNumberHours(e);
-                            }}
-                            ref={(handleNumberHoursRef) =>
-                              (this.handleNumberHoursRef = handleNumberHoursRef)
-                            }
-                          />
-                          <p className="addFeeInputPlaceHolder">hrs</p>
-                          {/* <img src={} alt={} /> */}
-                          <label htmlFor="addFeeRateInputFeild">
-                            <img src={addFeeEdit} alt={addFeeEdit} />
-                          </label>
-                        </div>
-                        <textarea
-                          className="SendMessageTxtarea"
-                          name=""
-                          id=""
-                        ></textarea>
-                        <p className="addDocsTxt">
-                          Add document or photos ( 0 of 5 )
-                        </p>
-                        <div className="attachFIle">
-                          <img src={sendMessageAdd} alt="sendMessageAdd" />
-                          <img src={addedFilesSndMessage} alt="addedFilesSndMessage" />
-                          <img src={addedFilesSndMessage} alt="addedFilesSndMessage" />
-                          <img src={addedFilesSndMessage} alt="addedFilesSndMessage" />
-                          <img src={addedFilesSndMessage} alt="addedFilesSndMessage" />
-                        </div>
-                      </>
-                    ) : (
-                      <div
-                        className="addFeeBigDiv"
-                        style={{ marginBottom: "170px" }}
-                      >
-                        <span
-                          className="sendMsgTxtLine caseHistoryFeePayDiv"
-                          onClick={() => {
-                            this.caseHistoryFeePayHandle(
-                              "Buyer & Seller pay 50% each"
-                            );
-                          }}
-                        >
-                          <span className="smallerThanSign">{">"}</span>{" "}
-                          <span>Buyer & Seller pay 50% each</span>
-                        </span>
-                        <hr className="furtherDetailHR" />
-
-                        <span
-                          className="sendMsgTxtLine caseHistoryFeePayDiv"
-                          onClick={() => {
-                            this.caseHistoryFeePayHandle(
-                              "Buyer to pay (Seller not responsive)"
-                            );
-                          }}
-                        >
-                          <span className="smallerThanSign">{">"}</span>{" "}
-                          <span>Buyer to pay (Seller not responsive)</span>
-                        </span>
-                        <hr className="furtherDetailHR" />
-
-                        <span
-                          className="sendMsgTxtLine caseHistoryFeePayDiv"
-                          onClick={() => {
-                            this.caseHistoryFeePayHandle(
-                              "Seller to pay (Buyer not responsive)"
-                            );
-                          }}
-                        >
-                          <span className="smallerThanSign">{">"}</span>{" "}
-                          <span>Seller to pay (Buyer not responsive)</span>
-                        </span>
-                      </div>
-                    )}
-                    <br />
-                  </div>
-                  <div className="selectResolutionDIv invoiceThreeBtnDiv">
-                    <span className="alignStart">
-                      <img
-                        src={invoiceBack}
-                        alt="invoiceBack"
-                        onClick={() => {
-                          this.setState({ furtherDetail: "secAction" });
-                        }}
-                      />
-                    </span>
-                    <span className="invoiceThreeBtn">
-                      <p
-                        className="selectResolutionBtn alignCenter"
-                        style={{ width: "200px" }}
-                        onClick={() => {
-                          this.setState({
-                            furtherDetail: "caseHistorySubmited",
-                          });
-                        }}
-                      >
-                        Submit
-                      </p>
-                    </span>
-                    <span className="alignEnd" style={{ float: "right" }}>
-                      <Link to={{ pathname: "" }}>
-                        <img
-                          src={invoiceUnpaidReject}
-                          className="floatRight"
-                          alt="invoiceUnpaidReject"
-                        />
-                      </Link>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : this.state.furtherDetail === "caseHistorySubmited" ? (
-            <>
-              <div className="overdueTasksOrderTxt">
-                <p>Case: #{this.state.selectedJob.id}</p>
-                <p style={{ color: "white" }}>Case History</p>
-              </div>
-              <div
-                className="invoiceBlackContainer invoiceOrderBlackDiv caseHistoryContainer"
-                style={{ marginTop: "-10px", paddingTop: "0px" }}
-              >
-                <div style={{ color: "yellow" }}>
-                  <div className="flexSpaceBtw">
-                    <h6>12/01/2022 Buyer to Mediator</h6>
-                    <h6 className="caseHistoryFirstActionRightTxt">- 03hr</h6>
-                  </div>
-                  <div className="flexSpaceBtw casetHistoryFinal">
-                    <h6>Amount</h6>
-                    <h6 className="caseHistoryFirstActionRightTxt">$10 USD</h6>
-                  </div>
-                  <p className="whiteRevied">
-                    Review the case and assign steps to resolve the despute will
-                    require 1 hours of work at my nominated hourly rate of
-                    $20USD.
-                  </p>
-                </div>
-              </div>
-
-              <div className="selectResolutionDIv invoiceThreeBtnDiv">
-                <span className="alignStart">
-                  <img
-                    src={invoiceBack}
-                    alt="invoiceBack"
-                    onClick={() => {
-                      this.setState({ furtherDetail: "furtherDetailAddFee" });
-                    }}
-                  />
-                </span>
-                <span className="invoiceThreeBtn">
-                  <p
-                    className="selectResolutionBtn alignCenter"
-                    onClick={() => {
-                      this.setState({ furtherDetail: "judgeCase" });
-                    }}
-                    style={{ width: "200px" }}
-                  >
-                    Judge Case
-                  </p>
-                </span>
-                <span className="alignEnd" style={{ float: "right" }}>
-                  <Link to={{ pathname: "" }}>
-                    <img
-                      src={invoicePaymentStopped}
-                      className="floatRight"
-                      alt="invoicePaymentStopped"
-                      onClick={() => {
-                        // this.setState({ furtherDetail: "secAction" });
-                      }}
-                    />
-                  </Link>
-                </span>
-              </div>
-            </>
-          ) : this.state.furtherDetail === "judgeCase" ? (
-            <>
-              <div>
-                <div className="overdueTasksOrderTxt">
-                  <p>Case: #{this.state.selectedJob.id}</p>
-
-                  <p
-                    style={{ color: "white" }}
-                    onClick={() => {
-                      this.setState({ furtherDetail: "firstAction" });
-                    }}
-                  >
-                    Case History
-                  </p>
-                </div>
-                {/* <div className="invoiceBlackDivMainContainer" id='invoiceOptions' style={{ display: 'none' }}> */}
-                <div
-                  className="invoiceBlackDivMainContainer overdueTaskContainer"
-                  id="invoiceOptions"
-                  style={{ display: "inherit" }}
-                >
-                  <div className="furtherDetailCOntainer judgeCaseContainer">
-                    <br />
-                    <h5 className="addFeeHeadingTxt">
-                      Are you ready to make a decision?
-                    </h5>
-                    <div className="flexSpaceBtw">
-                      <h5 className="addFeeHeadingTxt">
-                        Is a Refund Required?
-                      </h5>
-                      <div
-                        className="onoffswitch contractonoffswitch contractSwithSwitchWhole"
-                        style={{ marginRight: "-10px", marginTop: "-5px" }}
-                      >
-                        <input
-                          type="checkbox"
-                          name="onoffswitch"
-                          className="onoffswitch-checkbox"
-                          id="caseHistoryJudge"
-                          tabIndex="0"
-                          onClick={() => {
-                            toast.warning("Comming Soon!", {
-                              position: "top-right",
-                            });
-                            document.getElementById('caseHistoryJudge').checked = false;
-                          }}
-                        />
-                        <label
-                          className="onoffswitch-label contractSwithOneLabel"
-                          htmlFor="caseHistoryJudge"
-                        >
-                          <span className="onoffswitch-inner caseHistoryJudgeInner"></span>
-                          <span
-                            className="onoffswitch-switch contractSwithSwitch"
-                            style={{
-                              marginTop: "2px",
-                              marginRight: "6px",
-                              width: "21px",
-                              height: "21px",
-                            }}
-                          ></span>
-                        </label>
-                      </div>
-                    </div>
-                    <div
-                      className="addFeeDiv"
-                      onClick={() => {
-                        this.setState({ whoPaysServiceFee: true });
-                      }}
-                    >
-                      <div className="row caseHistoryJudgeBox">
-                        <div className="col-8">
-                          <h6>Buyer to recive %</h6>
-                        </div>
-                        <div
-                          className="col-4 caseHistoryPercentCont"
-                          onClick={() => {
-                            if (this.state.judgeCaseBuyerReceive === true) {
-                              this.setState({ judgeCaseBuyerReceive: false });
-                            } else {
-                              this.setState({ judgeCaseBuyerReceive: true });
-                            }
-                          }}
-                        >
-                          {/* <img src={} alt={} /> */}
-                          <p className="percentTxt">
-                            {this.state.judgeCaseBuyerReceiveValue}%
-                          </p>
-                          <img src={judgeCaseBlackDropdown} style={{ marginTop: '-1px', marginRight: '-10px' }} alt="judgeCaseBlackDropdown" />
-                        </div>
-                      </div>
-                    </div>
-                    {this.state.judgeCaseBuyerReceive === true ? (
-                      <div
-                        className="addFeeBigDiv judgeCaseBuyerRecivePop"
-                        style={{ marginBottom: "170px" }}
-                      >
-                        <span
-                          className="sendMsgTxtLine caseHistoryFeePayDiv"
-                          onClick={() => {
-                            this.caseHistoryJudgeCaseBuyerReceiveHanlder(
-                              "100"
-                            );
-                          }}
-                        >
-                          <span className="smallerThanSign">{">"}</span>{" "}
-                          <span>100% of invoice</span>
-                        </span>
-                        <hr className="furtherDetailHR" />
-
-                        <span
-                          className="sendMsgTxtLine caseHistoryFeePayDiv"
-                          onClick={() => {
-                            this.caseHistoryJudgeCaseBuyerReceiveHanlder("50");
-                          }}
-                        >
-                          <span className="smallerThanSign">{">"}</span>{" "}
-                          <span>50% - 50% of the invoice</span>
-                        </span>
-                        <hr className="furtherDetailHR" />
-
-                        <span
-                          className="sendMsgTxtLine caseHistoryFeePayDiv"
-                        // onClick={() => {
-                        //   this.caseHistoryJudgeCaseBuyerReceiveHanlder(
-                        //     "Seller to pay (Buyer not responsive)"
-                        //   );
-                        // }}
-                        >
-                          <div className="row">
-                            <div className="col-6">
-                              <span>
-                                <span className="smallerThanSign">{">"}</span>{" "}
-                                Enter Percentage
-                              </span>
-                            </div>
-                            <div className="col-6">
-                              <input
-                                type="text"
-                                ref={(enterPercent) =>
-                                  (this.enterPercent = enterPercent)
-                                }
-                                className="enterPercentBuyerRceiveInputFIled"
-                                onChange={(e) => {
-                                  if (
-                                    e.target.value > 100 ||
-                                    e.target.value === 0
-                                  ) {
-                                    toast.error(
-                                      "Response time must be between 0-100",
-                                      {
-                                        position: "top-right",
-                                      }
-                                    );
-                                    this.enterPercent.value = "100";
-                                    this.setState({
-                                      judgeCaseBuyerReceiveValue: "100",
-                                    });
-                                  } else {
-                                    this.setState({
-                                      judgeCaseBuyerReceiveValue:
-                                        e.target.value,
-                                    });
-                                  }
-                                }}
-                              />
-                            </div>
-                          </div>
-                          {/* <span className="smallerThanSign">{">"}</span>{" "}
-                          <span>Enter Percentage</span> */}
-                        </span>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-
-                    <h5
-                      className="addFeeHeadingTxt"
-                      style={{ marginTop: "20px" }}
-                    >
-                      Enter reason for decision
-                    </h5>
-                    <div
-                      className="addFeeDiv"
-                      onClick={() => {
-                        this.setState({ whoPaysServiceFee: true });
-                      }}
-                    >
-                      <div className="row caseHistoryJudgeBox">
-                        <div className="col-10">
-                          {/* <h6>Upload Report or type notes</h6> */}
-                          <input type="addFeeRateInputFeild" id="addFeeRateInputFeild" placeholder="Upload Report or type notes" className="reportDissicion" />
-                        </div>
-                        <div className="col-2 caseHistorydisicion" style={{ marginTop: '-8px' }}>
-                          <img src={judgeCaseEdit} style={{ marginLeft: '-5px' }} alt={judgeCaseEdit} />
-                          <img src={judgeCaseAdd} style={{ marginLeft: '8px' }} alt={judgeCaseAdd} />
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      className="attachFIle judgeCaseUploadFIles"
-                      style={{ marginTop: "20px" }}
-                    >
-                      <img src={judgeCaseViewExample} style={{ minWidth: '60px', height: "52px" }} alt="judgeCaseViewExample" />
-                      <input type="file" id="decisionFile" onChange={(e) => this.dicisionFIleSelected(e)} style={{ display: 'none' }} />
-                      <label htmlFor="decisionFile">
-                        {/* <img src={judgeCaseAddedFile} alt="judgeCaseAddedFile" /> */}
-                        <img src={judgeCaseAdd} alt="judgeCaseAddedFile" style={{ width: '50px' }} />
-                      </label>
-                    </div>
-                  </div>
-                  <div className="selectResolutionDIv invoiceThreeBtnDiv">
-                    <span className="alignStart">
-                      <img
-                        src={invoiceBack}
-                        alt="invoiceBack"
-                        onClick={() => {
-                          this.setState({ furtherDetail: true });
-                        }}
-                      />
-                    </span>
-                    <span className="invoiceThreeBtn">
-                      <p
-                        className="selectResolutionBtn alignCenter"
-                        style={{ width: "200px" }}
-                        onClick={() => {
-                          this.handleDicisionMaked()
-                        }}
-                      >
-                        Submit
-                      </p>
-                    </span>
-                    <span className="alignEnd" style={{ float: "right" }}>
-                      <Link to={{ pathname: "" }}>
-                        <img
-                          src={sendMessageCancel}
-                          className="floatRight"
-                          alt="sendMessageCancel"
-                        />
-                      </Link>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
-          ) : this.state.furtherDetail === "judgeCaseSubmited" ? (
-            <>
-              <div>
-                <div className="overdueTasksOrderTxt">
-                  <p>Case: #123456789</p>
-                  <p
-                    style={{ color: "white" }}
-                    onClick={() => {
-                      this.setState({ furtherDetail: "firstAction" });
-                    }}
-                  >
-                    Case History
-                  </p>
-                </div>
-                {/* <div className="invoiceBlackDivMainContainer" id='invoiceOptions' style={{ display: 'none' }}> */}
-                <div
-                  className="invoiceBlackDivMainContainer overdueTaskContainer"
-                  id="invoiceOptions"
-                  style={{ display: "inherit" }}
-                >
-                  <div className="judgeCaseSubmitedistRow colorBlueCaseSubmited">
-                    <h5>Total in USD:</h5>
-                    <h5>$1246.78</h5>
-                  </div>
-                  <div className="judgeCaseSubmitedistRow colorBlueCaseSubmited">
-                    <h5>Total in BNB:</h5>
-                    <h5>2.5</h5>
-                  </div>
-                  <div className="judgeCaseSubmitedistRow colorBlueCaseSubmited">
-                    <h5>Appeal Time</h5>
-                    <h5>07 days</h5>
-                  </div>
-
-                  <br />
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>
-                      <b>BUYER</b>
-                    </h5>
-                  </div>
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>ABC Services Pty Ltd</h5>
-                  </div>
-
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>Refund in USD</h5>
-                    <h5>$1246.78</h5>
-                  </div>
-
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>Refund in BNB</h5>
-                    <h5>2.5</h5>
-                  </div>
-
-                  <br />
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>
-                      <b>SELLER</b>
-                    </h5>
-                  </div>
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>ABC Services Pty Ltd</h5>
-                  </div>
-
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>Pay USD</h5>
-                    <h5>$0.00</h5>
-                  </div>
-
-                  <div className="judgeCaseSubmitedistRow">
-                    <h5>Pay in BNB</h5>
-                    <h5>0.0</h5>
-                  </div>
-
-                  <center>
-                    <button className="msgBtn">
-                      Press <b>Submit</b> to apply
-                    </button>
-                  </center>
-                  <div className="selectResolutionDIv invoiceThreeBtnDiv">
-                    <span className="alignStart">
-                      <img
-                        src={invoiceBack}
-                        alt="invoiceBack"
-                        onClick={() => {
-                          this.setState({ furtherDetail: "judgeCase" });
-                        }}
-                      />
-                    </span>
-                    <span className="invoiceThreeBtn">
-                      <p
-                        className="selectResolutionBtn alignCenter"
-                        style={{ width: "200px" }}
-                        onClick={() => {
-                          this.setState({
-                            // furtherDetail: "judgeCaseSubmited",
-                          });
-                        }}
-                      >
-                        Submit
-                      </p>
-                    </span>
-                    <span className="alignEnd" style={{ float: "right" }}>
-                      <Link to={{ pathname: "" }}>
-                        <img
-                          src={sendMessageCancel}
-                          alt="sendMessageCancel"
-                          className="floatRight"
-                        />
-                      </Link>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
           ) : (
-            <>
-              <h1>hell</h1>
-            </>
+            <div className="invoiceBlackContainer invoiceOrderBlackDiv">
+              {magnifierViewUserUI}
+            </div>
           )}
         </div>
         <ToastContainer />

@@ -238,6 +238,9 @@ class PurchaseHistory extends Component {
       )
       .send({ from: this.state.userAddres })
       .on("transactionHash", (hash) => {
+        console.log(this.state.magnifierViewUserIndex);
+        console.log(this.state.magnifierViewUser.customerWalletAddress);
+        console.log(this.state.ethSwapAddressWithConnectedNetworkID);
         setTimeout(() => {
           this.state.ethSwap.methods
             .payFeeForSuperMediator(
