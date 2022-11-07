@@ -1,261 +1,291 @@
 .medResBlueDIv {
-    background-color: #009afe;
-  }
-  
-  .medResBlueDIv:hover,
-  .medResBlueDIv:focus {
-    background-color: #00ccff;
-  }
-  
-  .medResBlueDIv:hover,
-  .medResBlueDIv:focus {
-    background-color: #00ccff;
-  }
-  
-  .caseHistoryHoverRed:hover,
-  .caseHistoryHoverRed:focus {
-    background-color: rgb(255, 0, 119);
-  }
-  
-  .caseHistoryContainer {
-    font-size: 17px;
-  }
-  
-  .caseHistoryContainer div h6 {
-    font-size: 17px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    margin-top: 15px;
-  }
-  
-  /* .caseHistoryFirstActionRightTxt{
-      margin-top: 20px;
-      position: absolute;
-      right: 40px;
-      margin-top: 20px;
-  } */
-  .flexSpaceBtw {
-    display: flex;
-    justify-content: space-between;
-    margin-right: 15px;
-  }
-  
-  .addFeeHeadingTxt {
-    color: #00ccff;
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
-  
-  .addFeeDiv {
-    border: 3px solid #00ccff;
-    padding: 10px 5px;
-    display: flex;
-    justify-content: space-between;
-    height: 43px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-  }
-  .addFeeDiv img {
-    width: 28px;
-    height: 28px;
-    margin-top: -5px;
-  }
-  
-  .addFeeBigDiv {
-    border: 3px solid #00ccff;
-    padding: 10px 10px;
-    height: 156px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-  }
-  
-  .addFeeDiv h6,
-  .addFeeDiv p {
-    font-size: 15px;
-  }
-  
-  .caseHistoryFeePayDiv {
-    color: white !important;
-  }
-  
-  .caseHistoryFeePayDiv span {
-    font-size: 15px;
-  }
-  
-  .addFeeRateInputFeild {
-    height: 30px;
-    width: 18px;
-    margin-top: -6px;
-    font-size: 15px;
-    padding: 7px 0px;
-    background-color: transparent;
-    /* background-color: white; */
-    fill: white;
-    border: none;
-    outline: none;
-  }
-  
-  .addFeeInputPlaceHolder {
-    margin-left: -255px;
-    margin-top: -2px;
-  }
-  
-  .casetHistoryFinal {
-    color: white;
-    margin-top: -18px;
-    margin-bottom: -10px;
-  }
-  
-  .casetHistoryFinal h6 {
-    font-weight: normal;
-    font-size: 15px !important;
-  }
-  
-  .whiteRevied {
-    color: white;
-    word-spacing: 2px;
-  }
-  
-  .judgeCaseContainer {
-    border: none;
-    padding: 0px 0px;
-    margin-top: -10px;
-  }
-  
-  .caseHistoryJudgeBox {
-    /* background-color: white; */
-    margin: 0 auto;
-    width: 100%;
-    margin-left: -5px;
-  }
-  
-  .caseHistoryJudgeBox h6 {
-    font-size: 19px;
-    margin-top: -2px;
-    margin-left: -5px;
-  }
-  
-  .caseHistoryPercentCont {
-    background-color: #00ccff;
-    display: flex;
-    justify-content: space-between;
-    margin-top: -10px;
-    height: 37px;
-    position: relative;
-    right: -10px;
-    padding-top: 7px;
-  }
-  
-  .caseHistorydisicion {
-    display: flex;
-    justify-content: space-between;
-    margin-top: -10px;
-    height: 37px;
-    position: relative;
-    right: -5px;
-    padding-top: 7px;
-    padding-left: 0;
-  }
-  .reportDissicion {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: white;
-    font-size: 18px;
-    margin-top: -4px;
-    margin-left: -6px;
-    width: 105%;
-  }
-  
-  .caseHistoryPercentCont p {
-    font-size: 19px;
-    color: black;
-    font-weight: bold;
-  }
-  
-  .judgeCaseBuyerRecivePop {
-    margin-bottom: 0px !important;
-  }
-  
-  .judgeCaseUploadFIles {
-    display: flex;
-    justify-content: start;
-  }
-  
-  .judgeCaseUploadFIles img {
-    margin-left: 10px;
-  }
-  
-  .enterPercentBuyerRceiveInputFIled {
-    width: 93%;
-    outline: none;
-    margin-left: 10px;
-    color: black;
-    font-size: 18px;
-    padding-left: 5px;
-  }
-  
-  .judgeCaseSubmitedistRow {
-    padding: 7px 15px;
-    display: flex;
-    justify-content: space-between;
-    color: white;
-    margin-bottom: -11px;
-  }
-  
-  .judgeCaseSubmitedistRow h5 {
-    font-size: 18px;
-    font-weight: normal;
-    color: white;
-  }
-  
-  .colorBlueCaseSubmited h5 {
-    color: #00ccff !important;
-    font-weight: bold;
-  }
-  
-  .msgBtn {
-    width: 92%;
+  background-color: #009afe;
+}
+
+.medResBlueDIv:hover,
+.medResBlueDIv:focus {
+  background-color: #00ccff;
+}
+
+.medResBlueDIv:hover,
+.medResBlueDIv:focus {
+  background-color: #00ccff;
+}
+
+.caseHistoryHoverRed:hover,
+.caseHistoryHoverRed:focus {
+  background-color: rgb(255, 0, 119);
+}
+
+.caseHistoryContainer {
+  font-size: 17px;
+}
+
+.caseHistoryContainer div h6 {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 15px;
+}
+
+/* .caseHistoryFirstActionRightTxt{
     margin-top: 20px;
-    height: 40px;
-    font-size: 25px;
-    background-color: #00ccff;
-    border: none;
-  }
-  
-  .caseHistoryJudgeInner::after {
-    content: "No";
-  }
-  
-  .caseHistoryJudgeInner:before {
-    content: "Yes";
-    left: -31px;
-    background-color: #099933;
-  }
-  
-  .contractonoffswitch {
-    width: 68px;
-  }
-  
-  .caseHistoryJudgeInner:before {
-    position: relative;
-    left: -1px;
-  }
-  
-  /* placeholder color mutualFriend */
-  input[type="addFeeRateInputFeild"]::placeholder {
-    /* Firefox, Chrome, Opera */
-    color: white;
-  }
-  
-  input[type="addFeeRateInputFeild"]:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: white;
-  }
-  
-  input[type="addFeeRateInputFeild"]::-ms-input-placeholder {
-    /* Microsoft Edge */
-    color: white;
-  }
-  
+    position: absolute;
+    right: 40px;
+    margin-top: 20px;
+} */
+.flexSpaceBtw {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 15px;
+}
+.mediatorFeesPay{
+  width: 150px;
+  background: transparent;
+  border: 3px solid #00ccff;
+  font-size: 22px;
+  outline: none;
+  border-radius: 11px;
+  color: #00ccff;
+  font-weight: bold;
+}
+
+.addFeeHeadingTxt {
+  color: #00ccff;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.addFeeDiv {
+  border: 3px solid #00ccff;
+  padding: 10px 5px;
+  display: flex;
+  justify-content: space-between;
+  height: 43px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+.addFeeDiv img {
+  width: 28px;
+  height: 28px;
+  margin-top: -5px;
+}
+
+.addFeeBigDiv {
+  border: 3px solid #00ccff;
+  padding: 10px 10px;
+  height: 156px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.addFeeDiv h6,
+.addFeeDiv p {
+  font-size: 15px;
+}
+
+.caseHistoryFeePayDiv {
+  color: white !important;
+}
+
+.caseHistoryFeePayDiv span {
+  font-size: 15px;
+}
+.addFeeForServiceInput {
+  background-color: transparent;
+  border: none;
+  width: 100%;
+  color: white;
+  font-size: 15px;
+  margin-top: -2px;
+  outline: none;
+  font-weight: bold;
+}
+
+.addFeeForServiceDiv {
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: bold;
+}
+.addFeeForServiceDiv span {
+  font-size: 25px;
+  position: relative;
+  top: -10px;
+}
+
+.addFeeRateInputFeild {
+  height: 30px;
+  width: 18px;
+  margin-top: -6px;
+  font-size: 15px;
+  padding: 7px 0px;
+  background-color: transparent;
+  /* background-color: white; */
+  fill: white;
+  border: none;
+  outline: none;
+}
+
+.addFeeInputPlaceHolder {
+  margin-left: -255px;
+  margin-top: -2px;
+}
+
+.casetHistoryFinal {
+  color: white;
+  margin-top: -18px;
+  margin-bottom: -10px;
+}
+
+.casetHistoryFinal h6 {
+  font-weight: normal;
+  font-size: 15px !important;
+}
+
+.whiteRevied {
+  color: white;
+  word-spacing: 2px;
+}
+
+.judgeCaseContainer {
+  border: none;
+  padding: 0px 0px;
+  margin-top: -10px;
+}
+
+.caseHistoryJudgeBox {
+  /* background-color: white; */
+  margin: 0 auto;
+  width: 100%;
+  margin-left: -5px;
+}
+
+.caseHistoryJudgeBox h6 {
+  font-size: 19px;
+  margin-top: -2px;
+  margin-left: -5px;
+}
+
+.caseHistoryPercentCont {
+  background-color: #00ccff;
+  display: flex;
+  justify-content: space-between;
+  margin-top: -10px;
+  height: 37px;
+  position: relative;
+  right: -10px;
+  padding-top: 7px;
+}
+
+.caseHistorydisicion {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -10px;
+  height: 37px;
+  position: relative;
+  right: -5px;
+  padding-top: 7px;
+  padding-left: 0;
+}
+.reportDissicion {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 18px;
+  margin-top: -4px;
+  margin-left: -6px;
+  width: 105%;
+}
+
+.caseHistoryPercentCont p {
+  font-size: 19px;
+  color: black;
+  font-weight: bold;
+}
+
+.judgeCaseBuyerRecivePop {
+  margin-bottom: 0px !important;
+}
+
+.judgeCaseUploadFIles {
+  display: flex;
+  justify-content: start;
+}
+
+.judgeCaseUploadFIles img {
+  margin-left: 10px;
+}
+
+.enterPercentBuyerRceiveInputFIled {
+  width: 93%;
+  outline: none;
+  margin-left: 10px;
+  color: black;
+  font-size: 18px;
+  padding-left: 5px;
+}
+
+.judgeCaseSubmitedistRow {
+  padding: 7px 15px;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+  margin-bottom: -11px;
+}
+
+.judgeCaseSubmitedistRow h5 {
+  font-size: 18px;
+  font-weight: normal;
+  color: white;
+}
+
+.colorBlueCaseSubmited h5 {
+  color: #00ccff !important;
+  font-weight: bold;
+}
+
+.msgBtn {
+  width: 92%;
+  margin-top: 20px;
+  height: 40px;
+  font-size: 25px;
+  background-color: #00ccff;
+  border: none;
+}
+
+.caseHistoryJudgeInner::after {
+  content: "No";
+}
+
+.caseHistoryJudgeInner:before {
+  content: "Yes";
+  left: -31px;
+  background-color: #099933;
+}
+
+.contractonoffswitch {
+  width: 68px;
+}
+
+.caseHistoryJudgeInner:before {
+  position: relative;
+  left: -1px;
+}
+
+/* placeholder color mutualFriend */
+input[type="addFeeRateInputFeild"]::placeholder {
+  /* Firefox, Chrome, Opera */
+  color: white;
+}
+
+input[type="addFeeRateInputFeild"]:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: white;
+}
+
+input[type="addFeeRateInputFeild"]::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: white;
+}

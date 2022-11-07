@@ -497,6 +497,7 @@ class PurchaseHistory extends Component {
         .put(`${process.env.REACT_APP_BASE_URL}order/orderStartMediation`, {
           orderId: this.state.SelectedOrder.id,
           mediationStatus: true,
+          whoStartMediation: "buyer"
         })
 
         .then((res) => {

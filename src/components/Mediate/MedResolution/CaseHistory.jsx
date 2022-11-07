@@ -103,6 +103,7 @@ class App extends Component {
       userConnectedEmailValue: "",
       furtherDetail: false,
       // furtherDetail: "judgeCaseSubmited",
+      // furtherDetail: "furtherDetailAddFee",
       jobSelected: false,
       invoicePaidBtn: true,
       whoPaysServiceFee: false,
@@ -143,7 +144,8 @@ class App extends Component {
       //   "medJobRejected": "0",
       //   "createdAt": "2022-10-24T05:28:48.000Z",
       //   "updatedAt": "2022-10-24T05:33:21.000Z",
-      //   "invoiceId": 1
+      //   "invoiceId": 1,
+      //   "whoStartMediation": "buyer"
       // },
       ethSwap: '',
       allChatOfBuyerSellerMediator: '',
@@ -226,6 +228,63 @@ class App extends Component {
       }, 250);
     }
   };
+  AmountInUSD(e) {
+    let bnbPrice = e.target.value / this.state.getBNBLivePrice
+    document.getElementById("AmountInBNB").value = bnbPrice;
+  }
+  AmountInBNB(e) {
+    let usdPrice = this.state.getBNBLivePrice * e.target.value
+    document.getElementById("AmountInUSD").value = usdPrice;
+  }
+  handleSubmitFeeProcess() {
+    let bnbAmount = document.getElementById("AmountInBNB").value
+    let SendMessageTxtarea = document.getElementById("SendMessageTxtarea").value;
+    let selectedJob = this.state.selectedJob;
+    console.log(selectedJob);
+    if (SendMessageTxtarea && bnbAmount !== "" && selectedJob.id !== "") {
+      axios
+        .put(`${process.env.REACT_APP_BASE_URL}order/setMediatorFee`, {
+          MediatorFeeInBNB: bnbAmount,
+          orderId: selectedJob.id
+        })
+
+        .then((res) => {
+          console.log(res);
+        }).catch((err) => {
+          console.log(err);
+        })
+
+      let receiverEmaill;
+      if (selectedJob.whoStartMediation === 'buyer') {
+        receiverEmaill = selectedJob.customeremail;
+      } else {
+        receiverEmaill = selectedJob.sellerEmail;
+      }
+      axios
+        .post(`${process.env.REACT_APP_BASE_URL}message/MediatorFeeMsg`, {
+          senderEmail: this.state.userAccountEmail,
+          receiverEmail: receiverEmaill,
+          message: SendMessageTxtarea,
+          orderId: selectedJob.id
+        })
+        .then((res) => {
+          toast.success(`Message Sent to ${selectedJob.whoStartMediation}`, {
+            position: "top-right",
+          });
+          setTimeout(() => {
+            window.location = "/CaseHistory"
+          }, 2000);
+          document.getElementById("SendMessageTxtarea").value = ""
+        }).catch((err) => {
+          console.log(err);
+        })
+
+    } else {
+      toast.error("Incomplete data", {
+        position: "top-right",
+      });
+    }
+  }
 
   handleNumberHours(e) {
     if (e.target.value > 99 || e.target.value === 0) {
@@ -1756,6 +1815,23 @@ class App extends Component {
                     <div
                       className="addFeeDiv"
                       onClick={() => {
+                        // this.setState({ whoPaysServiceFee: true });
+                      }}
+                    >
+                      {this.state.whoPaysServiceFeeTxt === "" ? (
+                        <h6 style={{ paddingLeft: '5px' }}>
+                          <b>
+                            {this.state.selectedJob.whoStartMediation} pay the 100% fee
+                          </b>
+                        </h6>
+                      ) : (
+                        <h6>{this.state.whoPaysServiceFeeTxt}</h6>
+                      )}
+                    </div>
+
+                    {/* <div
+                      className="addFeeDiv"
+                      onClick={() => {
                         this.setState({ whoPaysServiceFee: true });
                       }}
                     >
@@ -1764,14 +1840,15 @@ class App extends Component {
                       ) : (
                         <h6>{this.state.whoPaysServiceFeeTxt}</h6>
                       )}
-                      <img src={addFeeEdit} alt={addFeeEdit} />
-                    </div>
+                      <img src={addFeeEdit} alt={addFeeEdit} /> 
+                    </div> */}
                     {this.state.whoPaysServiceFee === false ? (
                       <>
-                        <div className="addFeeDiv">
+                        {/* <div className="addFeeDiv">
                           <input
                             placeholder="0"
                             type="addFeeRateInputFeild"
+                            style={{ paddingLeft: '5px' }}
                             name=""
                             id="addFeeRateInputFeild"
                             className="addFeeRateInputFeild"
@@ -1783,15 +1860,36 @@ class App extends Component {
                             }
                           />
                           <p className="addFeeInputPlaceHolder">hrs</p>
-                          {/* <img src={} alt={} /> */}
                           <label htmlFor="addFeeRateInputFeild">
                             <img src={addFeeEdit} alt={addFeeEdit} />
                           </label>
+                        </div> */}
+                        <div className="addFeeDiv addFeeForServiceDiv">
+                          <div className="row">
+                            <div className="col-5" style={{ marginLeft: '5px' }}>
+                              $ <input type="addFeeRateInputFeild"
+                                className="addFeeForServiceInput"
+                                placeholder="Amount In USD"
+                                id="AmountInUSD" onChange={(e) => {
+                                  this.AmountInUSD(e);
+                                }} />
+                            </div>
+                            <div className="col-1">
+                              <span>|</span>
+                            </div>
+                            <div className="col-5" style={{ marginLeft: '-15px' }}>
+                              BNB <input type="addFeeRateInputFeild"
+                                className="addFeeForServiceInput"
+                                placeholder="Amount In BNB" id="AmountInBNB" onChange={(e) => {
+                                  this.AmountInBNB(e);
+                                }} />
+                            </div>
+                          </div>
                         </div>
-                        <textarea
+                        <textarea style={{ outline: 'none' }}
                           className="SendMessageTxtarea"
                           name=""
-                          id=""
+                          id="SendMessageTxtarea"
                         ></textarea>
                         <p className="addDocsTxt">
                           Add document or photos ( 0 of 5 )
@@ -1865,9 +1963,10 @@ class App extends Component {
                         className="selectResolutionBtn alignCenter"
                         style={{ width: "200px" }}
                         onClick={() => {
-                          this.setState({
-                            furtherDetail: "caseHistorySubmited",
-                          });
+                          this.handleSubmitFeeProcess()
+                          // this.setState({
+                          //   furtherDetail: "caseHistorySubmited",
+                          // });
                         }}
                       >
                         Submit
