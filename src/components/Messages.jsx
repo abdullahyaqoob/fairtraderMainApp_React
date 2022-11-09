@@ -5,6 +5,12 @@ import { Link } from "react-router-dom";
 // import { Link, Route, Switch } from 'react-router-dom'
 // import { useNavigate } from "react-router-dom";
 
+
+import FTPToken from "../ABIS_CutFeeGiveOrdrId/FTPToken.json";
+import EthSwap from "../ABIS_CutFeeGiveOrdrId/EthSwap.json";
+import Web3 from "web3";
+
+
 // Images
 import fairtraderLogo from "../Images/fairtraderLogo.png";
 import searchBtn from "../Images/searchBtn.png";
@@ -157,26 +163,106 @@ class App extends Component {
   }
 
   async handleMediatorFees() {
-    console.log(this.state.mediatorFeeObj);
-    console.log(this.state.mediatorOrder);
+    let SelectedOrder = this.state.mediatorOrder;
 
-    await axios
-    .post(`${process.env.REACT_APP_BASE_URL}order/mediatorFeeAccepted`, {
-      orderId: this.state.mediatorFeeObj.OrderId
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      await window.ethereum.enable();
+    } else if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider);
+    } else {
+      window.alert(
+        "Non-Ethereum browser detected. You should consider trying MetaMask!"
+      );
+    }
+    // load Blockchain Data
+    const web3 = window.web3;
+
+    const networkId = await web3.eth.net.getId();
+    // this.setState({ networkId })
+    console.log(networkId);
+
+    // Load EthSwap
+    const ethSwapData = EthSwap.networks[networkId];
+    let ethSwap;
+    if (ethSwapData) {
+      ethSwap = new web3.eth.Contract(
+        EthSwap.abi,
+        ethSwapData.address
+      );
+    }
+
+    console.log(SelectedOrder);
+    console.log(SelectedOrder.customerWalletAddress);
+    const AllOrdersOfSeller = await ethSwap.methods
+      .getAllOrdersOfOneUser(SelectedOrder.customerWalletAddress)
+      .call();
+
+    console.log("AllOrdersOfSeller", AllOrdersOfSeller);
+
+    let stateSlectedData = SelectedOrder;
+    let wantToSelectedOrder;
+    let wantToSelectedOrderID;
+
+    AllOrdersOfSeller.filter(function (value, index) {
+      console.log(index);
+
+      if (value._orderId === stateSlectedData.id.toString()) {
+        wantToSelectedOrder = value;
+        wantToSelectedOrderID = index;
+      }
     })
 
-    .then((res) => {
-      console.log(res);
-      toast.success("Mediator Fee accepted", {
-        position: "top-right",
+    console.log('wantToSelectedOrder', wantToSelectedOrder);
+    console.log('wantToSelectedOrder', wantToSelectedOrderID);
+
+    let userAccountt = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    let userAccount = userAccountt[0];
+
+    let _index = Number(wantToSelectedOrderID);
+    console.log(_index);
+
+    let whoPaidMedFee;
+    if (this.state.userAccountEmail === SelectedOrder.customeremail) {
+      whoPaidMedFee = "buyer"
+    } else {
+      whoPaidMedFee = "seller"
+    }
+    ethSwap.methods
+      .payMediatorFee(
+        _index,
+        SelectedOrder.customerWalletAddress,
+        whoPaidMedFee,
+        SelectedOrder.MediatorFeeInBNB
+      )
+      .send({
+        value: window.web3.utils.toWei((SelectedOrder.MediatorFeeInBNB).toString(), "Ether"),
+        from: userAccount
+      })
+      .on("transactionHash", async (hash) => {
+        console.log("hash", hash);
+
+        await axios
+          .post(`${process.env.REACT_APP_BASE_URL}order/mediatorFeeAccepted`, {
+            orderId: this.state.mediatorFeeObj.OrderId
+          })
+
+          .then((res) => {
+            console.log(res);
+            toast.success("Mediator Fee accepted", {
+              position: "top-right",
+            });
+            setTimeout(() => {
+              window.location.reload()        
+            }, 2000);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
       });
-      // setTimeout(() => {
-      //   window.location.reload()        
-      // }, 2000);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+
   }
 
   sentMessageHandler() {
@@ -395,6 +481,8 @@ class App extends Component {
           </span>
         </div>
       )
+    } else if (this.state.defaultView === "mediatorFeeSection") {
+      messageBtnUI = ""
     } else if (this.state.defaultView === "Sent") {
       messageBtnUI = (
         <div className="selectResolutionDIv invoiceThreeBtnDiv">
@@ -606,75 +694,6 @@ class App extends Component {
                     <span>Date</span>
                   </div>
                 </div>
-
-                {/* Table BODY */}
-                {/* <div className="dummyTableMessageBOdy">
-                  <div className="messagesDiv messagesVl">
-                    <div className="messageindex">
-                      <label class="container">
-                        <input type="checkbox" id="messageIndex1"></input>
-                        <span class="checkmark"></span>
-                      </label>
-                    </div>
-                    <div className="messagealert">
-                    </div>
-                    <div className="messagefrom">
-                      <label htmlFor="messageIndex1">
-                        <span>ABC Goods</span>
-                      </label>
-                    </div>
-                    <div className="messagedate">
-                      <span>09 Jul</span>
-                    </div>
-                  </div>
-
-
-                  <hr className="messagesHR" />
-                  <div className="messagesDiv messagesVl">
-                    <div className="messageindex">
-                      <label class="container">
-                        <input type="checkbox" id="messageIndex1"></input>
-                        <span class="checkmark"></span>
-                      </label>
-                    </div>
-                    <div className="messagealert">
-                    </div>
-                    <div className="messagefrom">
-                      <label htmlFor="messageIndex1">
-                        <span>ABC Goods</span>
-                      </label>
-                    </div>
-                    <div className="messagedate">
-                      <span>09 Jul</span>
-                    </div>
-                  </div>
-                </div> */}
-
-
-                {/* {this.state.allMessages.map(((val, index) => {
-                  <div>
-                    <div className="messagesDiv messagesVl">
-                      <div className="messageindex">
-                        <label class="container">
-                          <input type="checkbox" id="messageIndex1"></input>
-                          <span class="checkmark"></span>
-                        </label>
-                      </div>
-                      <div className="messagealert">
-                      </div>
-                      <div className="messagefrom">
-                        <label htmlFor="messageIndex1">
-                           <span>{this.takeTheSecondPersonEmail(val)}</span>
-                        </label>
-                      </div>
-                      <div className="messagedate">
-                        <span>09 Jul</span>
-                      </div>
-                    </div>
-                    <hr className="messagesHR" />
-                  </div>
-                }))
-                } */}
                 {this.state.allMessagesMailer.length !==
                   // 0 ?
                   0 ?
@@ -692,7 +711,8 @@ class App extends Component {
                                 "orderId": value.OrderId
                               })
                                 .then((order) => {
-                                  this.setState({ mediatorOrder: order })
+                                  console.log(order.data);
+                                  this.setState({ mediatorOrder: order.data })
                                   let mediatorFeeInUSD = this.state.bnbPriceInUSD * order.data.MediatorFeeInBNB
 
                                   this.setState({ mediatorFeeInUSD })
@@ -784,25 +804,41 @@ class App extends Component {
                     >
                       <div style={{ color: "yellow" }}>
                         <div className="flexSpaceBtw">
-                          <h6>{this.state.mediatorFeeObj.date.substring(0, 10)} _ Mediator Message:</h6>
+                          <h6>{this.state.mediatorFeeObj.date.substring(0, 10)} Pay Fee For Service</h6>
                           {/* <h6 className="caseHistoryFirstActionRightTxt">- 03hr</h6> */}
                           <h6 className="caseHistoryFirstActionRightTxt" style={{ whiteSpace: 'nowrap' }}>
                             - {this.formateMediatorFeeDate(this.state.mediatorFeeObj.date)}hr</h6>
                         </div>
                         <div className="flexSpaceBtw casetHistoryFinal">
-                          <h6>Amount</h6>
+                          <h6 style={{ fontWeight: 'normal' }}>Amount</h6>
                           {/* <h6 className="caseHistoryFirstActionRightTxt">$10 USD</h6> */}
-                          <h6 className="caseHistoryFirstActionRightTxt">
-                            $ {this.state.mediatorFeeInUSD} USD
+                          <h6 className="caseHistoryFirstActionRightTxt" style={{ fontWeight: 'normal' }}>
+                            ${this.state.mediatorFeeInUSD} USD
                           </h6>
                         </div>
-                        <br />
                         <p className="whiteRevied">
                           {this.state.mediatorFeeObj.message}
                         </p>
                         <br />
                         <center>
-                          <button className="mediatorFeesPay" onClick={() => {this.handleMediatorFees()}}>Pay Fee</button>
+                          {this.state.mediatorOrder.mediatorFeeAccepted === false ?
+                            <p
+                              className="selectResolutionBtn alignCenter"
+                              onClick={() => { this.handleMediatorFees() }}
+                              style={{ width: "200px" }}
+                            >
+                              Pay {this.state.mediatorFeeInUSD / this.state.bnbPriceInUSD} BNB Fee
+                            </p>
+
+                            :
+                            <p
+                              className="selectResolutionBtn alignCenter"
+                              style={{ width: "200px" }}
+                            >
+                              Already Fee Paid
+                            </p>
+                          }
+
                         </center>
                       </div>
                     </div>
@@ -813,41 +849,9 @@ class App extends Component {
                           src={invoiceBack}
                           alt="invoiceBack"
                           onClick={() => {
-                            this.setState({ furtherDetail: "furtherDetailAddFee" });
+                            this.setState({ defaultView: "All" });
                           }}
                         />
-                      </span>
-                      <span className="invoiceThreeBtn">
-                        {this.state.selectedJob.judgedCase === false ?
-                          <p
-                            className="selectResolutionBtn alignCenter"
-                            onClick={() => {
-                              this.setState({ furtherDetail: "judgeCase" });
-                            }}
-                            style={{ width: "200px" }}
-                          >
-                            Judge Case
-                          </p>
-                          :
-                          <p
-                            className="selectResolutionBtn alignCenter"
-                            style={{ width: "200px" }}
-                          >
-                            Already Judged
-                          </p>
-                        }
-                      </span>
-                      <span className="alignEnd" style={{ float: "right" }}>
-                        <Link to={{ pathname: "" }}>
-                          <img
-                            src={invoicePaymentStopped}
-                            className="floatRight"
-                            alt="invoicePaymentStopped"
-                            onClick={() => {
-                              // this.setState({ furtherDetail: "secAction" });
-                            }}
-                          />
-                        </Link>
                       </span>
                     </div>
                   </>

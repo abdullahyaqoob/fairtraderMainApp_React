@@ -99,6 +99,7 @@ class CreateInvoice extends Component {
       this.setState({ propHendledData: propData })
 
       document.getElementById("createInvoiceName").value = propData.customername
+      document.getElementById("createInvoiceNameOrderName").value = propData.invoiceName
       document.getElementById("createInvoiceAddr").value = propData.customeraddress
       document.getElementById("createInvoiceEmail").value = propData.customeremail
       document.getElementById("createInvoiceAmount").value = propData.Amount
@@ -188,6 +189,7 @@ class CreateInvoice extends Component {
     console.log('repeated');
     if (this.props["props"].userAccountEmail.userAccountEmail !== "") {
       let createInvoiceName = document.getElementById("createInvoiceName").value;
+      let createInvoiceNameOrderName = document.getElementById("createInvoiceNameOrderName").value;
       let createInvoiceAddr = document.getElementById("createInvoiceAddr").value;
       let createInvoiceEmail = document.getElementById("createInvoiceEmail")
         .value;
@@ -196,6 +198,7 @@ class CreateInvoice extends Component {
 
       console.log(
         createInvoiceName,
+        createInvoiceNameOrderName,
         createInvoiceAddr,
         createInvoiceEmail,
         createInvoiceAmount
@@ -206,6 +209,7 @@ class CreateInvoice extends Component {
       if (
         createInvoiceEmail === "" ||
         createInvoiceName === "" ||
+        createInvoiceNameOrderName === "" ||
         createInvoiceAmount === "" ||
         this.state.formatedCalenderValue === "" ||
         this.state.ProfileSelectedFileQual === ""
@@ -232,6 +236,7 @@ class CreateInvoice extends Component {
           var formData = new FormData();
           formData.append("sellerwalletaddress", userAccountAddress);
           formData.append("customername", createInvoiceName);
+          formData.append("invoiceName", createInvoiceNameOrderName);
           formData.append("customerAmount", createInvoiceAmount);
           formData.append("customeraddress", createInvoiceAddr);
           formData.append("customeremail", createInvoiceEmail);
@@ -706,6 +711,46 @@ class CreateInvoice extends Component {
                   />
                 </span>
               </div>
+
+
+
+              <div className="resolutionOptionstoggle optionChange autoPickedData invoiceFeilds">
+                <span className="alignStart">
+                  <img
+                    src={invoiceName}
+                    alt="mapIcon"
+                    style={{ marginTop: "-1px", marginRight: "10px" }}
+                  />
+                  {this.state.propHendledData === '' ?
+                    <input
+                      id="createInvoiceNameOrderName"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter invoice name"
+                    /> : <input
+                      id="createInvoiceNameOrderName"
+                      type="InvoiceinvoiceFields"
+                      className="mutualFriendInput invoiceFields"
+                      placeholder="enter invoice name"
+                      disabled
+                    />}
+
+
+                </span>
+                <span
+                  className="alignEnd"
+                  style={{ float: "right", marginRight: "-8px" }}
+                >
+                  <img
+                    src={invoiceLink}
+                    style={{ marginTop: "0px" }}
+                    className="floatRight"
+                    alt="walletGreaterSign"
+                  />
+                </span>
+              </div>
+
+
 
               <div className="resolutionOptionstoggle optionChange autoPickedData invoiceFeilds">
                 <span className="alignStart">

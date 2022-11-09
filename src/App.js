@@ -31,6 +31,7 @@ import PaidFees from "./components/Mediate/MyFees/PaidFees.jsx";
 
 import Messages from "./components/Messages.jsx";
 import Assets from "./components/Assets.jsx";
+import MedAssets from "./components/MedAssets.jsx";
 
 // css
 import "./App.css";
@@ -379,6 +380,20 @@ function App() {
             />
           }
         />
+        <Route
+          path="/MedAssets"
+          element={
+            <MedAssets
+              props={{
+                MetamaskStatus: { metamaskStatus },
+                UserAccountAddr: { userAccountAddr },
+                userAccountEmail: { userAccountEmail },
+              }}
+              // props={props}
+            />
+          }
+        />
+        
       </Routes>
       <ToastContainer />
     </>

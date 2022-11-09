@@ -52,7 +52,7 @@ class App extends Component {
     super(props);
     this.state = {};
   }
-  async componentWillMount() {}
+  async componentWillMount() { }
 
   render() {
     return (
@@ -68,7 +68,7 @@ class App extends Component {
             </div>
             <div className="col-6">
               <p className="alignEnd">
-              {localStorage.getItem("userViewTradeOrMediate") !==
+                {localStorage.getItem("userViewTradeOrMediate") !==
                   "mediate" ? (
                   <>
                     <Link to={{ pathname: "/Messages" }}>
@@ -210,6 +210,39 @@ class App extends Component {
               </div>
             </div>
           </Link>
+          {localStorage.getItem("userViewTradeOrMediate") === "trade" ? (
+            <Link
+              to={{ pathname: "/Assets" }}
+              style={{ textDecoration: "none" }}
+            >
+              <div className="menuBox">
+                <div className="row">
+                  <div className="col-2">
+                    <img src={menuPaymentIcon} alt="menuPaymentIcon" />
+                  </div>
+                  <div className="col-10">
+                    <h2>Withdraw Assets</h2>
+                    <p>All Assets which you have to withdraw</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ) : (<Link
+            to={{ pathname: "/MedAssets" }}
+            style={{ textDecoration: "none" }}
+          >
+            <div className="menuBox">
+              <div className="row">
+                <div className="col-2">
+                  <img src={menuPaymentIcon} alt="menuPaymentIcon" />
+                </div>
+                <div className="col-10">
+                  <h2>Withdraw Assets</h2>
+                  <p>All Assets which you have to withdraw</p>
+                </div>
+              </div>
+            </div>
+          </Link>)}
         </div>
       </div>
     );

@@ -50,6 +50,7 @@ class App extends Component {
       ProfileSelectedFileQual: "",
       allWithdraws: '',
       ethSwap: '',
+      bnbPriceInUSD: ''
     };
   }
 
@@ -103,9 +104,9 @@ class App extends Component {
 
       axios
         .post(
-          `${process.env.REACT_APP_BASE_URL}order/ableToWithdrawCases`,
+          `${process.env.REACT_APP_BASE_URL}order/mediatorAssetsToWithDraw`,
           {
-            userEmail: connectedUserEmail,
+            medEmail: connectedUserEmail,
           }
         )
 
@@ -118,6 +119,7 @@ class App extends Component {
 
             .then((bnbPrice) => {
               console.log(bnbPrice.data);
+              this.setState({ bnbPriceInUSD: bnbPrice.data.price })
               allWithdraws.map(function (val, i) {
                 let sellerPercent = 100 - val.buyerTakeFund;
                 let refundPriceInUSDOfBuyer = val.Amount * bnbPrice.data.price / 100 * val.buyerTakeFund;
@@ -171,48 +173,7 @@ class App extends Component {
         `${date.getUTCDate()}-${date.getUTCMonth()}-${date.getUTCFullYear()} T ${date.getUTCHours()}:${date.getUTCMinutes()}`;
       return formatedDate;
     }
-    function timeRemainHanlde(e, x, z) {
-
-      // return 
-      // <p style={{ color: '#3bff00' }}
-      //   onClick={async () => {
-
-      //     console.log(e);
-
-
-      //     let whoWithDrawedUser;
-      //     if (z === e.buyerWalletAddress) {
-      //       whoWithDrawedUser = "buyer"
-      //     } else {
-      //       whoWithDrawedUser = "seller"
-      //     }
-      //     console.log(z);
-      //     console.log(whoWithDrawedUser);
-
-      //     axios
-      //       .post(`${process.env.REACT_APP_BASE_URL}mediate/orderWithDrawed`, {
-      //         orderId: e.orderId,
-      //         whoWithDrawed: whoWithDrawedUser,
-      //       })
-
-      //       .then((res) => {
-      //         console.log(res);
-      //         setTimeout(() => {
-      //           window.location.reload();
-      //         }, 2000);
-
-      //         toast.success("Successfully, WithDrawed", {
-      //           position: "top-right",
-      //         });
-      //         // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
-      //       })
-      //       .catch((err) => {
-      //         console.log(err);
-      //       });
-      //   }}>WithDraw
-      // </p>
-
-
+    function timeRemainHanlde(e) {
       console.log(e);
       let appealEndDate = e.appealEndDate;
 
@@ -243,11 +204,9 @@ class App extends Component {
                 method: "eth_requestAccounts",
               });
 
-
               ethSwap.methods
-                .userWithdrawTheirDisputesOrdersCash(
-                  e.buyerWalletAddress, x
-                  // "0xc2Ddb3e0cb46A0A61518494dc45B11780976218b", 0
+                .mediatorWithDrawFees(
+                  window.web3.utils.toWei((e.mediatorFeeInBNB).toString(), "Ether")
                 )
                 .send({
                   from: userAccountt[0]
@@ -255,18 +214,9 @@ class App extends Component {
                 .on("transactionHash", (hash) => {
                   console.log("hash", hash);
 
-                  let whoWithDrawedUser;
-                  if (z === e.buyerWalletAddress) {
-                    whoWithDrawedUser = "buyer"
-                  } else {
-                    whoWithDrawedUser = "seller"
-                  }
-
-
                   axios
-                    .post(`${process.env.REACT_APP_BASE_URL}mediate/orderWithDrawed`, {
+                    .post(`${process.env.REACT_APP_BASE_URL}order/mediatorWidthdrawedFunds`, {
                       orderId: e.orderId,
-                      whoWithDrawed: whoWithDrawedUser,
                     })
 
                     .then((res) => {
@@ -491,7 +441,7 @@ class App extends Component {
                                 <b>Case No.: {val.orderId}</b>
                               </p>
                               <p>Judged Time:</p>
-                              <p>Amount: ${val.Amount}</p>
+                              <p>Amount: ${(val.mediatorFeeInBNB * this.state.bnbPriceInUSD).toFixed(1)}</p>
 
 
                             </p>
@@ -500,30 +450,16 @@ class App extends Component {
                             <p className="invoiceUnpaidProfileData">
                               <p>Apeal Time: {val.apeealTime} D</p>
                               <p title="Judge Date">{purchaseHitoryDateFormat(val.JudgedTime)}</p>
-                              {val.buyerWalletAddress === this.state.userAddres ?
-                                <p style={{ color: 'yellow' }}>
-                                  {val.superJudgedCase === true ?
-                                    "Payment Released"
-                                    : val.whoCalledSuperMed !== "" ?
-                                      "Appealed"
-                                      :
-                                      val.buyerWidthdrawed === true ?
-                                        "Withdrawed"
-                                        : timeRemainHanlde(val, i, this.state.userAddres)
-                                  }
-                                </p>
-                                : <p style={{ color: 'yellow' }}>
-                                  {val.superJudgedCase === true ?
-                                    "Payment Released"
-                                    : val.whoCalledSuperMed !== "" ?
-                                      "Appealed"
-                                      :
-                                      val.sellerWidthdrawed === true ?
-                                        "Withdrawed"
-                                        : timeRemainHanlde(val, i, this.state.userAddres)
-                                  }
-                                </p>
-                              }
+                              <p style={{ color: 'yellow' }}>
+                                {val.superJudgedCase === true ?
+                                  "Payment Released"
+                                  : val.whoCalledSuperMed !== "" ?
+                                    "Appealed"
+                                    : val.mediatorWidthdrawed === true ?
+                                      "Withdrawed"
+                                      : timeRemainHanlde(val)
+                                }
+                              </p>
                             </p>
                           </div>
                         </div>
