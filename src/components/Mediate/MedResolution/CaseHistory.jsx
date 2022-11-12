@@ -101,6 +101,7 @@ class App extends Component {
       salesHistoryTotalPaid: 0,
       salesHistoryTotalUnPaid: 0,
       userConnectedEmailValue: "",
+      userAddres: '',
       furtherDetail: false,
       // furtherDetail: "judgeCaseSubmited",
       // furtherDetail: "furtherDetailAddFee",
@@ -171,16 +172,6 @@ class App extends Component {
       }).catch((err) => {
         console.log(err);
       })
-    axios.post("http://localhost:5000/order/ableToWithdrawCases", {
-      "userEmail": "address1@gmail.com"
-    })
-      .then((res) => {
-        console.log('ddddddddddddddddddd', res);
-      }).catch((err) => {
-        console.log(err);
-      })
-
-
   }
   loadBlockchainData = async () => {
     let MetamaskStatus;
@@ -245,6 +236,7 @@ class App extends Component {
       axios
         .put(`${process.env.REACT_APP_BASE_URL}order/setMediatorFee`, {
           MediatorFeeInBNB: bnbAmount,
+          MediatorWalletAddress: this.state.userAddres,
           orderId: selectedJob.id
         })
 
@@ -265,7 +257,8 @@ class App extends Component {
           senderEmail: this.state.userAccountEmail,
           receiverEmail: receiverEmaill,
           message: SendMessageTxtarea,
-          orderId: selectedJob.id
+          orderId: selectedJob.id,
+          invoiceName: selectedJob.invoiceName
         })
         .then((res) => {
           toast.success(`Message Sent to ${selectedJob.whoStartMediation}`, {
@@ -307,6 +300,7 @@ class App extends Component {
     ) {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
       console.log(userAddres);
+      this.setState({ userAddres: userAddres })
 
       connectedUserEmail = this.props["props"].userAccountEmail
         .userAccountEmail;
@@ -389,7 +383,8 @@ class App extends Component {
           senderEmail: this.state.userAccountEmail,
           receiverEmail: receiverEmail,
           message: mediatorMsg,
-          orderId: selectedJob.id
+          orderId: selectedJob.id,
+          invoiceName: selectedJob.invoiceName
         })
         .then((res) => {
           toast.success(`Message Sent to ${mediatorSendMsgTo}`, {
@@ -557,7 +552,8 @@ class App extends Component {
                   senderEmail: this.state.userAccountEmail,
                   receiverEmail: this.state.selectedJob.sellerEmail,
                   message: `Order No. ${this.state.selectedJob.id} is judged, You can appeal in apeeal time`,
-                  orderId: this.state.selectedJob.id
+                  orderId: this.state.selectedJob.id,
+                  invoiceName: this.state.selectedJob.invoiceName
                 })
                 .then((res) => {
                   console.log(res);
@@ -570,7 +566,8 @@ class App extends Component {
                   senderEmail: this.state.userAccountEmail,
                   receiverEmail: this.state.selectedJob.customeremail,
                   message: `Order No. ${this.state.selectedJob.id} is judged, You can appeal in apeeal time`,
-                  orderId: this.state.selectedJob.id
+                  orderId: this.state.selectedJob.id,
+                  invoiceName: this.state.selectedJob.invoiceName
                 })
                 .then((res) => {
                   console.log(res);

@@ -122,10 +122,10 @@ class App extends Component {
                 let sellerPercent = 100 - val.buyerTakeFund;
                 let refundPriceInUSDOfBuyer = val.Amount * bnbPrice.data.price / 100 * val.buyerTakeFund;
                 let refundPriceInUSDOfSeller = val.Amount * bnbPrice.data.price / 100 * sellerPercent;
-                if (val.buyerWalletAddress === connectedUserEmail) {
-                  val.Amount = refundPriceInUSDOfBuyer;
+                if (val.buyerWalletAddress === userAddres) {
+                  val.Amount = refundPriceInUSDOfBuyer.toFixed(2);
                 } else {
-                  val.Amount = refundPriceInUSDOfSeller;
+                  val.Amount = refundPriceInUSDOfSeller.toFixed(2);
                 }
               })
               this.setState({ allWithdraws: allWithdraws });

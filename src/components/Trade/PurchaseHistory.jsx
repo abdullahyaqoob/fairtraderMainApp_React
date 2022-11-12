@@ -218,7 +218,8 @@ class PurchaseHistory extends Component {
                 senderEmail: this.state.userAccountEmail,
                 receiverEmail: res.data,
                 message: mediatorMsgField,
-                orderId: this.state.magnifierViewUser.id
+                orderId: this.state.magnifierViewUser.id,
+                invoiceName: this.state.selectedJob.invoiceName
               })
               .then((res) => {
                 toast.success("Message Sent to Mediator", {
@@ -402,7 +403,8 @@ class PurchaseHistory extends Component {
             senderEmail: this.state.userAccountEmail,
             receiverEmail: this.state.SelectedOrder.sellerEmail,
             message: addNoteTextereaValue,
-            orderId: this.state.SelectedOrder.id
+            orderId: this.state.SelectedOrder.id,
+            invoiceName: this.state.SelectedOrder.invoiceName
           })
           .then((res) => {
             console.log(res);

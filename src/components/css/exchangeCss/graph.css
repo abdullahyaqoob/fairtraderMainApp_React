@@ -1,0 +1,298 @@
+#myChart {
+    margin: 0 auto;
+    min-height: 150px;
+    max-height: 150px;
+    min-width: 95%;
+    max-width: 95%;
+}
+
+.text-success {
+    color: rgb(0, 255, 0) !important;
+}
+
+.graphPeriods {
+    color: #18C7C7;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 30px;
+    z-index: 9999;
+}
+
+.bottomHeader {
+    width: 90%;
+}
+
+tspan {
+    fill: white !important;
+}
+text {
+    fill: white !important;
+}
+
+.apexcharts-tooltip.apexcharts-theme-light {
+    border: 1px solid #e3e3e3;
+    background: rgb(24, 24, 24) !important;
+}
+.apexcharts-menu{
+    background-color: black !important;
+}
+.apexcharts-menu-item:hover{
+    background-color: rgb(37, 37, 37) !important;
+}
+
+.graphTimePeriod {
+    margin-right: 10px;
+}
+
+.graphTimePeriod:active {
+    background-color: transparent !important;
+}
+
+#tabChart, .showCoinDetail {
+    display: none;
+}
+.graphSelectPeriod {
+    margin-right: 20px;
+}
+
+.graphDetailCss {
+    margin-bottom: -12px;
+}
+
+@media (max-width: 1000px) {
+    #tabChart {
+        display: initial;
+    }
+
+    #tabChart #chart {
+        margin: 0 auto !important;
+        margin-top: -25px !important;
+    }
+
+    #MobileChart {
+        display: none;
+    }
+
+    #desktopChart {
+        display: none;
+    }
+
+    .apexcharts-toolbar {
+        display: none !important;
+    }
+
+    .graphCoinDetailRow {
+        margin-top: -15px !important;
+    }
+    .graphDetailCss {
+        position: absolute;
+        right: -10px;
+        /* margin-top: 40px; */
+        /* right: 70px; */
+    }
+}
+
+
+@media (max-width: 700px) {
+    #tabChart #chart {
+        position: relative;
+        left: -5px;
+    }
+}
+
+
+@media (max-width: 449px) {
+    .graphCoinDetailRow {
+        display: none;
+    }
+
+    .graphTOpContainer {
+        margin-top: 15px;
+    }
+
+    #tabChart #chart {
+        position: relative;
+        left: 10px;
+    }
+    .graphDetailTxtSize {
+        font-size: 14px !important;
+    }
+
+    .showCoinDetail {
+        font-size: 14px;
+        display: initial;
+        background-color: #2D7EF7;
+        border: 2px solid white;
+        position: absolute;
+        margin-top: -8px;
+        margin-left: -2px;
+        font-weight: bold;
+        padding-top: 2px;
+        border-bottom-right-radius: 14px;
+        border-top-right-radius: 14px;
+        z-index: 99;
+    }
+}
+
+@media (max-width: 415px) {
+    .showCoinDetail {
+        font-size: 13px;
+        padding-left: 1px;
+    }
+
+    .graphSelectPeriod {
+        margin-right: 10px;
+    }
+
+}
+
+@media (max-width: 380px) {
+    .graphTOpContainer {
+        margin-top: 5px !important;
+    }
+
+    .showCoinDetail {
+        font-size: 12px;
+        margin-top: -2px;
+    }
+}
+
+@media (max-width: 520px) {
+    .fontTwelve, .fontTwelveHeading {
+        font-size: 12px;
+    }
+
+    #tabChart #chart {
+        position: relative;
+        left: -12px;
+    }
+
+    /* .graphPeriods{
+        margin-right: 60px;
+    } */
+    .bottomHeader {
+        width: 93% !important;
+    }
+
+}
+
+@media (max-width: 470px) {
+    .fontTwelve, .fontTwelveHeading {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 440px) {
+    .fontTwelve, .fontTwelveHeading {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .fontTwelve {
+        font-size: 9px !important;
+    }
+
+    .fontTwelveHeading {
+        font-size: 12px !important;
+    }
+
+    .graphFormats {
+        font-size: 12px;
+    }
+
+    .graphSelectPeriod {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 365px) {
+    .graphFormats {
+        font-size: 11px;
+    }
+
+    .graphSelectPeriod {
+        font-size: 11px;
+    }
+
+}
+
+@media (max-width: 360px) {
+    .fontTwelve {
+        font-size: 8px !important;
+    }
+
+}
+
+@media (max-height: 830px) {
+    #myChart {
+        min-height: 170px;
+        max-height: 170px;
+    }
+}
+
+@media (max-height: 790px) {
+    #myChart {
+        min-height: 160px;
+        max-height: 160px;
+    }
+}
+
+@media (max-height: 770px) {
+    #myChart {
+        min-height: 155px;
+        max-height: 155px;
+    }
+}
+
+@media (max-height: 750px) {
+    #myChart {
+        min-height: 145px;
+        max-height: 145px;
+    }
+}
+
+@media (max-height: 725px) {
+    #myChart {
+        min-height: 135px;
+        max-height: 135px;
+    }
+}
+
+@media (max-height: 700px) {
+    #myChart {
+        min-height: 125px;
+        max-height: 125px;
+    }
+}
+
+@media (max-height: 680px) {
+    #myChart {
+        min-height: 115px;
+        max-height: 115px;
+    }
+}
+
+@media (max-height: 655px) {
+    #myChart {
+        min-height: 110px;
+        max-height: 110px;
+    }
+}
+
+@media (min-width: 1000px) {
+    #myChart {
+        margin-top: -300px !important;
+        /* position: relative;
+        left: -50px; */
+        min-height: 280px;
+        max-height: 280px;
+        min-width: 94%;
+        max-width: 94%;
+    }
+}
+@media (max-width: 400px) {
+    .graphDetailTxtSize {
+        font-size: 12px !important;
+    }
+}

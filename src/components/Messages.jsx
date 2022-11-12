@@ -235,7 +235,8 @@ class App extends Component {
         _index,
         SelectedOrder.customerWalletAddress,
         whoPaidMedFee,
-        SelectedOrder.MediatorFeeInBNB
+        window.web3.utils.toWei((SelectedOrder.MediatorFeeInBNB).toString(), "Ether"),
+        SelectedOrder.MediatorWalletAddress
       )
       .send({
         value: window.web3.utils.toWei((SelectedOrder.MediatorFeeInBNB).toString(), "Ether"),
@@ -291,7 +292,8 @@ class App extends Component {
           senderEmail: this.state.userAccountEmail,
           receiverEmail: receiverEmail,
           message: messageTextareaTxt,
-          orderId: this.state.wantToOpenMsgOfUser.OrderName
+          orderId: this.state.wantToOpenMsgOfUser.OrderId,
+          invoiceName: this.state.wantToOpenMsgOfUser.OrderName
         })
 
         .then((res) => {
@@ -355,11 +357,9 @@ class App extends Component {
         console.log(err);
       })
 
-
-
     await axios
       .post(`${process.env.REACT_APP_BASE_URL}message/getOrderDetailByOrderId`, {
-        orderId: this.state.wantToOpenMsgOfUser.OrderName
+        orderId: this.state.wantToOpenMsgOfUser.OrderId
       })
 
       .then(async (res) => {
@@ -688,7 +688,7 @@ class App extends Component {
                   </div>
                   <div className="messagefrom">
                     {/* <span>From</span> */}
-                    <span>Order ID</span>
+                    <span>Order Name</span>
                   </div>
                   <div className="messagedate">
                     <span>Date</span>
@@ -725,10 +725,10 @@ class App extends Component {
                                 defaultView: "View",
 
                               })
-                              this.showSelectedUserMsgs(value.OrderName)
+                              this.showSelectedUserMsgs(value.OrderId)
 
                               setInterval(() => {
-                                this.showSelectedUserMsgs(this.state.wantToOpenMsgOfUser.OrderName)
+                                this.showSelectedUserMsgs(this.state.wantToOpenMsgOfUser.OrderId)
                               }, 50000);
                             }
                           }}>

@@ -121,14 +121,9 @@ class App extends Component {
               console.log(bnbPrice.data);
               this.setState({ bnbPriceInUSD: bnbPrice.data.price })
               allWithdraws.map(function (val, i) {
-                let sellerPercent = 100 - val.buyerTakeFund;
-                let refundPriceInUSDOfBuyer = val.Amount * bnbPrice.data.price / 100 * val.buyerTakeFund;
-                let refundPriceInUSDOfSeller = val.Amount * bnbPrice.data.price / 100 * sellerPercent;
-                if (val.buyerWalletAddress === connectedUserEmail) {
-                  val.Amount = refundPriceInUSDOfBuyer;
-                } else {
-                  val.Amount = refundPriceInUSDOfSeller;
-                }
+
+                let refundPriceInUSDOfBuyer = val.mediatorFeeInBNB * bnbPrice.data.price;
+                val.mediatorFeeInBNB = refundPriceInUSDOfBuyer.toFixed(2);
               })
               this.setState({ allWithdraws: allWithdraws });
             })
@@ -441,7 +436,7 @@ class App extends Component {
                                 <b>Case No.: {val.orderId}</b>
                               </p>
                               <p>Judged Time:</p>
-                              <p>Amount: ${(val.mediatorFeeInBNB * this.state.bnbPriceInUSD).toFixed(1)}</p>
+                              <p>Amount: ${val.mediatorFeeInBNB}</p>
 
 
                             </p>

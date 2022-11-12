@@ -32,7 +32,7 @@ import PaidFees from "./components/Mediate/MyFees/PaidFees.jsx";
 import Messages from "./components/Messages.jsx";
 import Assets from "./components/Assets.jsx";
 import MedAssets from "./components/MedAssets.jsx";
-
+import DesktopVersion from "./components/DesktopVersion.jsx";
 // css
 import "./App.css";
 import axios from "axios";
@@ -384,6 +384,19 @@ function App() {
           path="/MedAssets"
           element={
             <MedAssets
+              props={{
+                MetamaskStatus: { metamaskStatus },
+                UserAccountAddr: { userAccountAddr },
+                userAccountEmail: { userAccountEmail },
+              }}
+              // props={props}
+            />
+          }
+        />
+        <Route
+          path="/desktopVersion"
+          element={
+            <DesktopVersion
               props={{
                 MetamaskStatus: { metamaskStatus },
                 UserAccountAddr: { userAccountAddr },

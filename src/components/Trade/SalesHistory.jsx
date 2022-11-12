@@ -202,7 +202,8 @@ class PurchaseHistory extends Component {
             senderEmail: this.state.userAccountEmail,
             receiverEmail: this.state.magnifierViewUser.customeremail,
             message: addNoteTextereaValue,
-            orderId: this.state.magnifierViewUser.id
+            orderId: this.state.magnifierViewUser.id,
+            invoiceName: this.state.magnifierViewUser.invoiceName
           })
           .then((res) => {
             console.log(res);
