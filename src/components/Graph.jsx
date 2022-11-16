@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
+import bottomGraphWhiteHeading from '../Images/bottomGraphWhiteHeading.png'
+import bottomGraphBlackHeading from '../Images/bottomGraphBlackHeading.png'
 
 import dropdownImg from "../Images/exchangeIcons/greenDropdown.png";
 
@@ -15,25 +17,25 @@ class ApexChart extends React.Component {
     let graphAllCloseValues = res.data["c"];
     let graphAllTime = res.data["t"];
 
-    graphAllTime.forEach(function(val, index) {
+    graphAllTime.forEach(function (val, index) {
       let emptyObj = new Object({ x: "", y: [] });
       graphFormatedArray.push(emptyObj);
       graphFormatedArray[index].x = new Date(val * 1000);
     });
 
-    graphAllOpenValues.forEach(function(val, index) {
+    graphAllOpenValues.forEach(function (val, index) {
       graphFormatedArray[index].y.push(parseFloat(val));
     });
 
-    graphAllHighValues.forEach(function(val, index) {
+    graphAllHighValues.forEach(function (val, index) {
       graphFormatedArray[index].y.push(parseFloat(val));
     });
 
-    graphAllLowValues.forEach(function(val, index) {
+    graphAllLowValues.forEach(function (val, index) {
       graphFormatedArray[index].y.push(parseFloat(val));
     });
 
-    graphAllCloseValues.forEach(function(val, index) {
+    graphAllCloseValues.forEach(function (val, index) {
       graphFormatedArray[index].y.push(parseFloat(val));
     });
 
@@ -124,7 +126,7 @@ class ApexChart extends React.Component {
 
     setInterval(() => {
       this.graphDataGetterReq();
-      }, 25000);
+    }, 25000);
     // }, 22222000);
 
     setInterval(() => {
@@ -313,7 +315,7 @@ class ApexChart extends React.Component {
                   </span>
                   <br />
                   {/* <b className='bottomHeaderTxt marginLeft'>${currentPrice}</b> */}
-                  <b className="bottomHeaderTxt marginLeft">
+                  <b className="bottomHeaderTxt marginLeft colorWhite">
                     ${Number(this.state.coinDetail.lastPrice).toFixed(6)}
                   </b>
                 </p>
@@ -340,7 +342,7 @@ class ApexChart extends React.Component {
                   <br />
                   <span>
                     {/* <b className='bottomHeaderTxt fontTwelve'>${hourVolume24}</b> */}
-                    <b className="bottomHeaderTxt fontTwelve">
+                    <b className="bottomHeaderTxt fontTwelve colorWhite">
                       ${Number(this.state.coinDetail.volume24h).toFixed(2)}
                     </b>
                   </span>
@@ -354,7 +356,7 @@ class ApexChart extends React.Component {
                   <br />
                   <span>
                     {/* <b className='bottomHeaderTxt fontTwelve'>${marketCap}</b></span></p></div> */}
-                    <b className="bottomHeaderTxt fontTwelve">
+                    <b className="bottomHeaderTxt fontTwelve colorWhite">
                       $
                       {parseFloat(
                         Number(
@@ -381,71 +383,72 @@ class ApexChart extends React.Component {
           )}
         </button>
         {this.state.showCoinDetail === false ? (
-          <div id="graphSecPart">
-            <p
-              className="text-right graphDetailCss"
-              style={{
-                color: "#18C7C7",
-                fontSize: "14px",
-                fontWeight: "bold",
-                marginRight: "30px",
-                zIndex: "9999",
-              }}
-            >
-              <span className="graphSelectPeriod">Select Period:</span>
-              <span
-                className="graphFormats graphTimePeriod"
-                onClick={() => {
-                  this.setState({ selectedTimePeriod: "1day" });
-                  this.graphDataGetterReq();
+          <>
+            <div id="graphSecPart">
+              <p
+                className="text-right graphDetailCss"
+                style={{
+                  color: "#18C7C7",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  marginRight: "30px",
+                  zIndex: "9999",
                 }}
-                style={{ cursor: "pointer" }}
               >
-                1D
-              </span>
-              <span
-                className="graphFormats graphTimePeriod"
-                onClick={() => {
-                  this.setState({ selectedTimePeriod: "2day" });
-                  this.graphDataGetterReq();
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                2D
-              </span>
-              <span
-                className="graphFormats graphTimePeriod"
-                onClick={() => {
-                  this.setState({ selectedTimePeriod: "3day" });
-                  this.graphDataGetterReq();
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                3D
-              </span>
-              <span
-                className="graphFormats graphTimePeriod"
-                onClick={() => {
-                  this.setState({ selectedTimePeriod: "7day" });
-                  this.graphDataGetterReq();
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                7D
-              </span>
-              <span
-                className="graphFormats graphTimePeriod"
-                onClick={() => {
-                  this.setState({ selectedTimePeriod: "30day" });
-                  this.graphDataGetterReq();
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                1M
-              </span>
-              {/* <span><img onClick={() => setWhichGraphState("first")} src={istGraph} /></span><span style={{ color: 'black' }}><span className="graphFormats">_</span></span>
+                <span className="graphSelectPeriod">Select Period:</span>
+                <span
+                  className="graphFormats graphTimePeriod"
+                  onClick={() => {
+                    this.setState({ selectedTimePeriod: "1day" });
+                    this.graphDataGetterReq();
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  1D
+                </span>
+                <span
+                  className="graphFormats graphTimePeriod"
+                  onClick={() => {
+                    this.setState({ selectedTimePeriod: "2day" });
+                    this.graphDataGetterReq();
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  2D
+                </span>
+                <span
+                  className="graphFormats graphTimePeriod"
+                  onClick={() => {
+                    this.setState({ selectedTimePeriod: "3day" });
+                    this.graphDataGetterReq();
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  3D
+                </span>
+                <span
+                  className="graphFormats graphTimePeriod"
+                  onClick={() => {
+                    this.setState({ selectedTimePeriod: "7day" });
+                    this.graphDataGetterReq();
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  7D
+                </span>
+                <span
+                  className="graphFormats graphTimePeriod"
+                  onClick={() => {
+                    this.setState({ selectedTimePeriod: "30day" });
+                    this.graphDataGetterReq();
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  1M
+                </span>
+                {/* <span><img onClick={() => setWhichGraphState("first")} src={istGraph} /></span><span style={{ color: 'black' }}><span className="graphFormats">_</span></span>
           <span><img onClick={() => setWhichGraphState("second")} src={secGraph} /></span> */}
-              {/* <span>
+                {/* <span>
                 <img src={istGraph} />
               </span>
               <span style={{ color: "black" }}>
@@ -454,10 +457,24 @@ class ApexChart extends React.Component {
               <span>
                 <img src={secGraph} />
               </span> */}
-            </p>
-            <br /><br />
-            {mainCOntetn}
-          </div>
+              </p>
+              <br /><br />
+              {mainCOntetn}
+            </div>
+            <div className="bottomDivOfGraph">
+              <center>
+              {/* <img src={bottomGraphBlackHeading} alt="bottomGraphWhiteHeading" style={{width: '80%'}} /> */}
+              <img src={bottomGraphWhiteHeading} alt="bottomGraphWhiteHeading.png" />
+              </center>
+            </div>
+            {/* <div className="bottomDivOfGraph">
+              <h2>Why is Fair Trader the payment gateway of the future.</h2>
+              <h5>Company HignLights</h5>
+              <p>Fair Trader is one of the most exciting crypto projects to come out in recent times. The Fair Trading Platform will provide safe commerce in both goods and services, halt and reverse transactions, enforce sellers’ guarantees, and other innovative options not currently offered on the leading Payment Gateways. Best of all it will work for both crypto and fiat currencies.</p>
+              <p>ABILITY TO RESOLVE DISPUTES ACCORDING TO PEOPLES RELIGIOUS BELIEFS:  Fair Trader will be the first payment platform in the world that will allow people to conduct commerce according to their religious beliefs. Now your rabbi, priest, muslim cleric or a common law nominee can oversee your transaction to help both parties resolve disputes with ease avoiding costly litigations.</p>
+              <p>Our team and community is growing fast. Join us in our vision to make the world a fairer place.</p>
+            </div> */}
+          </>
         ) : (
           <>
             <div className="row GraphRow" style={{ paddingTop: "32px" }}>
