@@ -234,8 +234,8 @@ class PurchaseHistory extends Component {
       .approve(
         this.state.ethSwapAddressWithConnectedNetworkID,
         // Amount
-        window.web3.utils.toWei("1", "Ether")
-        // window.web3.utils.toWei(this.state.fivePercentOfInvoiceInFTPCrntPrice, "Ether")
+        // window.web3.utils.toWei("1", "Ether")
+        window.web3.utils.toWei(this.state.fivePercentOfInvoiceInFTPCrntPrice, "Ether")
       )
       .send({ from: this.state.userAddres })
       .on("transactionHash", (hash) => {

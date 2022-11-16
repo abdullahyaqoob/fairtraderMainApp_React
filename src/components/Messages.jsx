@@ -413,9 +413,12 @@ class App extends Component {
             >
               <span onClick={() => {
                 this.setState({ replyToWhich: "Buyer" })
-              }}>Reply to Buyer </span> <span onClick={() => {
-                this.setState({ replyToWhich: "Mediator" })
-              }}> / Med</span>
+              }}>Reply to Buyer </span>
+              {this.state.orderDetail.superMediatorInvolved === "" ?
+                <span onClick={() => {
+                  this.setState({ replyToWhich: "Mediator" })
+                }}> / Med</span>
+                : ""}
             </p>
           })
         } else if (this.state.userAccountEmail === res.data.customeremail) {
@@ -429,9 +432,12 @@ class App extends Component {
             >
               <span onClick={() => {
                 this.setState({ replyToWhich: "Seller" })
-              }}>Reply to Seller </span> <span onClick={() => {
-                this.setState({ replyToWhich: "Mediator" })
-              }}> / Med</span>
+              }}>Reply to Seller </span>
+              {this.state.orderDetail.superMediatorInvolved === "" ?
+                <span onClick={() => {
+                  this.setState({ replyToWhich: "Mediator" })
+                }}> / Med</span>
+                : ""}
             </p>
           })
         } else {
@@ -790,11 +796,11 @@ class App extends Component {
                     <div className="messageindex">To:</div>
                     <div className="messagefrom" style={{ width: '89%' }}>
                       {this.state.replyToWhich === "Seller" ?
-                        <input type="InvoiceinvoiceFields" value={this.state.orderDetail.sellerEmail} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
+                        <input type="InvoiceinvoiceFields" value={this.state.orderDetail.sellerEmail} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" disabled />
                         : this.state.replyToWhich === "Buyer" ?
-                          <input type="InvoiceinvoiceFields" value={this.state.orderDetail.customeremail} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
+                          <input type="InvoiceinvoiceFields" value={this.state.orderDetail.customeremail} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" disabled />
                           :
-                          <input type="InvoiceinvoiceFields" value={this.state.mediatorEmail} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" />
+                          <input type="InvoiceinvoiceFields" value={this.state.mediatorEmail} placeholder="Email Address" id="messageToTxtFeild" className="messageToTxtFeild" disabled />
                       }
                     </div>
                   </div>

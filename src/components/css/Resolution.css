@@ -754,6 +754,22 @@ input[type="invoiceFields"]::-ms-input-placeholder {
     }
 }
 
+@media (min-width: 999px) {
+    .authMainDiv {
+        height: 780px;
+    }
+    /* invoiceOrderBlackDiv */
+    .invoiceBlackContainer, .handleMainPage{
+        height: 668px !important;
+    }
+    .invoiceBlackDivMainContainer, .paymentDivContainer{
+        height: 570px !important;
+    }
+    .contractBlackContainer {
+        height: 300px !important;
+    }
+}
+
 @media (max-width: 390px) {
     .selectResoutionTxt {
         font-size: 19px;

@@ -130,7 +130,6 @@ function DesktopCOmp() {
                             <div className="col-5">
                                 <div className="row functionalityDiv GraphRow">
                                     <App />
-
                                 </div>
 
                                 <br /><br /><br /><br />
