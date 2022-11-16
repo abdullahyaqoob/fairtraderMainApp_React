@@ -292,9 +292,9 @@ class ApexChart extends React.Component {
 
     return (
       <div className="bottomHeader graphTOpContainer">
-        <div className="row graphCoinDetailRow">
+        <div className="row graphCoinDetailRow GraphRow">
           <div className="col-6">
-            <div className="row" style={{ fontSize: "13px" }}>
+            <div className="row GraphRow" style={{ fontSize: "13px" }}>
               <div className="col-3">
                 <img
                   className="bottomHeaderLogo"
@@ -331,7 +331,7 @@ class ApexChart extends React.Component {
             </div>
           </div>
           <div className="col-6">
-            <div className="row" style={{ fontSize: "13px" }}>
+            <div className="row GraphRow" style={{ fontSize: "13px" }}>
               <div className="col-8">
                 <p style={{ float: "right" }}>
                   <span className="colorBlueBold bottomHeaderTxt fontTwelveHeading">
@@ -460,9 +460,9 @@ class ApexChart extends React.Component {
           </div>
         ) : (
           <>
-            <div className="row" style={{ paddingTop: "32px" }}>
+            <div className="row GraphRow" style={{ paddingTop: "32px" }}>
               <div className="col-6">
-                <div className="row" style={{ fontSize: "13px" }}>
+                <div className="row GraphRow" style={{ fontSize: "13px" }}>
                   <div className="col-3">
                     <img
                       className="bottomHeaderLogo"
@@ -499,7 +499,7 @@ class ApexChart extends React.Component {
                 </div>
               </div>
               <div className="col-6">
-                <div className="row" style={{ fontSize: "13px" }}>
+                <div className="row GraphRow" style={{ fontSize: "13px" }}>
                   <div className="col-6">
                     <p style={{ float: "right" }}>
                       <span className="colorBlueBold bottomHeaderTxt fontTwelveHeading graphDetailTxtSize">
@@ -536,9 +536,9 @@ class ApexChart extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="row" style={{ marginTop: "15px" }}>
+            <div className="row GraphRow" style={{ marginTop: "15px" }}>
               <div className="col-6">
-                <div className="row" style={{ fontSize: "13px" }}>
+                <div className="row GraphRow" style={{ fontSize: "13px" }}>
                   <div className="col-6">
                     <p style={{ float: "right" }}>
                       <span className="colorBlueBold bottomHeaderTxt fontTwelveHeading graphDetailTxtSize">
@@ -581,7 +581,7 @@ class ApexChart extends React.Component {
                 </div>
               </div>
               <div className="col-6">
-                <div className="row" style={{ fontSize: "13px" }}>
+                <div className="row GraphRow" style={{ fontSize: "13px" }}>
                   <div className="col-6">
                     <p style={{ float: "right" }}>
                       <span className="colorBlueBold bottomHeaderTxt fontTwelveHeading graphDetailTxtSize">

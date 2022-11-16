@@ -28,7 +28,7 @@ class App extends Component {
             <h2 style={{ textAlign: 'center' }}><b>Welcome to FTP Exchange</b></h2>
 
             <p style={{ fontSize: '19px', width: '97%', margin: '0 auto' }}>You can now purchase the FTP token with a debit card or swap it for another token like BNB coin. You can also Stake the FTP token (lock it against an early sale) and earn up to 50% extra tokens per year.</p>
-            <div className="row">
+            <div className="row GraphRow">
               {/* <div className="col-3">
                 <br />
                 <br />
@@ -161,7 +161,7 @@ class App extends Component {
 
           <div>
             <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-            <div className="footer_terms row" style={{ color: '#1183B7', fontWeight: 'bold', marginTop: '4px' }}>
+            <div className="footer_terms row GraphRow" style={{ color: '#1183B7', fontWeight: 'bold', marginTop: '4px' }}>
               <div className="col-6" style={{ fontSize: '19px', cursor: 'pointer' }}>
                 <a href='https://fairtrader.io/' style={{ color: '#1296B9', textDecoration: 'none' }} target='_blank'>Home</a>
                 <span style={{ color: 'black' }}>__</span>

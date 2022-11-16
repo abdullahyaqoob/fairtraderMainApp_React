@@ -484,6 +484,22 @@ class PurchaseHistory extends Component {
           </span>
         </div>
       );
+    } else if (this.state.invoiceUnpaidOrder === "paidInvoicePressed") {
+      invoicepaidOptionsBtn = (
+        <div className="selectResolutionDIv invoiceThreeBtnDiv">
+          <span className="alignStart">
+            <img src={invoiceBack} alt="invoiceBack" />
+          </span>
+          <span className="invoiceThreeBtn">
+            <p
+              className="selectResolutionBtn alignCenter"
+              style={{ width: "210px" }}
+            >
+              Invoice Paid
+            </p>
+          </span>
+        </div>
+      )
     }
 
     let invoicePaymentStoppedProfileImg;
@@ -1239,29 +1255,37 @@ class PurchaseHistory extends Component {
                       >
                         Not judged till
                       </p>
-                      :
-                      <p
-                        className="selectResolutionBtn alignCenter"
-                        style={{ width: "200px" }}
-                        onClick={() => {
-                          this.setState({ editInvoiceHandler: true })
-                          this.setState({ propData: this.state.magnifierViewUser })
-                        }}
-                      >
-                        Edit Invoice
-                      </p>
+                      : this.state.magnifierViewUser.paidstatus === false ?
+                        <p
+                          className="selectResolutionBtn alignCenter"
+                          style={{ width: "200px" }}
+                          onClick={() => {
+                            this.setState({ editInvoiceHandler: true })
+                            this.setState({ propData: this.state.magnifierViewUser })
+                          }}
+                        >
+                          Edit Invoice
+                        </p>
+                        : <p
+                          className="selectResolutionBtn alignCenter"
+                          style={{ width: "200px" }}
+                        >
+                          Invoice Paid
+                        </p>
                   }
                 </span>
-                <span className="alignEnd" style={{ float: "right" }}>
-                  <Link to={{ pathname: "" }}>
-                    <img
-                      style={{ marginRight: "5px" }}
-                      src={salesHistoryDelete}
-                      className="floatRight"
-                      alt="salesHistoryDelete"
-                    />
-                  </Link>
-                </span>
+                {this.state.magnifierViewUser.paidstatus === false ?
+                  <span className="alignEnd" style={{ float: "right" }}>
+                    <Link to={{ pathname: "" }}>
+                      <img
+                        style={{ marginRight: "5px" }}
+                        src={salesHistoryDelete}
+                        className="floatRight"
+                        alt="salesHistoryDelete"
+                      />
+                    </Link>
+                  </span>
+                  : ""}
               </div>
             ) : (
               ""
@@ -1825,7 +1849,11 @@ class PurchaseHistory extends Component {
                                   className="invoiceBlackDiv invoiceOrderBlackSubDiv invoiceOrderBlackSubDivColorWhite"
                                   // style={{ marginTop: "-5px" }}
                                   onClick={() => {
-                                    this.setState({ invoiceUnpaidOrder: true });
+                                    if (val.paidstatus === false) {
+                                      this.setState({ invoiceUnpaidOrder: true });
+                                    } else {
+                                      this.setState({ invoiceUnpaidOrder: "paidInvoicePressed" });
+                                    }
                                   }}
                                 >
                                   <div className="row">
@@ -1848,9 +1876,15 @@ class PurchaseHistory extends Component {
                                     </div>
                                     <div className="col-5">
                                       <p className="invoiceUnpaidProfileData">
-                                        <p style={{ color: "rgb(182, 255, 182)" }}>
-                                          <b>Pay On:</b>
-                                        </p>
+                                        {val.orderStatusStopeed === true ?
+                                          <p style={{ color: "gold" }}>
+                                            <b>Payment</b>
+                                          </p>
+                                          :
+                                          <p style={{ color: "rgb(182, 255, 182)" }}>
+                                            <b>Pay On:</b>
+                                          </p>
+                                        }
                                         <div className="invoiceUnpaidSearch">
                                           <img
                                             src={searchWhite}
@@ -1869,10 +1903,15 @@ class PurchaseHistory extends Component {
                                             }}
                                           />
                                         </div>
-                                        <p style={{ color: "rgb(182, 255, 182)" }}>
-                                          {/* <b>02/11/2022</b> */}
-                                          <b>{val.payment}</b>
-                                        </p>
+                                        {val.orderStatusStopeed === true ?
+                                          <p style={{ color: "gold" }}>
+                                            <b>Stopped</b>
+                                          </p>
+                                          :
+                                          <p style={{ color: "rgb(182, 255, 182)" }}>
+                                            <b>{val.payment}</b>
+                                          </p>
+                                        }
                                         <p>
                                           {/* <b>USD $1120.78</b> */}
                                           <b>USD ${val.Amount}</b>

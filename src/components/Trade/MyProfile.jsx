@@ -63,8 +63,14 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    setTimeout(() => {
-      console.log(this.props);
+    this.userAddressHandle();
+  }
+
+  userAddressHandle = async () => {
+    if (
+      this.props["props"].UserAccountAddr.userAccountAddr !== "" &&
+      this.props["props"].MetamaskStatus.metamaskStatus !== ""
+    ) {
       this.setState({
         loggedInAccountAddr: this.props["props"].UserAccountAddr
           .userAccountAddr,
@@ -121,7 +127,9 @@ class App extends Component {
             console.log(err);
           });
       }
-    }, 2000);
+    } else {
+      setTimeout(this.userAddressHandle, 250);
+    }
   }
 
   myProfileSubmitHandler = async (e) => {
@@ -280,7 +288,7 @@ class App extends Component {
             </div>
             <div className="col-6">
               <p className="alignEnd">
-              {localStorage.getItem("userViewTradeOrMediate") !==
+                {localStorage.getItem("userViewTradeOrMediate") !==
                   "mediate" ? (
                   <>
                     <Link to={{ pathname: "/Messages" }}>
@@ -374,8 +382,8 @@ class App extends Component {
               <div className="row">
                 <div className="col-5">
                   {this.state.userData === undefined ||
-                  this.state.userData === "" ||
-                  this.state.userData.image === "" ? (
+                    this.state.userData === "" ||
+                    this.state.userData.image === "" ? (
                     //  ||this.state.userData.image === "" ||
                     //  this.state.userData.image === "not set" ||
                     //  this.state.userData.image === undefined
@@ -630,10 +638,10 @@ class App extends Component {
                     src={myProfileNextPage}
                     className="floatRight"
                     alt="myProfileNextPage"
-                    //  onClick={() => {
-                    //     this.setState({ handleSelectMediatorLocation: false })
-                    //     this.setState({ handleSelectMediatorTrust: true })
-                    // }}
+                  //  onClick={() => {
+                  //     this.setState({ handleSelectMediatorLocation: false })
+                  //     this.setState({ handleSelectMediatorTrust: true })
+                  // }}
                   />
                 </Link>
               </span>

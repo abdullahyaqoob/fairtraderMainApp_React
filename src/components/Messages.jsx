@@ -128,7 +128,7 @@ class App extends Component {
         this.setState({ allMessagesMailer: res.data })
         console.log(this.state.allMessagesMailer);
         if (res.data.length === 0) {
-          setTimeout(this.mountedAxiosCallsForMessages, 250);
+          this.setState({ intervalVar: setTimeout(this.mountedAxiosCallsForMessages, 500) });
         }
       }).catch((err) => {
         console.log(err);
@@ -137,6 +137,7 @@ class App extends Component {
 
 
   userConnectedEmail = async () => {
+    let mountedCallInterval;
     let connectedUserEmail;
     if (this.props["props"].userAccountEmail.userAccountEmail !== "") {
       connectedUserEmail = this.props["props"].userAccountEmail
@@ -144,6 +145,12 @@ class App extends Component {
       this.setState({ userAccountEmail: connectedUserEmail })
       console.log(this.state.userAccountEmail);
 
+      setTimeout(() => {
+        if (this.state.allMessagesMailer.length === 0) {
+          clearInterval(this.state.intervalVar)
+          clearInterval(mountedCallInterval)
+        }
+      }, 6000);
       this.mountedAxiosCallsForMessages()
 
       axios.get("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT")
@@ -153,7 +160,7 @@ class App extends Component {
           console.log(err);
         })
 
-      setInterval(() => {
+      let mountedCallInterval = setInterval(() => {
         this.mountedAxiosCallsForMessages()
       }, 50000);
 
@@ -256,7 +263,7 @@ class App extends Component {
               position: "top-right",
             });
             setTimeout(() => {
-              window.location.reload()        
+              window.location.reload()
             }, 2000);
           })
           .catch((err) => {

@@ -145,9 +145,11 @@ class CreateInvoice extends Component {
   };
 
   updateInvoiceHandler = async () => {
+    let createInvoiceAmount = document.getElementById("createInvoiceAmount")
+    .value;
     let propHendledData = this.state.propHendledData;
     console.log("update", propHendledData);
-    if (this.state.ProfileSelectedFileQual === "" || this.state.formatedCalenderValue === "") {
+    if (this.state.ProfileSelectedFileQual === "" || createInvoiceAmount === "" || this.state.formatedCalenderValue === "") {
       this.$toasted.error("Invalid Request");
     } else {
       // requests for sending this selected file
@@ -155,6 +157,7 @@ class CreateInvoice extends Component {
       var formData = new FormData();
       formData.append("orderId", propHendledData.id);
       formData.append("invoiceId", propHendledData.invoiceId);
+      formData.append("invoiceAmount", createInvoiceAmount);
       formData.append("invoicefile", this.state.ProfileSelectedFileQual);
       formData.append("payment", this.state.formatedCalenderValue);
 
@@ -171,7 +174,7 @@ class CreateInvoice extends Component {
 
           setTimeout(() => {
             window.location = "Invoice";
-          }, 1000);
+          }, 2000);
 
           toast.success("Successfully Invoice Edited", {
             position: "top-right",
@@ -818,7 +821,6 @@ class CreateInvoice extends Component {
                       type="InvoiceinvoiceFields"
                       className="mutualFriendInput invoiceFields"
                       placeholder="Amount in BNB"
-                      disabled
                     />}
 
 

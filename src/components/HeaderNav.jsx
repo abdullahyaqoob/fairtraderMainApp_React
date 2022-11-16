@@ -279,7 +279,7 @@ class App extends Component {
         return (
             <>
                 <div className='headerNav'>
-                    <div className='row'>
+                    <div className='row GraphRow'>
                         <div className='col-4'>
                             <a href="http://fairtrader.io/">
                                 <img className='fairtraderLogo navFairtraderLogo' src="https://fairtrader.io/wp-content/uploads/2021/08/FairTrader_logo.svg" alt="fairtraderLogo" />
@@ -301,18 +301,18 @@ class App extends Component {
                                 </div> */}
 
 
-                                <Link to={{ pathname: '/WhichWallet' }}>
+                                {/* <Link to={{ pathname: '/WhichWallet' }}> */}
                                     {userAccountContent}
-                                </Link>
+                                {/* </Link> */}
                             </div>
                             <div style={{ display: "inline", float: "right" }}>
-                                <Link to={{ pathname: '/SelectNetwork' }}>
+                                {/* <Link to={{ pathname: '/SelectNetwork' }}> */}
                                     <div className='headerBtns sndHeaderBtn networkBtn navHeaderBtnDiv headerBtnIst'>
                                         <img src={networkImg} className='sndHeaderBtnist navConnectSNDBtn' alt="connectImg" />
                                         {userNetworkContent}
                                         <img src={networkDropdown1} className='sndHeaderBtnsnd navHeaderBtnDiv' alt="networkDropdown" />
                                     </div>
-                                </Link>
+                                {/* </Link> */}
                             </div>
                         </div>
                     </div>

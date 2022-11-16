@@ -1956,18 +1956,34 @@ class App extends Component {
                       />
                     </span>
                     <span className="invoiceThreeBtn">
-                      <p
-                        className="selectResolutionBtn alignCenter"
-                        style={{ width: "200px" }}
-                        onClick={() => {
-                          this.handleSubmitFeeProcess()
-                          // this.setState({
-                          //   furtherDetail: "caseHistorySubmited",
-                          // });
-                        }}
-                      >
-                        Submit
-                      </p>
+                      {this.state.selectedJob.MediatorFeeInBNB !== "" && this.state.selectedJob.mediatorFeeAccepted === false ?
+                        <p
+                          className="selectResolutionBtn alignCenter"
+                          style={{ width: "200px" }}
+                        >
+                          Already Sent
+                        </p>
+                        : this.state.selectedJob.mediatorFeeAccepted === true ?
+                          <p
+                            className="selectResolutionBtn alignCenter"
+                            style={{ width: "200px" }}
+                          >
+                            Fee Accepted
+                          </p>
+                          :
+                          <p
+                            className="selectResolutionBtn alignCenter"
+                            style={{ width: "200px" }}
+                            onClick={() => {
+                              this.handleSubmitFeeProcess()
+                              // this.setState({
+                              //   furtherDetail: "caseHistorySubmited",
+                              // });
+                            }}
+                          >
+                            Submit
+                          </p>
+                      }
                     </span>
                     <span className="alignEnd" style={{ float: "right" }}>
                       <Link to={{ pathname: "" }}>
@@ -2275,16 +2291,27 @@ class App extends Component {
                       />
                     </span>
                     <span className="invoiceThreeBtn">
-                      <p
-                        className="selectResolutionBtn alignCenter"
-                        style={{ width: "200px" }}
-                        onClick={() => {
-                          this.handleSubmitPreview()
-
-                        }}
-                      >
-                        Submit
-                      </p>
+                      {this.state.selectedJob.mediatorFeeAccepted === false ?
+                        <p
+                          className="selectResolutionBtn alignCenter"
+                          style={{ width: "200px" }}
+                        >
+                          Fee Not Paid
+                        </p>
+                        :
+                        <p
+                          className="selectResolutionBtn alignCenter"
+                          style={{ width: "200px" }}
+                          onClick={() => {
+                            this.handleSubmitPreview()
+                            // this.setState({
+                            //   furtherDetail: "caseHistorySubmited",
+                            // });
+                          }}
+                        >
+                          Submit
+                        </p>
+                      }
                     </span>
                     <span className="alignEnd" style={{ float: "right" }}>
                       <Link to={{ pathname: "" }}>

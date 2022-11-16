@@ -31379,12 +31379,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x06FbAd7C62C4d88903D37b7e610A5ff6072b22bD",
-      "transactionHash": "0xc06de3835f2161b0ca85b9b2ad8fc8bd7af892446a06ff02ef5aafa9a874f7e4"
+      "address": "0x1A47D2e0492374644476c79EC8c4dB9ceBF82821",
+      "transactionHash": "0xe9deffda03f8535c19eee5b2f775bd07edd55c40f7ca21a1eced12c441d5c287"
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-11-10T08:43:32.123Z",
+  "updatedAt": "2022-11-16T01:23:22.621Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
