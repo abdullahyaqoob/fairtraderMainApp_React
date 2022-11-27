@@ -103,12 +103,23 @@ class PurchaseHistory extends Component {
       editInvoiceHandler: false,
       propData: {},
       userAccountEmail: '',
-      magnifierViewUserIndex: ''
+      magnifierViewUserIndex: '',
+      bnbPriceInUSD: ''
+
     };
   }
   componentDidMount() {
     this.userAddressHandle();
     this.loadBlockchainData();
+
+    axios.get("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT")
+      .then((res) => {
+        console.log(res.data.price);
+        let fixedPrice = Number(res.data.price).toFixed(1)
+        this.setState({ bnbPriceInUSD: fixedPrice })
+      }).then((err) => {
+        console.log(err);
+      })
   }
 
   loadBlockchainData = async () => {
@@ -715,7 +726,7 @@ class PurchaseHistory extends Component {
                     <h6 style={{ color: "#c62127" }}>Construction Work</h6>
                     <h6>
                       Total <span style={{ color: "lightgrey" }}>.</span>$
-                      {this.state.magnifierViewUser.Amount}USD
+                      {Number(this.state.magnifierViewUser.Amount * this.state.bnbPriceInUSD).toFixed(1)}USD
                     </h6>
                   </div>
                   <div
@@ -1584,7 +1595,7 @@ class PurchaseHistory extends Component {
                                             </p>
                                             <p className="colorWhite">
                                               {/* <b>USD $1120.78</b> */}
-                                              <b>USD ${val.Amount}</b>
+                                              <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                             </p>
                                           </p>
                                         </div>
@@ -1649,7 +1660,7 @@ class PurchaseHistory extends Component {
                                             </p>
                                             <p>
                                               {/* <b>USD $1120.78</b> */}
-                                              <b>USD ${val.Amount}</b>
+                                              <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                             </p>
                                           </p>
                                         </div>
@@ -1664,7 +1675,7 @@ class PurchaseHistory extends Component {
                                   Total (USD){" "}
                                   <span style={{ color: "black" }}>.</span>{" "}
                                   {/* $2,512.98 */}$
-                                  {this.state.totalAmountVarUnpaid}
+                                  {Number(this.state.totalAmountVarUnpaid * this.state.bnbPriceInUSD).toFixed(1)}
                                 </p>
                               </div>
 
@@ -1914,7 +1925,7 @@ class PurchaseHistory extends Component {
                                         }
                                         <p>
                                           {/* <b>USD $1120.78</b> */}
-                                          <b>USD ${val.Amount}</b>
+                                          <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                         </p>
                                       </p>
                                     </div>
@@ -1926,7 +1937,7 @@ class PurchaseHistory extends Component {
                               <p className="invoiceUnpaidTotalTxt">
                                 Total (USD){" "}
                                 <span style={{ color: "black" }}>.</span> $
-                                {this.state.totalAmountVarPaid}
+                                {Number(this.state.totalAmountVarPaid * this.state.bnbPriceInUSD).toFixed(1)}
                               </p>
                             </div>
 
@@ -2132,7 +2143,7 @@ class PurchaseHistory extends Component {
                                         }
                                         <p>
                                           {/* <b>USD $1120.78</b> */}
-                                          <b>USD ${val.Amount}</b>
+                                          <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                         </p>
                                       </p>
                                     </div>
@@ -2144,7 +2155,7 @@ class PurchaseHistory extends Component {
                               <p className="invoiceUnpaidTotalTxt">
                                 Total (USD){" "}
                                 <span style={{ color: "black" }}>.</span> $
-                                {this.state.totalAmountVarPaid}
+                                {Number(this.state.totalAmountVarPaid * this.state.bnbPriceInUSD).toFixed(1)}
                               </p>
                             </div>
 

@@ -58,64 +58,77 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    setTimeout(() => {
-      console.log(this.props);
-      this.setState({
-        loggedInAccountAddr: this.props["props"].UserAccountAddr
-          .userAccountAddr,
-      });
-      // this.setState({ loggedInAccountNtw: this.props["props"].UserAccountNtw.userAccountNtw })
-      this.setState({
-        MetamaskCondition: this.props["props"].MetamaskStatus.metamaskStatus,
-      });
-      console.log(
-        "Props Data: ",
-        this.state.loggedInAccountAddr,
-        this.state.MetamaskCondition
-      );
+    this.userAddressHandle();
 
-      if (this.state.MetamaskCondition === true) {
-        let userAccount = this.props["props"].UserAccountAddr.userAccountAddr;
+  }
+  userAddressHandle = async () => {
+    if (
+      this.props["props"].UserAccountAddr.userAccountAddr !== "" &&
+      this.props["props"].MetamaskStatus.metamaskStatus !== ""
+    ) {
 
-        axios
-          .post(process.env.REACT_APP_BASE_URL + "user/searchUsers", {
-            walletaddress: userAccount,
-          })
-          .then((res) => {
-            let userData = res.data.data[0];
-            this.setState({ userData });
-            console.log(this.state.userData);
+      setTimeout(() => {
 
-            if (userData.buisnessname != "") {
-              document.getElementById("myProfileFrtBusinessName").value =
-                userData.buisnessname;
-            }
-            if (userData.website != "") {
-              document.getElementById("myProfileFrtWebsite").value =
-                userData.website;
-            }
-            if (userData.phoneno != 0) {
-              document.getElementById("myProfileFrtPhoneNmbr").value =
-                userData.phoneno;
-            }
-            if (userData.facebook != "") {
-              document.getElementById("myProfileFrtFacebookPage").value =
-                userData.facebook;
-            }
-            if (userData.priceperhour != 0) {
-              document.getElementById("myProfileFrtPricePerHour").value =
-                userData.priceperhour;
-            }
-            if (userData.providing != "") {
-              document.getElementById("myProfileFrtServices").value =
-                userData.providing;
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    }, 2000);
+        console.log(this.props);
+        this.setState({
+          loggedInAccountAddr: this.props["props"].UserAccountAddr
+            .userAccountAddr,
+        });
+        // this.setState({ loggedInAccountNtw: this.props["props"].UserAccountNtw.userAccountNtw })
+        this.setState({
+          MetamaskCondition: this.props["props"].MetamaskStatus.metamaskStatus,
+        });
+        console.log(
+          "Props Data: ",
+          this.state.loggedInAccountAddr,
+          this.state.MetamaskCondition
+        );
+
+        if (this.state.MetamaskCondition === true) {
+          let userAccount = this.props["props"].UserAccountAddr.userAccountAddr;
+
+          axios
+            .post(process.env.REACT_APP_BASE_URL + "user/searchUsers", {
+              walletaddress: userAccount,
+            })
+            .then((res) => {
+              let userData = res.data.data[0];
+              this.setState({ userData });
+              console.log(this.state.userData);
+
+              if (userData.language != "") {
+                document.getElementById("myProfileFrtLang").value =
+                  userData.language;
+              }
+              if (userData.website != "") {
+                document.getElementById("myProfileFrtWebsite").value =
+                  userData.website;
+              }
+              if (userData.phoneno != 0) {
+                document.getElementById("myProfileFrtPhoneNmbr").value =
+                  userData.phoneno;
+              }
+              if (userData.facebook != "") {
+                document.getElementById("myProfileFrtFacebookPage").value =
+                  userData.facebook;
+              }
+              if (userData.bio != "") {
+                document.getElementById("myProfileFrtBio").value =
+                  userData.bio;
+              }
+              if (userData.providing != "") {
+                document.getElementById("myProfileFrtServices").value =
+                  userData.providing;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }, 1);
+    } else {
+      setTimeout(this.userAddressHandle, 250);
+    }
   }
 
   profileServicesHandle = async (e) => {
@@ -125,8 +138,8 @@ class App extends Component {
   };
 
   myProfileFurtherSubmitHandler = async (e) => {
-    let myProfileFrtBusinessName = document.getElementById(
-      "myProfileFrtBusinessName"
+    let myProfileFrtLang = document.getElementById(
+      "myProfileFrtLang"
     ).value;
     let myProfileFrtWebsite = document.getElementById("myProfileFrtWebsite")
       .value;
@@ -135,8 +148,8 @@ class App extends Component {
     let myProfileFrtFacebookPage = document.getElementById(
       "myProfileFrtFacebookPage"
     ).value;
-    let myProfileFrtPricePerHour = document.getElementById(
-      "myProfileFrtPricePerHour"
+    let myProfileFrtBio = document.getElementById(
+      "myProfileFrtBio"
     ).value;
     let myProfileFrtServices = document.getElementById("myProfileFrtServices")
       .value;
@@ -145,27 +158,35 @@ class App extends Component {
       alert("Please First enter Services you provide");
     } else if (this.state.userData.industry === "") {
       alert("Please First enter Industry. (from the prev page)");
-    } else if (myProfileFrtBusinessName === "") {
-      alert("Please First enter Business name");
+    } else if (myProfileFrtLang === "") {
+      alert("Please First enter Language");
     } else if (myProfileFrtWebsite === "") {
       alert("Please First enter your website");
     } else if (myProfileFrtPhoneNmbr === "") {
       alert("Please First enter your phone number");
     } else if (myProfileFrtFacebookPage === "") {
       alert("Please First enter your facebook link");
-    } else if (myProfileFrtPricePerHour === "") {
-      alert("Please First enter price per hour rate");
+    } else if (myProfileFrtBio === "") {
+      alert("Please First enter Bio");
     } else {
+      console.log(
+        myProfileFrtLang,
+        myProfileFrtWebsite,
+        myProfileFrtPhoneNmbr,
+        myProfileFrtFacebookPage,
+        myProfileFrtBio,
+        myProfileFrtServices
+      );
       // Update User Profile
       axios
         .put(`${process.env.REACT_APP_BASE_URL}user/createOrUpdateUser`, {
           walletaddress: this.state.loggedInAccountAddr,
           industry: this.state.userData.industry,
-          buisnessname: myProfileFrtBusinessName,
+          language: myProfileFrtLang,
           website: myProfileFrtWebsite,
           phoneno: myProfileFrtPhoneNmbr,
           facebook: myProfileFrtFacebookPage,
-          priceperhour: myProfileFrtPricePerHour,
+          bio: myProfileFrtBio,
           providing: myProfileFrtServices,
         })
 
@@ -179,13 +200,6 @@ class App extends Component {
           console.log(err);
         });
     }
-    console.log(
-      myProfileFrtBusinessName,
-      myProfileFrtWebsite,
-      myProfileFrtPhoneNmbr,
-      myProfileFrtFacebookPage,
-      myProfileFrtPricePerHour
-    );
   };
 
   render() {
@@ -202,7 +216,7 @@ class App extends Component {
             </div>
             <div className="col-6">
               <p className="alignEnd">
-              {localStorage.getItem("userViewTradeOrMediate") !==
+                {localStorage.getItem("userViewTradeOrMediate") !==
                   "mediate" ? (
                   <>
                     <Link to={{ pathname: "/Messages" }}>
@@ -240,7 +254,7 @@ class App extends Component {
             <div className="contractTabMenuItems">
               <button className="walletcontractTab AlertTabNoNadius">
                 <Link to={{ pathname: "/Attention" }}>
-                <img src={Attension} alt="Attension" />
+                  <img src={Attension} alt="Attension" />
                 </Link>
               </button>
               <button className="walletResolutionTab">
@@ -299,10 +313,10 @@ class App extends Component {
               <div className="resolutionOptionstoggle myProfileFeild">
                 <span className="alignStart">
                   <input
-                    id="myProfileFrtBusinessName"
+                    id="myProfileFrtLang"
                     type="InvoiceinvoiceFields"
                     className="mutualFriendInput invoiceFields"
-                    placeholder="Business Name"
+                    placeholder="Language"
                     style={{ marginTop: "1px" }}
                   />
                 </span>
@@ -395,10 +409,10 @@ class App extends Component {
               <div className="resolutionOptionstoggle myProfileFeild">
                 <span className="alignStart">
                   <input
-                    id="myProfileFrtPricePerHour"
+                    id="myProfileFrtBio"
                     type="InvoiceinvoiceFields"
                     className="mutualFriendInput invoiceFields"
-                    placeholder="Price Per hour (USD)"
+                    placeholder="Bio"
                     style={{ marginTop: "1px" }}
                   />
                 </span>
@@ -481,10 +495,10 @@ class App extends Component {
                 ""
               )}
 
-              <p className="myProfileFeildsDiscription">
+              {/* <p className="myProfileFeildsDiscription">
                 Other fields can be added in this place which will help explain
                 a person business or services and how to find them
-              </p>
+              </p> */}
             </div>
 
             <div className="selectResolutionDIv invoiceThreeBtnDiv contractDIvBTN">

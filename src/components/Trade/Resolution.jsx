@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 // import { Link, Route, Switch } from 'react-router-dom'
 // import { useNavigate } from "react-router-dom";
+import lookup from "country-code-lookup";
 
 // Images
 import fairtraderLogo from "../../Images/fairtraderLogo.png";
@@ -330,14 +331,38 @@ class App extends Component {
   }
 
   render() {
+    function handleFlag(e) {
+      console.log(e);
+      let countryCOde = lookup.byCountry(e.country)
+      return <span style={{ fontSize: '25px', marginTop: '7px' }} className={`flag-icon flag-icon-${countryCOde.iso2.toLowerCase()}`}></span>
+    }
+    let resolutionMediatorProfileEmail;
     let resolutionMediatorEmail = this.state.resolutionMediatorSelected.email
-    let resolutionMediatorProfileEmail =
-      <a href={`mailto:${resolutionMediatorEmail}`} target="_blank">
-        <img src={emailIcon} alt="emailIcon" />
-      </a>
+    if (resolutionMediatorEmail !== '') {
+      resolutionMediatorProfileEmail =
+        <a href={`mailto:${resolutionMediatorEmail}`} target="_blank">
+          <img src={emailIcon} alt="emailIcon" />
+        </a>
+    } else {
+      resolutionMediatorProfileEmail =
+        <img src={emailIcon} alt="emailIcon" onClick={() => { toast.warning("Not defined") }} />
+    }
 
 
+    let resolutionMediatorProfileWebsite;
+    let resolutionMediatorWebsite = this.state.resolutionMediatorSelected.businessWebsite
+    if (resolutionMediatorWebsite !== '') {
+      resolutionMediatorProfileWebsite =
+        <a href={resolutionMediatorWebsite} target="_blank">
+          <img src={websiteIcon} alt="websiteIcon" />
+        </a>
+    } else {
+      resolutionMediatorProfileWebsite =
+        <img src={websiteIcon} alt="websiteIcon" onClick={() => { toast.warning("Not defined") }} />
+    }
 
+
+    // resolutionMediatorSelected
 
     let mutualFriendOrMentor;
     if (this.state.mutualFriend === true) {
@@ -620,17 +645,17 @@ class App extends Component {
                         className="mediatorSuggested"
                         alt="mediatorSuggested"
                       />
-                      {value.passport === "" ? (
+                      {value.idCard === "" ? (
                         <img
-                          src={location8}
+                          src={location7}
                           className="mediatorMainPic"
-                          alt="location8"
+                          alt="mediatorMainPic"
                         />
                       ) : (
                         <img
-                          src={process.env.REACT_APP_BASE_URL + value.passport}
+                          src={value.idCard}
                           className="mediatorMainPic"
-                          alt={value.passport}
+                          alt={value.idCard}
                         />
                       )}
                       {/* <img
@@ -638,8 +663,10 @@ class App extends Component {
                         className="mediatorAustraliaFlag"
                         alt="mediatorAustraliaFlag"
                       /> */}
+
+
                       {/* <p className="mediatorsInfoTxt" style={{textAlign: 'center'}}>{value.id}</p> */}
-                      <p className="mediatorsInfoTxt" style={{ textAlign: 'center' }}>84 %</p>
+                      <p className="mediatorsInfoTxt" style={{ marginTop: '5px' }}>{handleFlag(value)} {value.country}</p>
                     </div>
                     {/* <img src={mediatorSearch} onClick={() => { this.handleMagnifierView() }} alt="mediatorSearch" className='mediatorSearch' /> */}
                     <img
@@ -1634,21 +1661,20 @@ class App extends Component {
                   <div className="MediatorCardHead">
                     <div className="row">
                       <div className="col-6 MediatorCardImg">
-                        {this.state.resolutionMediatorSelected.passport ===
+                        {this.state.resolutionMediatorSelected.idCard ===
                           "" ? (
                           <img
-                            src={location8}
+                            src={location7}
                             alt="MediatorCardImg"
                             style={{ borderRadius: "12px" }}
                           />
                         ) : (
                           <img
                             src={
-                              process.env.REACT_APP_BASE_URL +
-                              this.state.resolutionMediatorSelected.passport
+                              this.state.resolutionMediatorSelected.idCard
                             }
                             style={{ borderRadius: "12px" }}
-                            alt={this.state.resolutionMediatorSelected.passport}
+                            alt={this.state.resolutionMediatorSelected.idCard}
                           />
                         )}
                         {/* <img src={flexlablogo} alt="MediatorCardImg" /> */}
@@ -1669,7 +1695,7 @@ class App extends Component {
                   </div>
                   <div className="MediatorCardBottom">
                     <h5 className="mediatorName">
-                      {this.state.resolutionMediatorSelected.name}
+                      {this.state.resolutionMediatorSelected.name.toUpperCase()}
                     </h5>
                     <h4 className="mediatorDisc">
                       {this.state.resolutionMediatorSelected.businessName}
@@ -1680,12 +1706,14 @@ class App extends Component {
                           <h4>ID:</h4>
                           <h4>Joined:</h4>
                           <h4>City:</h4>
-                          <img
+                          {/* <img
                             src={mediatorAustraliaFlag}
                             width="35"
                             alt=""
                             style={{ marginTop: "7px" }}
-                          />
+                          /> */}
+                          {handleFlag(this.state.resolutionMediatorSelected)}
+
                         </div>
 
                         <div className="col-8">
@@ -1719,7 +1747,10 @@ class App extends Component {
                       src={qualificationLeftImg}
                       alt="qualificationLeftImg"
                     />
-                    <p className="DetailedSubDivPara">Yes</p>
+                    <p className="DetailedSubDivPara">{this.state.resolutionMediatorSelected.documents === null || this.state.resolutionMediatorSelected.documents === "" ?
+                      "No" : "Yes"
+                    }</p>
+                    {/* <p className="DetailedSubDivPara">Yes</p> */}
 
                     <span className="alignEnd" style={{ float: "right" }}>
                       <img
@@ -1735,7 +1766,7 @@ class App extends Component {
                     <img src={mediatorLeftImg} alt="qualificationLeftImg" />
 
                     <span className="alignEnd" style={{ float: "right" }}>
-                      <p className="detailedSubDivP">77</p>
+                      <p className="detailedSubDivP">2</p>
                     </span>
                   </div>
                   <h4 className="mediatorName" style={{ color: "white" }}>
@@ -1744,7 +1775,7 @@ class App extends Component {
                   <div className="DetailedSubDiv DetailedSubDiv2">
                     <img src={appealLeftImg} alt="qualificationLeftImg" />
                     <span className="alignEnd" style={{ float: "right" }}>
-                      <p className="detailedSubDivP">0</p>
+                      <p className="detailedSubDivP">1</p>
                     </span>
                   </div>
                   <h4 className="mediatorName" style={{ color: "white" }}>
@@ -1754,7 +1785,7 @@ class App extends Component {
                     <img src={hourlyRateImg} alt="qualificationLeftImg" />
 
                     <span className="alignEnd" style={{ float: "right" }}>
-                      <p className="detailedSubDivP">$40 USD</p>
+                      <p className="detailedSubDivP">${this.state.resolutionMediatorSelected.priceperhour} USD</p>
                     </span>
                   </div>
                 </div>
@@ -1764,17 +1795,23 @@ class App extends Component {
 
           <div className="contractBlackContainer">
             {/* <h6 className='alignCenter'>FTP Terms & Conditions</h6> */}
-            <p style={{ marginTop: "-12px", fontSize: "17px" }}>
-              FLEXLAB are experts in blockchain development services, including
-              auditing of smart contracts. We can also conduct an audit on the
-              work done by other developers and provide a detailed report in
-              multiple languages. Please visit our website to or contact us by
-              email. Thank you
-            </p>
+            {this.state.resolutionMediatorSelected.bio === "" ?
+              <p style={{ marginTop: "-12px", fontSize: "17px" }}>
+                No Biography
+              </p> :
+              <textarea
+                className="BuisInput"
+                type="text"
+                value={this.state.resolutionMediatorSelected.bio}
+                placeholder="Your Bio"
+                ref="userBio"
+              ></textarea>
+            }
 
             <center>
               <div className="mediatorSocialLinks">
-                <img src={websiteIcon} alt="websiteIcon" />
+                {resolutionMediatorProfileWebsite}
+                {/* <img src={websiteIcon} alt="websiteIcon" /> */}
                 {resolutionMediatorProfileEmail}
                 <img src={telegramIcon} alt="telegramIcon" />
               </div>

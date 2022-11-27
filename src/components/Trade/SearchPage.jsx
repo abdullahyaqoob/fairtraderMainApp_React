@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 // import { Link, Route, Switch } from 'react-router-dom'
 // import { useNavigate } from "react-router-dom";
 
+import lookup from "country-code-lookup";
 // Images
 import fairtraderLogo from "../../Images/fairtraderLogo.png";
 import searchBtn from "../../Images/searchBtn.png";
@@ -18,7 +19,7 @@ import paymentTether from "../../Images/Menu/paymentTether.png";
 import paymentEth from "../../Images/Menu/paymentEth.png";
 import paymentMatic from "../../Images/Menu/paymentMatic.png";
 import paymentUsdt from "../../Images/Menu/paymentUsdt.png";
-import paymentBnb from "../../Images/Menu/paymentBnb.png";
+import profileUser from "../../Images/myProfile/profileUser.png";
 import navMessage from "../../Images/Menu/navMessage.png";
 // import walletLogo from '../../Images/wallet/connectLogo.png';
 import myProfileNextPage from "../../Images/myProfile/myProfileNextPage.png";
@@ -52,13 +53,14 @@ import mediatorNext from "../../Images/resolutionMediator/mediatorNext.png";
 import mediatorPrev from "../../Images/resolutionMediator/mediatorPrev.png";
 
 // Toast
-// import { ToastContainer, toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 // components
 // import HeaderNav from '../../components/HeaderNav.jsx';
 
 // css
+import '../css/flagIcon.min.css';
 import "../css/Search.css";
 import "../css/myProfile.css";
 import axios from "axios";
@@ -181,7 +183,7 @@ class App extends Component {
           requestSearchData
         )
         .then((res) => {
-          console.log(res.data.data);
+          console.log(res.data);
           this.setState({ serachedMediatorList: res.data.data });
           this.setState({ searchMediatorPage: true });
         })
@@ -192,6 +194,12 @@ class App extends Component {
   };
 
   render() {
+    function handleFlag(e) {
+      console.log(e);
+      let countryCOde = lookup.byCountry(e.country)
+      return <span style={{ fontSize: '25px', marginTop: '7px' }} className={`flag-icon flag-icon-${countryCOde.iso2.toLowerCase()}`}></span>
+    }
+
     let resolutionMediatorProfileEmail;
     let resolutionMediatorEmail = this.state.magnifierViewUserData.email
     if (resolutionMediatorEmail !== '') {
@@ -201,8 +209,22 @@ class App extends Component {
         </a>
     } else {
       resolutionMediatorProfileEmail =
-      <img src={emailIcon} alt="emailIcon" />
+        <img src={emailIcon} alt="emailIcon" onClick={() => { toast.warning("Not defined") }} />
     }
+
+    let resolutionMediatorProfileWebsite;
+    let resolutionMediatorWebsite = this.state.magnifierViewUserData.facebook
+    if (resolutionMediatorWebsite !== '') {
+      resolutionMediatorProfileWebsite =
+        <a href={resolutionMediatorWebsite} target="_blank">
+          <img src={websiteIcon} alt="websiteIcon" />
+        </a>
+    } else {
+      resolutionMediatorProfileWebsite =
+        <img src={websiteIcon} alt="websiteIcon" onClick={() => { toast.warning("Not defined") }} />
+    }
+
+
     return (
       <>
         <div className="authMainDiv">
@@ -655,15 +677,15 @@ class App extends Component {
                           <div className="mediatorBlackDiv">
                             <img
                               src={mediatorSuggested}
-                              id="location1"
+                              id="profileUser"
                               className="mediatorSuggested"
                               alt="mediatorSuggested"
                             />
                             {value.image === "" ? (
                               <img
-                                src={location1}
+                                src={profileUser}
                                 className="mediatorMainPic"
-                                alt="location1"
+                                alt="profileUser"
                               />
                             ) : (
                               <img
@@ -674,12 +696,12 @@ class App extends Component {
                                 alt={value.image}
                               />
                             )}
-                            <img
+                            {/* <img
                               src={mediatorAustraliaFlag}
                               className="mediatorAustraliaFlag"
                               alt="mediatorAustraliaFlag"
-                            />
-                            <p className="mediatorsInfoTxt">
+                            /> */}
+                            <p className="mediatorsInfoTxt" style={{ textAlign: 'center' }}>
                               {value.priceperhour}
                             </p>
                           </div>
@@ -715,7 +737,7 @@ class App extends Component {
                                 {this.state.magnifierViewUserData.image ===
                                   "" ? (
                                   <img
-                                    src={location8}
+                                    src={profileUser}
                                     alt="MediatorCardImg"
                                     style={{ borderRadius: "12px" }}
                                   />
@@ -759,12 +781,14 @@ class App extends Component {
                                   <h4>ID:</h4>
                                   <h4>Joined:</h4>
                                   <h4>ZIP:</h4>
-                                  <img
+                                  {handleFlag(this.state.magnifierViewUserData)}
+
+                                  {/* <img
                                     src={mediatorAustraliaFlag}
                                     width="35"
                                     alt=""
                                     style={{ marginTop: "7px" }}
-                                  />
+                                  /> */}
                                 </div>
                                 <div className="col-8">
                                   <h6>{this.state.magnifierViewUserData.id}</h6>
@@ -826,7 +850,7 @@ class App extends Component {
                               className="alignEnd"
                               style={{ float: "right" }}
                             >
-                              <p className="detailedSubDivP">77</p>
+                              <p className="detailedSubDivP">2</p>
                             </span>
                           </div>
                           <h4
@@ -844,7 +868,7 @@ class App extends Component {
                               className="alignEnd"
                               style={{ float: "right" }}
                             >
-                              <p className="detailedSubDivP">0</p>
+                              <p className="detailedSubDivP">1</p>
                             </span>
                           </div>
                           <h4
@@ -863,7 +887,7 @@ class App extends Component {
                               className="alignEnd"
                               style={{ float: "right" }}
                             >
-                              <p className="detailedSubDivP">$40 USD</p>
+                              <p className="detailedSubDivP">${this.state.magnifierViewUserData.priceperhour} USD</p>
                             </span>
                           </div>
                         </div>
@@ -872,22 +896,26 @@ class App extends Component {
                   </div>
 
                   <div className="contractBlackContainer">
-                    {/* <h6 className='alignCenter'>FTP Terms & Conditions</h6> */}
-                    <p style={{ marginTop: "-12px", fontSize: "17px" }}>
-                      FLEXLAB are experts in blockchain development services,
-                      including auditing of smart contracts. We can also conduct
-                      an audit on the work done by other developers and provide
-                      a detailed report in multiple languages. Please visit our
-                      website to or contact us by email. Thank you
-                    </p>
+                    {this.state.magnifierViewUserData.bio === "" ?
+                      <p style={{ marginTop: "-12px", fontSize: "17px" }}>
+                        No Biography
+                      </p> :
+                      <textarea
+                        className="BuisInput"
+                        type="text"
+                        value={this.state.magnifierViewUserData.bio}
+                        placeholder="Your Bio"
+                        ref="userBio"
+                      ></textarea>
+                    }
 
                     <center>
                       <div className="mediatorSocialLinks">
-                        <img src={websiteIcon} alt="websiteIcon" />
+                        {resolutionMediatorProfileWebsite}
                         {resolutionMediatorProfileEmail}
 
                         {/* <img src={emailIcon} alt="emailIcon" /> */}
-                        <img src={telegramIcon} alt="telegramIcon" />
+                        <img src={telegramIcon} alt="telegramIcon" onClick={() => { toast.warning("Not defined") }} />
                       </div>
                     </center>
 
@@ -937,13 +965,21 @@ class App extends Component {
                 </span>
 
                 <div className="selectResolutionBtnDiv">
-                  <p
-                    className="selectResolutionBtn alignCenter"
-                    style={{ width: "95%" }}
-                    onClick={() => this.searchHandler()}
-                  >
-                    Search
-                  </p>
+                  {this.state.searchMediatorPage === false ?
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      style={{ width: "95%" }}
+                      onClick={() => this.searchHandler()}
+                    >
+                      Search
+                    </p>
+                    :
+                    <p
+                      className="selectResolutionBtn alignCenter"
+                      style={{ width: "95%" }}
+                    >
+                      Contact
+                    </p>}
                 </div>
               </div>
             </div>

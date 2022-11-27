@@ -50,6 +50,7 @@ function App() {
   const [userAccountAddr, setuserAccountAddr] = useState("");
   const [userAccountEmail, setuserAccountEmail] = useState("");
   const [userAccountNtw, setuserAccountNtw] = useState("");
+  const [userBusinessname, setuserBusinessname] = useState("");
   const [metamaskStatus, setmetamaskStatus] = useState("");
   const [props, setprops] = useState({});
 
@@ -121,6 +122,7 @@ function App() {
             }
           } else if (res.data.data[0].email !== "") {
             setuserAccountEmail(res.data.data[0].email);
+            setuserBusinessname(res.data.data[0].buisnessname);
           }
         })
         .catch((err) => {
@@ -186,6 +188,7 @@ function App() {
                 MetamaskStatus: { metamaskStatus },
                 UserAccountAddr: { userAccountAddr },
                 userAccountEmail: { userAccountEmail },
+                userBusinessname: {userBusinessname}
               }}
               // props={props}
             />

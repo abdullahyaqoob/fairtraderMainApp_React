@@ -89,6 +89,7 @@ class CreateInvoice extends Component {
       userAccountAddress: "",
       handleViewPDF: false,
       propHendledData: '',
+      userBusinessname: 'Business Name'
     };
   }
 
@@ -108,6 +109,16 @@ class CreateInvoice extends Component {
 
       // console.log("Selected Image File: ", propData.invoicefile);
       console.log("formatedCalenderValue: ", propData.payment);
+    }
+
+    this.userHandleBusinessName();
+  }
+
+  userHandleBusinessName = async () => {
+    if (this.props["props"].userBusinessname.userBusinessname !== ""){
+      this.setState({userBusinessname: this.props["props"].userBusinessname.userBusinessname})
+     } else {
+      setTimeout(this.userHandleBusinessName, 250);
     }
 
   }
@@ -669,7 +680,7 @@ class CreateInvoice extends Component {
                   style={{ float: "left" }}
                   alt="walletFirstParaIcon"
                 />
-                <span className="invoiceFeildsTxt">ABC Services</span>
+                <span className="invoiceFeildsTxt">{this.state.userBusinessname}</span>
                 <span className="invoiceFirstToken">#180040</span>
                 <img
                   src={invoiceSetting}

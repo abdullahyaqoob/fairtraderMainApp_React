@@ -14,6 +14,7 @@
     "babel-preset-stage-3": "6.24.1",
     "babel-register": "6.26.0",
     "bootstrap": "4.3.1",
+    "country-code-lookup": "^0.0.20",
     "eth-rpc-errors": "^4.0.3",
     "gh-pages": "^4.0.0",
     "history": "^5.3.0",

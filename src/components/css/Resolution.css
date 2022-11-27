@@ -246,7 +246,10 @@
     font-size: 20px;
     margin-bottom: -2px;
 }
-
+.headDivTwoElements{
+    width: 91%;
+    margin: 0 auto;
+}
 .resolutionOptionstoggle {
     font-size: 19px;
     background-color: white;

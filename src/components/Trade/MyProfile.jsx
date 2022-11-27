@@ -71,62 +71,69 @@ class App extends Component {
       this.props["props"].UserAccountAddr.userAccountAddr !== "" &&
       this.props["props"].MetamaskStatus.metamaskStatus !== ""
     ) {
-      this.setState({
-        loggedInAccountAddr: this.props["props"].UserAccountAddr
-          .userAccountAddr,
-      });
-      // this.setState({ loggedInAccountNtw: this.props["props"].UserAccountNtw.userAccountNtw })
-      this.setState({
-        MetamaskCondition: this.props["props"].MetamaskStatus.metamaskStatus,
-      });
-      // console.log('Props Data: ', this.state.loggedInAccountAddr, this.state.loggedInAccountNtw, this.state.MetamaskCondition);
-      console.log(
-        "Props Data: ",
-        this.state.loggedInAccountAddr,
-        this.state.MetamaskCondition
-      );
+      setTimeout(() => {
 
-      if (this.state.MetamaskCondition === true) {
-        let userAccount = this.props["props"].UserAccountAddr.userAccountAddr;
+        this.setState({
+          loggedInAccountAddr: this.props["props"].UserAccountAddr
+            .userAccountAddr,
+        });
+        // this.setState({ loggedInAccountNtw: this.props["props"].UserAccountNtw.userAccountNtw })
+        this.setState({
+          MetamaskCondition: this.props["props"].MetamaskStatus.metamaskStatus,
+        });
+        // console.log('Props Data: ', this.state.loggedInAccountAddr, this.state.loggedInAccountNtw, this.state.MetamaskCondition);
+        console.log(
+          "Props Data: ",
+          this.state.loggedInAccountAddr,
+          this.state.MetamaskCondition
+        );
 
-        axios
-          .post(process.env.REACT_APP_BASE_URL + "user/searchUsers", {
-            walletaddress: userAccount,
-          })
-          .then((res) => {
-            let userData = res.data.data[0];
-            this.setState({ userData });
-            console.log(res.data.data[0]);
-            if (res.data.data.length !== 0) {
-              if (userData.country !== "") {
-                document.getElementById("myProfileCountry").value =
-                  userData.country;
+        if (this.state.MetamaskCondition === true) {
+          let userAccount = this.props["props"].UserAccountAddr.userAccountAddr;
+
+          axios
+            .post(process.env.REACT_APP_BASE_URL + "user/searchUsers", {
+              walletaddress: userAccount,
+            })
+            .then((res) => {
+              let userData = res.data.data[0];
+              this.setState({ userData });
+              console.log(res.data.data[0]);
+              if (res.data.data.length !== 0) {
+                if (userData.country !== "") {
+                  document.getElementById("myProfileCountry").value =
+                    userData.country;
+                }
+                if (userData.city !== "") {
+                  document.getElementById("myProfileCity").value = userData.city;
+                }
+                if (userData.zipcode !== 0) {
+                  document.getElementById("myProfileZipCode").value =
+                    userData.zipcode;
+                }
+                if (userData.buisnessname !== "") {
+                  document.getElementById("myProfileBusinessName").value =
+                    userData.buisnessname;
+                }
+                if (userData.priceperhour !== 0) {
+                  document.getElementById("myProfileRate").value =
+                    userData.priceperhour;
+                }
+                if (userData.email !== "") {
+                  document.getElementById("myProfileEmail").value =
+                    userData.email;
+                }
+                if (userData.industry !== "") {
+                  document.getElementById("myProfileIndustry").value =
+                    userData.industry;
+                }
               }
-              if (userData.city !== "") {
-                document.getElementById("myProfileCity").value = userData.city;
-              }
-              if (userData.zipcode !== 0) {
-                document.getElementById("myProfileZipCode").value =
-                  userData.zipcode;
-              }
-              if (userData.language !== "") {
-                document.getElementById("myProfileLanguage").value =
-                  userData.language;
-              }
-              if (userData.email !== "") {
-                document.getElementById("myProfileEmail").value =
-                  userData.email;
-              }
-              if (userData.industry !== "") {
-                document.getElementById("myProfileIndustry").value =
-                  userData.industry;
-              }
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }, 1);
     } else {
       setTimeout(this.userAddressHandle, 250);
     }
@@ -136,14 +143,16 @@ class App extends Component {
     let myProfileCountry = document.getElementById("myProfileCountry").value;
     let myProfileCity = document.getElementById("myProfileCity").value;
     let myProfileZipCode = document.getElementById("myProfileZipCode").value;
-    let myProfileLanguage = document.getElementById("myProfileLanguage").value;
+    let myProfileBusinessName = document.getElementById("myProfileBusinessName").value;
+    let myProfileRate = document.getElementById("myProfileRate").value;
     let myProfileEmail = document.getElementById("myProfileEmail").value;
     let myProfileIndustry = document.getElementById("myProfileIndustry").value;
     console.log(
       myProfileCountry,
       myProfileCity,
       myProfileZipCode,
-      myProfileLanguage,
+      myProfileBusinessName,
+      myProfileRate,
       myProfileEmail,
       myProfileIndustry
     );
@@ -154,6 +163,14 @@ class App extends Component {
       });
     } else if (myProfileEmail === "") {
       toast.error("Please First enter Email", {
+        position: "top-right",
+      });
+    } else if (myProfileBusinessName === "") {
+      toast.error("Please First enter Business name", {
+        position: "top-right",
+      });
+    } else if (myProfileRate === "") {
+      toast.error("Please First enter hourly rate", {
         position: "top-right",
       });
     } else if (myProfileCountry === "") {
@@ -179,7 +196,8 @@ class App extends Component {
           country: myProfileCountry,
           city: myProfileCity,
           zipcode: myProfileZipCode,
-          language: myProfileLanguage,
+          buisnessname: myProfileBusinessName,
+          priceperhour: myProfileRate,
           email: myProfileEmail,
           industry: myProfileIndustry,
         })
@@ -527,7 +545,7 @@ class App extends Component {
                 </div>
               </Link>
 
-              <div className="resolutionOptionstoggle myProfileFeild">
+              {/* <div className="resolutionOptionstoggle myProfileFeild">
                 <span className="alignStart">
                   <img
                     src={myProfileLanguage}
@@ -553,7 +571,94 @@ class App extends Component {
                     alt="profileFeildEdit"
                   />
                 </span>
+              </div> */}
+              <div className="headDivTwoElements">
+                <div className="row">
+                  <div className="col-7 resolutionOptionstoggle myProfileFeild" style={{ position: 'relative', right: '2px' }}>
+                    <span className="alignStart">
+                      {/* <img
+                    src={myProfileLanguage}
+                    alt="myProfileLanguage"
+                    style={{ marginTop: "-1px", marginRight: "10px" }}
+                  /> */}
+                      <input
+                        type="InvoiceinvoiceFields"
+                        className="mutualFriendInput invoiceFields"
+                        id="myProfileBusinessName"
+                        placeholder="Business Name"
+                        style={{ marginTop: "1px" }}
+                      />
+                    </span>
+                    <span
+                      className="alignEnd"
+                      style={{ float: "right", marginLeft: "-8px" }}
+                    >
+                      <img
+                        src={profileFeildEdit}
+                        style={{ marginTop: "0px" }}
+                        className="floatRight"
+                        alt="profileFeildEdit"
+                      />
+                    </span>
+                  </div>
+
+                  <div className="col-5 resolutionOptionstoggle myProfileFeild" style={{ position: 'relative', left: '2px' }}>
+                    <span className="alignStart">
+                      {/* <img
+                    src={myProfileLanguage}
+                    alt="myProfileLanguage"
+                    style={{ marginTop: "-1px", marginRight: "10px" }}
+                  /> */}
+                      <input
+                        type="InvoiceinvoiceFields"
+                        className="mutualFriendInput invoiceFields"
+                        id="myProfileRate"
+                        placeholder="Price/hr (USD)"
+                        style={{ marginTop: "1px" }}
+                      />
+                    </span>
+                  </div>
+                </div>
               </div>
+              {/* <div className="headDivTwoElements">
+               <div className="resolutionOptionstoggle myProfileFeild" style={{width: '59%'}}>
+                <span className="alignStart">
+                
+                  <input
+                    type="InvoiceinvoiceFields"
+                    className="mutualFriendInput invoiceFields"
+                    id="myProfileBusinessName"
+                    placeholder="Business Name"
+                    style={{ marginTop: "1px" }}
+                  />
+                </span>
+                <span
+                  className="alignEnd"
+                  style={{ float: "right", marginLeft: "-8px" }}
+                >
+                  <img
+                    src={profileFeildEdit}
+                    style={{ marginTop: "0px" }}
+                    className="floatRight"
+                    alt="profileFeildEdit"
+                  />
+                </span>
+              </div>
+
+              <div className="resolutionOptionstoggle myProfileFeild" style={{width: '40%'}}>
+                <span className="alignStart">
+               
+                  <input
+                    type="InvoiceinvoiceFields"
+                    className="mutualFriendInput invoiceFields"
+                    id="myProfileRate"
+                    placeholder="Price/hr (USD)"
+                    style={{ marginTop: "1px" }}
+                  />
+                </span>
+            
+              </div>
+              </div> */}
 
               <div className="resolutionOptionstoggle myProfileFeild">
                 <span className="alignStart">

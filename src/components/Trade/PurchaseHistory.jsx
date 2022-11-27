@@ -101,7 +101,8 @@ class PurchaseHistory extends Component {
       invoicePurchaseHistoryDisputeData: [],
       userAccountEmail: '',
       fivePercentOfInvoiceInFTPCrntPrice: 0,
-      ethSwapAddressWithConnectedNetworkID: ''
+      ethSwapAddressWithConnectedNetworkID: '',
+      bnbPriceInUSD: ''
     };
   }
   // handlePayNowFunc1stStep = () => {
@@ -110,6 +111,15 @@ class PurchaseHistory extends Component {
     this.loadBlockchainData();
 
     this.userAddressHandle();
+
+    axios.get("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT")
+      .then((res) => {
+        console.log(res.data.price);
+        let fixedPrice = Number(res.data.price).toFixed(1)
+        this.setState({ bnbPriceInUSD: fixedPrice })
+      }).then((err) => {
+        console.log(err);
+      })
   };
   loadBlockchainData = async () => {
     let MetamaskStatus;
@@ -199,6 +209,41 @@ class PurchaseHistory extends Component {
       }).catch((err) => {
         console.log(err);
       })
+  }
+  handleReleasePayment = () => {
+    console.log(this.state.magnifierViewUser);
+    if (this.state.userAddres !== ("" || undefined) && this.state.magnifierViewUser.sellerwalletaddress !== ("" || undefined)) {
+      this.state.ethSwap.methods
+        .buyerPaySimple(
+          this.state.magnifierViewUser.sellerwalletaddress, window.web3.utils.toWei(this.state.magnifierViewUser.Amount, "Ether")
+        )
+        .send({
+          from: this.state.userAddres,
+        })
+        .on("transactionHash", (hash) => {
+          axios
+            .put(`${process.env.REACT_APP_BASE_URL}order/buyerPaySimple`, {
+              orderId: this.state.magnifierViewUser.id
+            })
+            .then((res) => {
+              console.log(res);
+              toast.success("Successfully Paid", {
+                position: "top-right",
+              });
+
+              setTimeout(() => {
+                window.location.reload()
+              }, 2000);
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+        })
+    } else {
+      toast.warning("Something get wrong, please refresh the page", {
+        position: "top-right",
+      });
+    }
   }
   handleSendMessageToMed = () => {
     let mediatorMsgField = document.getElementById("sendMsgToMed").value
@@ -1078,16 +1123,31 @@ class PurchaseHistory extends Component {
             Start Mediation
           </p>
         );
+        // } else if (this.state.magnifierViewUser.simplePaid === "1") {
+      } else if (this.state.magnifierViewUser.simplePaid === "0") {
+        invoicepaymentStopBtnTxt = (
+          <p
+            className="selectResolutionBtn alignCenter"
+            onClick={() => {
+              toast.warning("Already Paid", {
+                position: "top-right",
+              });
+            }}
+            style={{ width: "200px" }}
+          >
+            Released Payment
+          </p>
+        );
       } else if (this.state.purchasehistoryPaidBtn !== false) {
         invoicepaymentStopBtnTxt = (
           <p
             className="selectResolutionBtn alignCenter"
             onClick={() => {
-              // this.handlePayNowFunc2ndStep();
+              this.handleReleasePayment();
             }}
             style={{ width: "200px" }}
           >
-            View Options
+            Release Payment
           </p>
         );
       } else if (this.state.payingStart === false) {
@@ -1410,7 +1470,7 @@ class PurchaseHistory extends Component {
                       <h6 style={{ color: "#c62127" }}>{this.state.magnifierViewUser.mediatorIndustry} Work</h6>
                       <h6>
                         Total <span style={{ color: "lightgrey" }}>.</span>
-                        ${this.state.magnifierViewUser.Amount}USD
+                        ${Number(this.state.magnifierViewUser.Amount * this.state.bnbPriceInUSD).toFixed(1)}USD
                       </h6>
                     </div>
                     <div
@@ -2187,7 +2247,7 @@ class PurchaseHistory extends Component {
                                         </p>
                                         <p className="colorWhite">
                                           {/* <b>USD $1120.78</b> */}
-                                          <b>USD ${val.Amount}</b>
+                                          <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                         </p>
                                       </p>
                                     </div>
@@ -2244,7 +2304,7 @@ class PurchaseHistory extends Component {
                                         </p>
                                         <p>
                                           {/* <b>USD $1120.78</b> */}
-                                          <b>USD ${val.Amount}</b>
+                                          <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                         </p>
                                       </p>
                                     </div>
@@ -2259,7 +2319,7 @@ class PurchaseHistory extends Component {
                               Total (USD){" "}
                               <span style={{ color: "black" }}>.</span>{" "}
                               {/* $2,512.98 */}$
-                              {this.state.totalAmountVarUnpaid}
+                              {Number(this.state.totalAmountVarUnpaid * this.state.bnbPriceInUSD).toFixed(1)}
                             </p>
                           </div>
 
@@ -2353,7 +2413,7 @@ class PurchaseHistory extends Component {
                               </b>
                             </p>
                             <p>
-                              <b>USD ${this.state.SelectedOrder.Amount}</b>
+                              <b>USD ${Number(this.state.SelectedOrder.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                               {/* <b>USD $126.00</b> */}
                             </p>
                           </p>
@@ -2536,7 +2596,7 @@ class PurchaseHistory extends Component {
                                     </p>
                                     <p>
                                       {/* <b>USD $1120.78</b> */}
-                                      <b>USD ${val.Amount}</b>
+                                      <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                     </p>
                                   </p>
                                 </div>
@@ -2548,7 +2608,7 @@ class PurchaseHistory extends Component {
                           <p className="invoiceUnpaidTotalTxt">
                             Total (USD){" "}
                             <span style={{ color: "black" }}>.</span> $
-                            {this.state.totalAmountVarPaid}
+                            {Number(this.state.totalAmountVarPaid * this.state.bnbPriceInUSD).toFixed(1)}
                           </p>
                         </div>
                         {invoicepaidOptionsBtn}
@@ -2754,7 +2814,7 @@ class PurchaseHistory extends Component {
                                     }
                                     <p>
                                       {/* <b>USD $1120.78</b> */}
-                                      <b>USD ${val.Amount}</b>
+                                      <b>USD ${Number(val.Amount * this.state.bnbPriceInUSD).toFixed(1)}</b>
                                     </p>
                                   </p>
                                 </div>
@@ -2766,7 +2826,7 @@ class PurchaseHistory extends Component {
                           <p className="invoiceUnpaidTotalTxt">
                             Total (USD){" "}
                             <span style={{ color: "black" }}>.</span> $
-                            {this.state.totalAmountVarPaid}
+                            {Number(this.state.totalAmountVarPaid * this.state.bnbPriceInUSD).toFixed(1)}
                           </p>
                         </div>
 
