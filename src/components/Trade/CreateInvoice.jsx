@@ -96,7 +96,7 @@ class CreateInvoice extends Component {
   componentDidMount() {
     let propData = this.props.propdata
     if (propData !== undefined) {
-      console.log('entered');
+      console.log('entered', propData);
       this.setState({ propHendledData: propData })
 
       document.getElementById("createInvoiceName").value = propData.customername
@@ -115,10 +115,20 @@ class CreateInvoice extends Component {
   }
 
   userHandleBusinessName = async () => {
-    if (this.props["props"].userBusinessname.userBusinessname !== ""){
-      this.setState({userBusinessname: this.props["props"].userBusinessname.userBusinessname})
-     } else {
-      setTimeout(this.userHandleBusinessName, 250);
+    console.log(this.props["props"]);
+    console.log(this.props.businessName);
+    if (this.props["props"] === undefined) {
+      if (this.props.businessName !== undefined) {
+        this.setState({ userBusinessname: this.props.businessName })
+      } else {
+        setTimeout(this.userHandleBusinessName, 250);
+      }
+    } else {
+      if (this.props["props"].userBusinessname.userBusinessname !== "") {
+        this.setState({ userBusinessname: this.props["props"].userBusinessname.userBusinessname })
+      } else {
+        setTimeout(this.userHandleBusinessName, 250);
+      }
     }
 
   }
@@ -157,7 +167,7 @@ class CreateInvoice extends Component {
 
   updateInvoiceHandler = async () => {
     let createInvoiceAmount = document.getElementById("createInvoiceAmount")
-    .value;
+      .value;
     let propHendledData = this.state.propHendledData;
     console.log("update", propHendledData);
     if (this.state.ProfileSelectedFileQual === "" || createInvoiceAmount === "" || this.state.formatedCalenderValue === "") {
@@ -672,7 +682,7 @@ class CreateInvoice extends Component {
           )}
 
           <div id="invoiceBLackContainer">
-            <div className="invoiceBlackContainer" id="invoiceBlackContainer">
+            <div className="invoiceBlackContainer createInvoiceBlackContainer createInvoiceBlackContainerMain" id="invoiceBlackContainer">
               <p className="invoiceFirstLine">
                 <img
                   src={invoiceProfile}

@@ -1,854 +1,905 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .authMainDiv {
-    height: 100vh;
-    background-color: #000000;
-    width: 100%;
-    margin: 0 auto;
+  height: 100vh;
+  background-color: #000000;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .topNav {
-    width: 90%;
-    margin: 0 auto;
-    padding-top: 25px;
-    /* background-color: red; */
+  width: 90%;
+  margin: 0 auto;
+  padding-top: 25px;
+  /* background-color: red; */
 }
 
 .topNavLinks {
-    width: 93%;
-    margin: 0 auto;
-    padding-right: 5px;
-    /* padding-top: 12px; */
+  width: 93%;
+  margin: 0 auto;
+  padding-right: 5px;
+  /* padding-top: 12px; */
 }
 
 .iconNav {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .alignStart {
-    text-align: start;
+  text-align: start;
 }
 
 .alignCenter {
-    text-align: center;
+  text-align: center;
 }
 
 .alignEnd {
-    text-align: end;
+  text-align: end;
 }
 
 .activeImg {
-    background-color: #1a9afe;
-    /* background-color: red; */
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    padding-top: 10px;
-    height: 95px;
-    position: relative;
-    left: -14px;
-    width: 140%;
-    z-index: 9;
+  background-color: #1a9afe;
+  /* background-color: red; */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  padding-top: 10px;
+  height: 95px;
+  position: relative;
+  left: -14px;
+  width: 140%;
+  z-index: 9;
 }
 
 .activeImgInvoice {
-    background-color: #099933;
-    margin-left: 0px;
+  background-color: #099933;
+  margin-left: 0px;
 }
 
 .activeImgContract {
-    background-color: #FE18B3;
-    margin-left: -1px;
-    width: 102px;
-    /* padding-top: 12px;
+  background-color: #fe18b3;
+  margin-left: -1px;
+  width: 102px;
+  /* padding-top: 12px;
     /* height: 50px !important; */
 }
 
 .activeImgWallet {
-    background-color: #9900FF;
-    margin-left: -4px;
-    width: 148%;
-    border-top-left-radius: 12px;
-    padding-top: 10px;
-    height: 95px;
-    position: relative;
-    left: -14px;
-    z-index: 9;
+  background-color: #9900ff;
+  margin-left: -4px;
+  width: 148%;
+  border-top-left-radius: 12px;
+  padding-top: 10px;
+  height: 95px;
+  position: relative;
+  left: -14px;
+  z-index: 9;
 }
 
 .handleMainPageContract {
-    /* height: 78% !important;
+  /* height: 78% !important;
     margin-top: -92px !important; */
-    /* background-image: url("../../Images/contract\ background.png") !important; */
-    /* height: 91% !important;
+  /* background-image: url("../../Images/contract\ background.png") !important; */
+  /* height: 91% !important;
     margin-top: -120px !important; */
-    /* background-color: red !important; */
+  /* background-color: red !important; */
 }
 
 .handleMainPageWallet {
-    background-image: url("../../Images/Wallet\ Tab\ -\ background.png") !important;
+  background-image: url("../../Images/Wallet\ Tab\ -\ background.png") !important;
 }
 
 .iconSubNav {
-    padding-top: 12px;
+  padding-top: 12px;
 }
 
 .handleMainPage {
-    width: 99%;
-    margin: 0 auto;
-    margin-top: -18px;
-    /* background-image: url("../../Images/resolutionBackground.png"); */
-    background-image: linear-gradient(to bottom, #16aaff, black);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    margin-top: -60px;
-    padding-top: 45px;
-    /* height: 70%; */
-    /* height: 552px; */
-    height: 85vh;
-    z-index: 999 !important;
+  width: 99%;
+  margin: 0 auto;
+  margin-top: -18px;
+  /* background-image: url("../../Images/resolutionBackground.png"); */
+  background-image: linear-gradient(to bottom, #16aaff, black);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-top: -60px;
+  padding-top: 45px;
+  /* height: 70%; */
+  /* height: 552px; */
+  height: 85vh;
+  z-index: 999 !important;
 }
 
 .mainContainer {
-    width: 87.6%;
-    margin: 0 auto;
+  width: 87.6%;
+  margin: 0 auto;
 }
 
 /* ******************************************************************************************************************** */
 /* ON OFF SWITCH */
 .onoffswitch {
-    position: relative;
-    /* width: 72px; */
-    width: 64px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+  position: relative;
+  /* width: 72px; */
+  width: 64px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .onoffswitch-checkbox {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .onoffswitch-label {
-    display: block;
-    overflow: hidden;
-    cursor: pointer;
-    /* border: 2px solid #999999; */
-    border-radius: 10px;
-    background-color: #DEB01A;
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  /* border: 2px solid #999999; */
+  border-radius: 10px;
+  background-color: #deb01a;
 }
 
 .onoffswitch-inner {
-    display: block;
-    width: 200%;
-    margin-left: -100%;
-    transition: margin 0.3s ease-in 0s;
+  display: block;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 0.3s ease-in 0s;
 }
 
-.onoffswitch-inner:before, .onoffswitch-inner:after {
-    display: block;
-    float: left;
-    width: 50%;
-    /* height: 30px; */
-    height: 25px;
-    padding: 0;
-    line-height: 26px;
-    font-size: 18px;
-    color: white;
-    font-family: Trebuchet, Arial, sans-serif;
-    font-weight: bold;
-    box-sizing: border-box;
+.onoffswitch-inner:before,
+.onoffswitch-inner:after {
+  display: block;
+  float: left;
+  width: 50%;
+  /* height: 30px; */
+  height: 25px;
+  padding: 0;
+  line-height: 26px;
+  font-size: 18px;
+  color: white;
+  font-family: Trebuchet, Arial, sans-serif;
+  font-weight: bold;
+  box-sizing: border-box;
 }
 
 .onoffswitch-inner:before {
-    content: "On";
-    padding-left: 7px;
-    background-color: #DEB01A;
-    color: #FFFFFF;
-    position: relative;
-    left: -34px;
+  content: "On";
+  padding-left: 7px;
+  background-color: #deb01a;
+  color: #ffffff;
+  position: relative;
+  left: -34px;
 }
 
 .onoffswitch-inner:after {
-    content: "off";
-    padding-right: 8px;
-    background-color: #485E88;
-    color: #FFFFFF;
-    text-align: right;
+  content: "off";
+  padding-right: 8px;
+  background-color: #485e88;
+  color: #ffffff;
+  text-align: right;
 }
 
 .onoffswitch-switch {
-    display: block;
-    width: 21px;
-    height: 21px;
-    margin: 2px;
-    margin-right: 7px;
-    background: #FFFFFF;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 33px;
-    /* border: 2px solid #999999; */
-    border-radius: 15px;
-    transition: all 0.3s ease-in 0s;
+  display: block;
+  width: 21px;
+  height: 21px;
+  margin: 2px;
+  margin-right: 7px;
+  background: #ffffff;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 33px;
+  /* border: 2px solid #999999; */
+  border-radius: 15px;
+  transition: all 0.3s ease-in 0s;
 }
 
-.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-inner {
-    margin-left: 0;
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  margin-left: 0;
 }
 
-.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-switch {
-    right: 0px;
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+  right: 0px;
 }
 
 /* switch two */
 
 .onoffswitch-label2 {
-    background-color: #099C3A;
+  background-color: #099c3a;
 }
 
 .onoffswitch-inner2:before {
-    background-color: #099C3A;
+  background-color: #099c3a;
 }
 
 /* switch three */
 
 .onoffswitch-label3 {
-    background-color: #009AFE;
+  background-color: #009afe;
 }
 
 .onoffswitch-inner3:before {
-    background-color: #009AFE;
+  background-color: #009afe;
 }
 
 /* Contract Swithces */
 
 .contractSwithOneLabel {
-    background-color: #099933;
+  background-color: #099933;
 }
 
 .contractSwithOneInner:before {
-    background-color: #099933;
+  background-color: #099933;
 }
 
 /* ******************************************************************************************************************** */
 
 .selectResoutionTxt {
-    font-weight: bold;
-    padding-top: 7px;
-    color: white;
-    /* margin-left: 40px; */
-    font-size: 20px;
-    margin-bottom: -2px;
+  font-weight: bold;
+  padding-top: 7px;
+  color: white;
+  /* margin-left: 40px; */
+  font-size: 20px;
+  margin-bottom: -2px;
 }
-.headDivTwoElements{
-    width: 91%;
-    margin: 0 auto;
+.headDivTwoElements {
+  width: 91%;
+  margin: 0 auto;
 }
 .resolutionOptionstoggle {
-    font-size: 19px;
-    background-color: white;
-    margin: 0 auto;
-    margin-top: 10px;
-    height: 40px;
-    /* width: 360px; */
-    width: 100%;
-    padding: 8px;
-    padding-right: 14px;
-    padding-left: 18px;
-    border-radius: 10px;
-    font-weight: bold;
-    color: #4E658D;
+  font-size: 19px;
+  background-color: white;
+  margin: 0 auto;
+  margin-top: 10px;
+  height: 40px;
+  /* width: 360px; */
+  width: 100%;
+  padding: 8px;
+  padding-right: 14px;
+  padding-left: 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: #4e658d;
 }
 
-.resolutionOptionstoggleAutoSelect{
-    background-color: transparent;
-    color: white;
+.resolutionOptionstoggleAutoSelect {
+  background-color: transparent;
+  color: white;
 }
 
 #resolutionAutomaticTxt {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, 50%);
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    color: #21FEFE;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  color: #21fefe;
 }
 
 .optionChange {
-    border: 3px solid #5ac0db;
-    background-color: #111224;
-    padding: 4px;
-    color: #99feff;
-    padding-right: 14px;
-    padding-left: 7px;
+  border: 3px solid #5ac0db;
+  background-color: #111224;
+  padding: 4px;
+  color: #99feff;
+  padding-right: 14px;
+  padding-left: 7px;
 }
 
 .changeBox {
-    font-size: 18px;
-    background-color: #1dccff;
-    color: #000000;
-    width: 85px;
-    text-align: center;
-    border-radius: 5px;
-    margin-top: -1px;
+  font-size: 18px;
+  background-color: #1dccff;
+  color: #000000;
+  width: 85px;
+  text-align: center;
+  border-radius: 5px;
+  margin-top: -1px;
 }
 
 .selectResolutionDIv {
-    width: 100% !important;
-    position: fixed;
-    left: 0;
-    bottom: 0px;
-    height: 90px;
-    z-index: 0 !important;
+  width: 100% !important;
+  position: fixed;
+  left: 0;
+  bottom: 0px;
+  height: 90px;
+  z-index: 0 !important;
 }
 
 .selectResolutionBtnDiv {
-    position: fixed;
-    bottom: 15px;
-    /* margin-top: 50px; */
-    width: 50%;
-    left: 50%;
-    transform: translate(-50%, 0%);
+  position: fixed;
+  bottom: 15px;
+  /* margin-top: 50px; */
+  width: 50%;
+  left: 50%;
+  transform: translate(-50%, 0%);
 }
 
 .selectResolutionBtn {
-    font-size: 19px;
-    color: #21FFFE;
-    border: 3px solid #21FFFE;
-    background: linear-gradient(to top, #043355, #00060A 75%);
-    font-weight: bold;
-    height: 48px;
-    padding-top: 9px;
-    padding-bottom: 8px;
-    border-radius: 15px;
+  font-size: 19px;
+  color: #21fffe;
+  border: 3px solid #21fffe;
+  background: linear-gradient(to top, #043355, #00060a 75%);
+  font-weight: bold;
+  height: 48px;
+  padding-top: 9px;
+  padding-bottom: 8px;
+  border-radius: 15px;
 }
 
 .selectResolutionMediatorBtn {
-    font-size: 19px !important;
-    color: #21FFFE;
-    border: 3px solid #21FFFE;
-    background: linear-gradient(to top, #043355, #00060A 75%);
-    font-weight: bold;
-    height: 48px;
-    padding-top: 12px;
-    padding-bottom: 8px;
-    border-radius: 15px;
+  font-size: 19px !important;
+  color: #21fffe;
+  border: 3px solid #21fffe;
+  background: linear-gradient(to top, #043355, #00060a 75%);
+  font-weight: bold;
+  height: 48px;
+  padding-top: 12px;
+  padding-bottom: 8px;
+  border-radius: 15px;
 }
 
 .mutualFriend {
-    color: #009933;
-    padding-left: 12px;
-    padding-top: 4px;
+  color: #009933;
+  padding-left: 12px;
+  padding-top: 4px;
 }
 
 .registeredmediator {
-    font-size: 15px;
-    background-color: #00CCFF;
-    font-weight: normal;
+  font-size: 15px;
+  background-color: #00ccff;
+  font-weight: normal;
 }
 
 .registeredCompanies {
-    font-size: 15px;
-    background-color: #00CCFF;
-    font-weight: normal;
-    /* height: 260px; */
-    height: 28.7%;
-    width: 86.7%;
-    /* width: 360px; */
-    margin-left: -18px;
-    /* border-radius: 12px; */
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    border-bottom-left-radius: 12px !important;
-    border-bottom-right-radius: 12px !important;
-    position: absolute;
-    /* margin-top: 100px; */
-    overflow: scroll;
-    padding-left: 18px;
-    padding-bottom: 10px;
-    /* margin-top: -5px; */
+  font-size: 15px;
+  background-color: #00ccff;
+  font-weight: normal;
+  /* height: 260px; */
+  height: 28.7%;
+  width: 86.7%;
+  /* width: 360px; */
+  margin-left: -18px;
+  /* border-radius: 12px; */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-left-radius: 12px !important;
+  border-bottom-right-radius: 12px !important;
+  position: absolute;
+  /* margin-top: 100px; */
+  overflow: scroll;
+  padding-left: 18px;
+  padding-bottom: 10px;
+  /* margin-top: -5px; */
 }
 
 .dropdownRegistered {
-    width: 40px;
-    margin-top: -3.9px;
-    margin-right: -7px;
+  width: 40px;
+  margin-top: -3.9px;
+  margin-right: -7px;
 }
 
 .registeredCompanies p {
-    margin-bottom: -1px;
-    color: #000000;
-    cursor: pointer;
-    font-size: 18px;
+  margin-bottom: -1px;
+  color: #000000;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 .mutualChange {
-    font-size: 18px;
-    background-color: #009933;
+  font-size: 18px;
+  background-color: #009933;
 }
 
 .mutualFriendChangeDiv {
-    margin-top: 0.5px;
+  margin-top: 0.5px;
 }
 
 .mutualFriendInput {
-    font-size: 18px;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    font-weight: normal;
+  font-size: 18px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-weight: normal;
 }
 
 .dropdownDiv {
-    width: 25px;
-    height: 24px;
-    background-color: #000000;
+  width: 25px;
+  height: 24px;
+  background-color: #000000;
 }
 
 /* SELECT MEDIATOR selectMediatorHeading */
 
 .selectMediatorHeading {
-    font-size: 18px;
-    color: black;
-    margin-top: 20px;
+  font-size: 18px;
+  color: black;
+  margin-top: 20px;
 }
 
 .SlcMedHeadingMiddle {
-    margin-left: 25px;
-    margin-right: 25px;
+  margin-left: 25px;
+  margin-right: 25px;
 }
 
 .slcMdtrActive {
-    color: white;
+  color: white;
 }
 
 .slcMedBlackContainer {
-    background-color: black;
-    width: 93%;
-    /* height: 430px; */
-    height: 60vh;
-    border-radius: 10px;
-    margin: 0 auto;
-    margin-top: 9px;
-    color: white;
-    padding: 19px;
-    /* padding-bottom: 100px; */
+  background-color: black;
+  width: 93%;
+  /* height: 430px; */
+  height: 60vh;
+  border-radius: 10px;
+  margin: 0 auto;
+  margin-top: 9px;
+  color: white;
+  padding: 19px;
+  /* padding-bottom: 100px; */
 }
-.serachBasedMediator{
-    padding: 0;
-    margin-top: 0;
+.serachBasedMediator {
+  padding: 0;
+  margin-top: 0;
 }
 
 .mediatorBlackBackground {
-    background-color: #000000;
-    width: 100%;
-    position: fixed;
-    bottom: 0;
-    height: 96px;
+  background-color: #000000;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  height: 96px;
 }
 
 .mediatorBlueDiv {
-    background-color: #1778F4;
-    /* height: 195px; */
-    height: 24.7vh;
-    border-radius: 10px;
-    margin: 0 auto;
-    text-align: center;
-    width: 104%;
-    padding: 8px;
-    margin-bottom: -7px;
+  background-color: #1778f4;
+  /* height: 195px; */
+  height: 24.7vh;
+  border-radius: 10px;
+  margin: 0 auto;
+  text-align: center;
+  width: 104%;
+  padding: 8px;
+  margin-bottom: -7px;
 }
 
 .mediatorBlueDivMarginLeft {
-    margin-left: -5px;
+  margin-left: -5px;
 }
 
 .mediatorBlackDiv {
-    /* height: 179px; */
-    height: 22.7vh;
-    background-color: #000000;
-    border-radius: 10px;
-    padding: 10px;
+  /* height: 179px; */
+  height: 22.7vh;
+  background-color: #000000;
+  border-radius: 10px;
+  padding: 10px;
 }
 
 .mediatorMainPic {
-    width: 127px;
-    height: 122px;
+  width: 127px;
+  height: 122px;
 }
 
 .mediatorSearch {
-    position: absolute;
-    right: 10px;
-    top: 4px;
+  position: absolute;
+  right: 10px;
+  top: 4px;
 }
 
 .mediatorSuggested {
-    position: absolute;
-    bottom: 48px;
-    display: none;
+  position: absolute;
+  bottom: 48px;
+  display: none;
 }
 
 .mediatorBlueDivMarginLeft .mediatorSearch {
-    right: 14px;
+  right: 14px;
 }
 
 .mediatorBlueDivMarginLeft .mediatorSuggested {
-    margin-left: 1px;
+  margin-left: 1px;
 }
 
 .mediatorAustraliaFlag {
-    float: left;
-    margin-top: 10px;
-    margin-left: 3px;
-    margin-right: 13px;
+  float: left;
+  margin-top: 10px;
+  margin-left: 3px;
+  margin-right: 13px;
 }
 
 .mediatorsInfoTxt {
-    margin-top: 9px;
-    font-size: 20px;
-    text-align: start;
-    font-weight: bold;
+  margin-top: 9px;
+  font-size: 20px;
+  text-align: start;
+  font-weight: bold;
 }
 
 .mediatorTrustTxt {
-    text-align: center;
-    font-size: 25px;
-    margin-top: 6px;
+  text-align: center;
+  font-size: 25px;
+  margin-top: 6px;
 }
 
 .mediatorPriceTxt {
-    font-size: 22px;
-    margin-top: 9px;
+  font-size: 22px;
+  margin-top: 9px;
 }
 
 /* *************************************resolutionMagnifierViewDiv**************************** */
 .resolutionMagnifierViewDiv {
-    background-image: url("../../Images/resolutionBackground.png");
+  background-image: url("../../Images/resolutionBackground.png");
 }
 
 .mediatorSocialLinks img {
-    padding-left: 12px;
-    padding-right: 12px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .pinkConainerMain {
-    width: 93%;
-    margin: 0 auto;
-    margin-top: 25px;
-    margin-bottom: 10px;
+  width: 93%;
+  margin: 0 auto;
+  margin-top: 25px;
+  margin-bottom: 10px;
 }
 
 .MediatorCardContainer {
-    /* background-color: white; */
-    height: 250px;
-    padding: 0;
+  /* background-color: white; */
+  height: 250px;
+  padding: 0;
 }
 
 .MediatorCardHead {
-    background-color: #093399;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    height: 95px;
-    padding-left: 7px;
-    padding-right: 12px;
+  background-color: #093399;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  height: 95px;
+  padding-left: 7px;
+  padding-right: 12px;
 }
 
 .MediatorCard {
-    background-color: white;
-    width: 95%;
-    height: 245px;
-    border: 3px solid white;
-    border-radius: 10px;
+  background-color: white;
+  width: 95%;
+  height: 245px;
+  border: 3px solid white;
+  border-radius: 10px;
 }
 
 .MediatorCardImg {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .MediatorCardImg img {
-    width: 79px;
-    height: 76px;
+  width: 79px;
+  height: 76px;
 }
 
 .MediatorCardHeadHeading h4 {
-    color: white;
-    font-size: 15px;
-    position: relative;
-    top: 16px;
-    font-weight: bold;
+  color: white;
+  font-size: 15px;
+  position: relative;
+  top: 16px;
+  font-weight: bold;
 }
 
 .MediatorCardHeadImg img {
-    position: relative;
-    top: 9px;
+  position: relative;
+  top: 9px;
 }
 
 .MediatorCardHeadImg img {
-    float: right;
+  float: right;
 }
-
 
 .MediatorCardBottom {
-    padding-left: 7px;
-    padding-right: 7px;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
 .mediatorName {
-    font-size: 17px;
-    color: black;
-    font-weight: bold;
-    margin-top: 9px;
-    margin-bottom: -1px;
+  font-size: 17px;
+  color: black;
+  font-weight: bold;
+  margin-top: 9px;
+  margin-bottom: -1px;
 }
 
 .mediatorDisc {
-    font-size: 17px;
-    color: #093399;
-    font-weight: bold;
+  font-size: 17px;
+  color: #093399;
+  font-weight: bold;
 }
 
 .medeatorDiscBox {
-    border-left: 3px solid #176AFF;
-    height: 85px;
-    padding-left: 6px;
-    padding-top: 0px;
+  border-left: 3px solid #176aff;
+  height: 85px;
+  padding-left: 6px;
+  padding-top: 0px;
 }
 
 .medeatorDiscBox h4 {
-    font-weight: bold;
-    margin-bottom: -0px;
+  font-weight: bold;
+  margin-bottom: -0px;
 }
 
 .medeatorDiscBox h6 {
-    font-weight: normal;
-    margin-bottom: 2px;
-    font-size: 14px;
-    color: #000000;
+  font-weight: normal;
+  margin-bottom: 2px;
+  font-size: 14px;
+  color: #000000;
 }
 
 .medeatorDiscBox .col-8 {
-    margin-left: -12px;
+  margin-left: -12px;
 }
 
 .registeredMediatorPercent {
-    color: #093399;
-    font-size: 26px;
-    position: absolute;
-    right: 30px;
-    margin-top: -30px;
-    font-weight: bold;
+  color: #093399;
+  font-size: 26px;
+  position: absolute;
+  right: 30px;
+  margin-top: -30px;
+  font-weight: bold;
 }
 .MediatorCardRightSide {
-    margin-top: -10px;
+  margin-top: -10px;
 }
 
-
-.DetailedSubDiv{
-    border: 2px solid #0C47AC;
-    border-radius: 6px;
-    height: 20px;
-    background-color: white;
-    height: 32px;
-    padding: 2px;
-    margin-top: 3px;
+.DetailedSubDiv {
+  border: 2px solid #0c47ac;
+  border-radius: 6px;
+  height: 20px;
+  background-color: white;
+  height: 32px;
+  padding: 2px;
+  margin-top: 3px;
 }
-.DetailedSubDiv2{
-    padding-right: 6px;
-    padding-left: 3px;
+.DetailedSubDiv2 {
+  padding-right: 6px;
+  padding-left: 3px;
 }
-.DetailedSubDivPara{
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0);
-    margin-top: -23px;
-    font-weight: bold;
-    color: #0C47AC;
-    font-size: 18px;
+.DetailedSubDivPara {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  margin-top: -23px;
+  font-weight: bold;
+  color: #0c47ac;
+  font-size: 18px;
 }
-.detailedSubDivP{
-    font-size: 17px;
-    font-weight: bold;
-    color: #0C47AC;
+.detailedSubDivP {
+  font-size: 17px;
+  font-weight: bold;
+  color: #0c47ac;
 }
 
 .ResolutioninvoiceTab {
-    border-bottom-right-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 .ResolutioncontractTab {
-    border-bottom-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 }
 
 .ResolutionresolutionTab {
-    background-color: #1a9afe !important;
+  background-color: #1a9afe !important;
 }
 
-
-
-
 ::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: black;
-    opacity: 1;
-    /* Firefox */
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 1;
+  /* Firefox */
 }
 
 :-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: black;
+  /* Internet Explorer 10-11 */
+  color: black;
 }
 
 ::-ms-input-placeholder {
-    /* Microsoft Edge */
-    color: black;
+  /* Microsoft Edge */
+  color: black;
 }
-
-
-
 
 /* placeholder color mutualFriend */
 input[type="mutualFriend"]::placeholder {
-
-    /* Firefox, Chrome, Opera */
-    color: #0eaf3f;
+  /* Firefox, Chrome, Opera */
+  color: #0eaf3f;
 }
 
 input[type="mutualFriend"]:-ms-input-placeholder {
-
-    /* Internet Explorer 10-11 */
-    color: #0eaf3f;
+  /* Internet Explorer 10-11 */
+  color: #0eaf3f;
 }
 
 input[type="mutualFriend"]::-ms-input-placeholder {
-
-    /* Microsoft Edge */
-    color: #0eaf3f;
+  /* Microsoft Edge */
+  color: #0eaf3f;
 }
 
 /* placeholder color invoiceFields */
 input[type="invoiceFields"]::placeholder {
-
-    /* Firefox, Chrome, Opera */
-    color: #21FEFE;
+  /* Firefox, Chrome, Opera */
+  color: #21fefe;
 }
 
 input[type="invoiceFields"]:-ms-input-placeholder {
-
-    /* Internet Explorer 10-11 */
-    color: #21FEFE;
+  /* Internet Explorer 10-11 */
+  color: #21fefe;
 }
 
 input[type="invoiceFields"]::-ms-input-placeholder {
-
-    /* Microsoft Edge */
-    color: #21FEFE;
+  /* Microsoft Edge */
+  color: #21fefe;
 }
 
-
 @media (max-height: 670px) {
-    .topLogoPic {
-        /* width: 66%; */
-    }
+  .topLogoPic {
+    /* width: 66%; */
+  }
 }
 
 @media (min-width: 999px) {
-    .authMainDiv {
-        height: 780px;
-    }
-    /* invoiceOrderBlackDiv */
-    .invoiceBlackContainer, .handleMainPage{
-        height: 668px !important;
-    }
-    .invoiceBlackDivMainContainer, .paymentDivContainer{
-        height: 570px !important;
-    }
-    .contractBlackContainer {
-        height: 300px !important;
-    }
+  .authMainDiv {
+    height: 780px;
+  }
+  /* invoiceOrderBlackDiv */
+  .invoiceBlackContainer,
+  .handleMainPage {
+    height: 668px !important;
+  }
+  .invoiceBlackDivMainContainer,
+  .paymentDivContainer {
+    height: 570px !important;
+  }
+  .contractBlackContainer {
+    height: 280px !important;
+  }
+  /* big screen search users small profile styline */
+
+  .serachTabSelectMedBTN {
+    display: none;
+  }
+  .mediatorBlueDiv {
+    /* height: 195px; */
+    height: 20.7vh;
+    width: 104%;
+  }
+
+  .mediatorBlackDiv {
+    /* height: 179px; */
+    height: 19vh;
+  }
+
+  .handleMainPage {
+    background-image: linear-gradient(to bottom, #2eb3ff, #011c2c, black);
+  }
+
+  /* Btn fixed to absolute 1000px */
+  .selectResolutionDIv {
+    background-color: transparent !important;
+    margin-left: 6px;
+    width: 96% !important;
+    position: absolute;
+    bottom: 70px;
+  }
+  .selectResolutionBtnDiv {
+    position: absolute;
+    bottom: 15px;
+    width: 45%;
+  }
+  .mediatorBlackBackground {
+    background-color: transparent;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    /* bottom: 70px; */
+  }
+  .invoiceBlackContainer {
+    height: 60vh !important;
+  }
+  .createInvoiceBlackContainer {
+    height: 63vh !important;
+  }
+  .createInvoiceBlackContainerMain{
+    /* height: 63vh !important; */
+  }
+  .salesHistoryMagnifierContent{
+    margin: 0 auto !important;
+  }
+ 
 }
 
 @media (max-width: 390px) {
-    .selectResoutionTxt {
-        font-size: 19px;
-    }
+  .selectResoutionTxt {
+    font-size: 19px;
+  }
 
-    .resolutionOptionstoggle, .selectResolutionBtn {
-        font-size: 18px;
-    }
+  .resolutionOptionstoggle,
+  .selectResolutionBtn {
+    font-size: 18px;
+  }
 
-    .changeBox, .registeredCompanies p, .mutualChange, .mutualFriendInput {
-        font-size: 17px;
-        margin-top: 0px;
-    }
+  .changeBox,
+  .registeredCompanies p,
+  .mutualChange,
+  .mutualFriendInput {
+    font-size: 17px;
+    margin-top: 0px;
+  }
 
-    .registeredCompanies, .registeredmediator {
-        font-size: 14px;
-    }
+  .registeredCompanies,
+  .registeredmediator {
+    font-size: 14px;
+  }
 
-    .autoPickedDataBtn {
-        margin-top: -0px;
-    }
+  .autoPickedDataBtn {
+    margin-top: -0px;
+  }
 
-    .autoPickedData {
-        padding-top: 4px;
-    }
+  .autoPickedData {
+    padding-top: 4px;
+  }
 }
 
 @media (max-width: 380px) {
-    .selectResoutionTxt {
-        font-size: 18px;
-    }
+  .selectResoutionTxt {
+    font-size: 18px;
+  }
 
-    .resolutionOptionstoggle, .selectResolutionBtn {
-        font-size: 17px;
-    }
+  .resolutionOptionstoggle,
+  .selectResolutionBtn {
+    font-size: 17px;
+  }
 
-    .changeBox, .registeredCompanies p, .mutualChange, .mutualFriendInput {
-        font-size: 16px;
-        margin-top: 1px;
-    }
+  .changeBox,
+  .registeredCompanies p,
+  .mutualChange,
+  .mutualFriendInput {
+    font-size: 16px;
+    margin-top: 1px;
+  }
 
-    .registeredCompanies, .registeredmediator {
-        font-size: 13px;
-    }
+  .registeredCompanies,
+  .registeredmediator {
+    font-size: 13px;
+  }
 
-    .autoPickedDataBtn {
-        margin-top: -1px;
-    }
+  .autoPickedDataBtn {
+    margin-top: -1px;
+  }
 
-    .autoPickedData {
-        padding-top: 5px;
-    }
+  .autoPickedData {
+    padding-top: 5px;
+  }
 
-    .topNavLinks {
-        width: 82%;
-    }
+  .topNavLinks {
+    width: 82%;
+  }
 
-    /* .invoiceImg {
+  /* .invoiceImg {
         width: 50px;
     } */
 
-    .resolutionImg {
-        /* width: 75px;
+  .resolutionImg {
+    /* width: 75px;
         margin-top: 6px; */
-    }
+  }
 
-    .activeImg {
-        padding-top: 10px;
-        height: 95px;
-        position: relative;
-        left: -15px;
-        width: 160%;
-        z-index: 9;
-    }
+  .activeImg {
+    padding-top: 10px;
+    height: 95px;
+    position: relative;
+    left: -15px;
+    width: 160%;
+    z-index: 9;
+  }
 
-    /* .contractImg {
+  /* .contractImg {
         width: 50px;
     }
 
@@ -858,57 +909,64 @@ input[type="invoiceFields"]::-ms-input-placeholder {
 }
 
 @media (max-width: 370px) {
-    .selectResoutionTxt {
-        font-size: 17px;
-    }
+  .selectResoutionTxt {
+    font-size: 17px;
+  }
 
-    .resolutionOptionstoggle {
-        font-size: 16px;
-    }
+  .resolutionOptionstoggle {
+    font-size: 16px;
+  }
 
-    .changeBox, .registeredCompanies p, .mutualChange, .mutualFriendInput {
-        font-size: 15px;
-        margin-top: 2px;
-    }
+  .changeBox,
+  .registeredCompanies p,
+  .mutualChange,
+  .mutualFriendInput {
+    font-size: 15px;
+    margin-top: 2px;
+  }
 
-    .registeredCompanies, .registeredmediator {
-        font-size: 12px;
-    }
+  .registeredCompanies,
+  .registeredmediator {
+    font-size: 12px;
+  }
 
-    .autoPickedDataBtn {
-        margin-top: -1px;
-    }
+  .autoPickedDataBtn {
+    margin-top: -1px;
+  }
 
-    .autoPickedData {
-        padding-top: 6px;
-    }
-
+  .autoPickedData {
+    padding-top: 6px;
+  }
 }
 
 @media (max-width: 360px) {
-    .selectResoutionTxt {
-        font-size: 16px;
-    }
+  .selectResoutionTxt {
+    font-size: 16px;
+  }
 
-    .resolutionOptionstoggle {
-        font-size: 15px;
-    }
+  .resolutionOptionstoggle {
+    font-size: 15px;
+  }
 
-    .changeBox, .registeredCompanies p, .mutualChange, .mutualFriendInput {
-        font-size: 14px;
-    }
+  .changeBox,
+  .registeredCompanies p,
+  .mutualChange,
+  .mutualFriendInput {
+    font-size: 14px;
+  }
 
-    .registeredCompanies, .registeredmediator {
-        font-size: 11px;
-    }
+  .registeredCompanies,
+  .registeredmediator {
+    font-size: 11px;
+  }
 
-    .autoPickedDataBtn {
-        margin-top: -1px;
-    }
+  .autoPickedDataBtn {
+    margin-top: -1px;
+  }
 
-    .autoPickedData {
-        padding-top: 7px;
-    }
+  .autoPickedData {
+    padding-top: 7px;
+  }
 }
 
 /* scroll bar */

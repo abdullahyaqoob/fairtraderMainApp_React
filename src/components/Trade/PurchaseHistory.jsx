@@ -1123,8 +1123,8 @@ class PurchaseHistory extends Component {
             Start Mediation
           </p>
         );
-        // } else if (this.state.magnifierViewUser.simplePaid === "1") {
-      } else if (this.state.magnifierViewUser.simplePaid === "0") {
+      } else if (this.state.magnifierViewUser.simplePaid === "1") {
+        // } else if (this.state.magnifierViewUser.simplePaid === "0") {
         invoicepaymentStopBtnTxt = (
           <p
             className="selectResolutionBtn alignCenter"
@@ -1443,7 +1443,7 @@ class PurchaseHistory extends Component {
     } else {
       if (this.state.magnifierViewUserViewPDF === false) {
         magnifierViewUserUI = (
-          <div className="hello">
+          <div>
             <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
               {/* <div id="invoiceUnpaidSearch" style={{ display: 'inherit', marginTop: '-8px' }}> */}
 

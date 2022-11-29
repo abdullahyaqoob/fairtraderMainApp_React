@@ -92,7 +92,7 @@ class App extends Component {
                 </Link>
 
                 {localStorage.getItem("userViewTradeOrMediate") !==
-                "mediate" ? (
+                  "mediate" ? (
                   <Link to={{ pathname: "/SearchPage" }}>
                     <img
                       src={searchBtn}
@@ -219,7 +219,7 @@ class App extends Component {
                 </div>
                 <div className="walletMainOptions">
                   <p>
-                    <span style={{ color: "black" }}>.</span>
+                    <span style={{ color: "#2D7EF7" }}>.</span>
                     <Link to={{ pathname: "/Wallet" }}>
                       <span className="pinkHowToUse">How to use App</span>
                     </Link>

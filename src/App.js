@@ -175,6 +175,7 @@ function App() {
                 MetamaskStatus: { metamaskStatus },
                 UserAccountAddr: { userAccountAddr },
                 userAccountEmail: { userAccountEmail },
+                userBusinessname: {userBusinessname}
               }}
               // props={props}
             />

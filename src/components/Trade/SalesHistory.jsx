@@ -697,11 +697,11 @@ class PurchaseHistory extends Component {
     let magnifierViewUserUI;
     if (this.state.magnifierViewUserViewPDF === false) {
       magnifierViewUserUI = (
-        <div className="hello">
+        <div>
           <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
             {/* <div id="invoiceUnpaidSearch" style={{ display: 'inherit', marginTop: '-8px' }}> */}
 
-            <div className="row">
+            <div className="row salesHistoryMagnifierContent">
               <div className="col-6">
                 <div className="profileBox">
                   <div className="profileBoxHeader">
@@ -2387,7 +2387,7 @@ class PurchaseHistory extends Component {
             </div>
             <ToastContainer />
           </div>
-          : <CreateInvoice propdata={this.state.propData} />
+          : <CreateInvoice propdata={this.state.propData} businessName={this.props["props"].userBusinessname.userBusinessname} />
         }
       </>
     );

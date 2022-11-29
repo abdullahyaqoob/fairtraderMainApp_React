@@ -140,7 +140,7 @@ class App extends Component {
               </div>
               <div className="walletMainOptions">
                 <p>
-                  <span style={{ color: "black" }}>.</span>
+                  <span style={{ color: "#2D7EF7" }}>.</span>
                   <span
                     className="pinkHowToUse"
                     onClick={() => {

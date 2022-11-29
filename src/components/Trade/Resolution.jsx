@@ -334,7 +334,11 @@ class App extends Component {
     function handleFlag(e) {
       console.log(e);
       let countryCOde = lookup.byCountry(e.country)
-      return <span style={{ fontSize: '25px', marginTop: '7px' }} className={`flag-icon flag-icon-${countryCOde.iso2.toLowerCase()}`}></span>
+      if (countryCOde === null) {
+        return <span style={{ fontSize: '25px', marginTop: '7px' }}></span>
+      } else {
+        return <span style={{ fontSize: '25px', marginTop: '7px' }} className={`flag-icon flag-icon-${countryCOde.iso2.toLowerCase()}`}></span>
+      }
     }
     let resolutionMediatorProfileEmail;
     let resolutionMediatorEmail = this.state.resolutionMediatorSelected.email
@@ -1747,7 +1751,7 @@ class App extends Component {
                       src={qualificationLeftImg}
                       alt="qualificationLeftImg"
                     />
-                    <p className="DetailedSubDivPara">{this.state.resolutionMediatorSelected.documents === null || this.state.resolutionMediatorSelected.documents === "" ?
+                    <p className="DetailedSubDivPara">{this.state.resolutionMediatorSelected.documents === null || this.state.resolutionMediatorSelected.documents === "" || this.state.resolutionMediatorSelected.documents === "[]" ?
                       "No" : "Yes"
                     }</p>
                     {/* <p className="DetailedSubDivPara">Yes</p> */}
@@ -1793,7 +1797,7 @@ class App extends Component {
             </div>
           </div>
 
-          <div className="contractBlackContainer">
+          <div className="contractBlackContainer" style={{ marginTop: '5px' }}>
             {/* <h6 className='alignCenter'>FTP Terms & Conditions</h6> */}
             {this.state.resolutionMediatorSelected.bio === "" ?
               <p style={{ marginTop: "-12px", fontSize: "17px" }}>

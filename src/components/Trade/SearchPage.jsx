@@ -702,7 +702,7 @@ class App extends Component {
                               alt="mediatorAustraliaFlag"
                             /> */}
                             <p className="mediatorsInfoTxt" style={{ textAlign: 'center' }}>
-                              {value.priceperhour}
+                              ${value.priceperhour} / hour
                             </p>
                           </div>
                           {/* <img src={mediatorSearch} onClick={() => { this.handleMagnifierView() }} alt="mediatorSearch" className='mediatorSearch' /> */}
@@ -919,7 +919,7 @@ class App extends Component {
                       </div>
                     </center>
 
-                    <div className="selectResolutionDIv invoiceThreeBtnDiv contractDIvBTN">
+                    <div className="selectResolutionDIv invoiceThreeBtnDiv contractDIvBTN serachTabSelectMedBTN">
                       <span className="alignStart">
                         <img src={mediatorPrev} alt="mapIcon" />
                       </span>
