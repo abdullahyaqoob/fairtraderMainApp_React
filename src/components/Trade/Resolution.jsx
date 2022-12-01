@@ -86,6 +86,8 @@ class App extends Component {
       selectedResolutionMediators: [],
       resolutionMediatorSelected: {},
       connectedUserAddr: "",
+      magnifiedMediatorAppeals: 0,
+      magnifiedMediatorMediations: 0,
       letMeSelectOrVs: false
     };
   }
@@ -333,6 +335,8 @@ class App extends Component {
   render() {
     function handleFlag(e) {
       console.log(e);
+
+
       let countryCOde = lookup.byCountry(e.country)
       if (countryCOde === null) {
         return <span style={{ fontSize: '25px', marginTop: '7px' }}></span>
@@ -680,6 +684,19 @@ class App extends Component {
                       onClick={() => {
                         this.setState({ resolutionMediatorSelected: value });
                         this.handleMagnifierView();
+                        axios.post(`${process.env.REACT_APP_BASE_URL}mediationAndAppeals/getMediatorMediationsAndAppeal`,
+                          {
+                            mediatorId: value.id,
+                          }
+                        )
+                          .then((res) => {
+                            console.log(res);
+                            this.setState({ magnifiedMediatorAppeals: res.data.totalAppeals })
+                            this.setState({ magnifiedMediatorMediations: res.data.totalMediations })
+                          })
+                          .catch((errr) => {
+                            console.log(errr);
+                          })
                       }}
                     />
                   </div>
@@ -1770,7 +1787,7 @@ class App extends Component {
                     <img src={mediatorLeftImg} alt="qualificationLeftImg" />
 
                     <span className="alignEnd" style={{ float: "right" }}>
-                      <p className="detailedSubDivP">2</p>
+                      <p className="detailedSubDivP">{this.state.magnifiedMediatorMediations}</p>
                     </span>
                   </div>
                   <h4 className="mediatorName" style={{ color: "white" }}>
@@ -1779,7 +1796,7 @@ class App extends Component {
                   <div className="DetailedSubDiv DetailedSubDiv2">
                     <img src={appealLeftImg} alt="qualificationLeftImg" />
                     <span className="alignEnd" style={{ float: "right" }}>
-                      <p className="detailedSubDivP">1</p>
+                      <p className="detailedSubDivP">{this.state.magnifiedMediatorAppeals}</p>
                     </span>
                   </div>
                   <h4 className="mediatorName" style={{ color: "white" }}>

@@ -176,40 +176,46 @@ class App extends Component {
               </div>
             </div>
           </div>
+          {localStorage.getItem("userViewTradeOrMediate") !==
+            "mediate" ? (
+            <>
+              <Link
+                to={{ pathname: "/MyPayment" }}
+                style={{ textDecoration: "none" }}
+              >
+                <div className="menuBox">
+                  <div className="row">
+                    <div className="col-2">
+                      <img src={menuPaymentIcon} alt="menuPaymentIcon" />
+                    </div>
+                    <div className="col-10">
+                      <h2>My Payment</h2>
+                      <p>Select your payment option</p>
+                    </div>
+                  </div>
+                </div>
+              </Link>
 
-          <Link
-            to={{ pathname: "/MyPayment" }}
-            style={{ textDecoration: "none" }}
-          >
-            <div className="menuBox">
-              <div className="row">
-                <div className="col-2">
-                  <img src={menuPaymentIcon} alt="menuPaymentIcon" />
+              <Link
+                to={{ pathname: "/MyProfile" }}
+                style={{ textDecoration: "none" }}
+              >
+                <div className="menuBox">
+                  <div className="row">
+                    <div className="col-2">
+                      <img src={menuProfileIcon} alt="menuProfileIcon" />
+                    </div>
+                    <div className="col-10">
+                      <h2>My Profile</h2>
+                      <p>How will other people find you?</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-10">
-                  <h2>My Payment</h2>
-                  <p>Select your payment option</p>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            to={{ pathname: "/MyProfile" }}
-            style={{ textDecoration: "none" }}
-          >
-            <div className="menuBox">
-              <div className="row">
-                <div className="col-2">
-                  <img src={menuProfileIcon} alt="menuProfileIcon" />
-                </div>
-                <div className="col-10">
-                  <h2>My Profile</h2>
-                  <p>How will other people find you?</p>
-                </div>
-              </div>
-            </div>
-          </Link>
+              </Link>
+            </>
+          ) : (
+            ""
+          )}
           {localStorage.getItem("userViewTradeOrMediate") === "trade" ? (
             <Link
               to={{ pathname: "/Assets" }}

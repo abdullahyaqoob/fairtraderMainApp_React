@@ -488,7 +488,23 @@ class PurchaseHistory extends Component {
             .send({
               from: this.state.userAddres,
             })
-            .on("transactionHash", (hash) => {
+            .on("transactionHash", async (hash) => {
+              let setMediatorMediatonsCompleted = false;
+
+              // Server side work
+              await axios
+                .post(`${process.env.REACT_APP_BASE_URL}mediationAndAppeals/setMediatorsAppeals`, {
+                  mediator: this.state.SelectedOrder.mediator,
+                  whoStarted: this.state.userAccountEmail
+                })
+
+                .then((res) => {
+                  console.log(res);
+                  setMediatorMediatonsCompleted = true;
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
 
               axios
                 .post(`${process.env.REACT_APP_BASE_URL}mediate/superMediatorInvolved`, {
@@ -498,13 +514,21 @@ class PurchaseHistory extends Component {
 
                 .then((res) => {
                   console.log(res);
-                  setTimeout(() => {
-                    window.location = "PurchaseHistory";
-                  }, 2000);
+                  navigationFUnc()
+                  function navigationFUnc() {
+                    console.log(setMediatorMediatonsCompleted);
+                    if (setMediatorMediatonsCompleted === true) {
+                      setTimeout(() => {
+                        window.location = "PurchaseHistory";
+                      }, 2000);
 
-                  toast.success("Successfully, Involved", {
-                    position: "top-right",
-                  });
+                      toast.success("Successfully, Involved", {
+                        position: "top-right",
+                      });
+                    } else {
+                      setTimeout(navigationFUnc, 250);
+                    }
+                  }
                   // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
                 })
                 .catch((err) => {
@@ -537,9 +561,24 @@ class PurchaseHistory extends Component {
   };
 
   handleStartMediation = async () => {
+    let setMediatorMediatonsCompleted = false;
+    console.log(this.state.SelectedOrder.mediator);
     if (this.state.magnifierViewUser.mediation === false) {
-
       // Server side work
+      await axios
+        .post(`${process.env.REACT_APP_BASE_URL}mediationAndAppeals/setMediatorsMediations`, {
+          mediator: this.state.SelectedOrder.mediator,
+          whoStarted: this.state.userAccountEmail
+        })
+
+        .then((res) => {
+          console.log(res);
+          setMediatorMediatonsCompleted = true;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       axios
         .put(`${process.env.REACT_APP_BASE_URL}order/orderStartMediation`, {
           orderId: this.state.SelectedOrder.id,
@@ -548,14 +587,22 @@ class PurchaseHistory extends Component {
         })
 
         .then((res) => {
-          console.log(res);
-          setTimeout(() => {
-            window.location = "PurchaseHistory";
-          }, 2000);
+          navigationFUnc()
+          function navigationFUnc() {
+            console.log(setMediatorMediatonsCompleted);
+            if (setMediatorMediatonsCompleted === true) {
+              setTimeout(() => {
+                window.location = "PurchaseHistory";
+              }, 2000);
 
-          toast.success("Successfully, Started", {
-            position: "top-right",
-          });
+              toast.success("Successfully, Started", {
+                position: "top-right",
+              });
+            } else {
+              setTimeout(navigationFUnc, 250);
+            }
+          }
+
           // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
         })
         .catch((err) => {
@@ -772,7 +819,7 @@ class PurchaseHistory extends Component {
     let userAddres;
     let connectedUserEmail;
     if (
-      this.props["props"].UserAccountAddr.userAccountAdd !== "" &&
+      this.props["props"].UserAccountAddr.userAccountAddr !== "" &&
       this.props["props"].userAccountEmail.userAccountEmail !== ""
     ) {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;

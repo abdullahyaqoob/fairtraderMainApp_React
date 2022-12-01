@@ -431,9 +431,14 @@ class App extends Component {
               style={{ width: "220px" }}
             >
               <span onClick={() => {
+                console.log(this.state.orderDetail);
                 this.setState({ replyToWhich: "Seller" })
               }}>Reply to Seller </span>
-              {this.state.orderDetail.superMediatorInvolved === "" ?
+              {/* <span onClick={() => {
+                  this.setState({ replyToWhich: "Mediator" })
+                }}> / Med</span> */}
+
+              {this.state.orderDetail.superMediationInvolved === false || this.state.orderDetail.superMediatorInvolved === "" || this.state.orderDetail.superMediatorInvolved === "0" ?
                 <span onClick={() => {
                   this.setState({ replyToWhich: "Mediator" })
                 }}> / Med</span>

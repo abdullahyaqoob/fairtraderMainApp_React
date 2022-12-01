@@ -265,8 +265,24 @@ class PurchaseHistory extends Component {
             .send({
               from: this.state.userAddres,
             })
-            .on("transactionHash", (hash) => {
+            .on("transactionHash", async (hash) => {
               console.log(this.state.magnifierViewUser.id);
+              let setMediatorMediatonsCompleted = false;
+              // Server side work
+              await axios
+                .post(`${process.env.REACT_APP_BASE_URL}mediationAndAppeals/setMediatorsAppeals`, {
+                  mediator: this.state.magnifierViewUser.mediator,
+                  whoStarted: this.state.userAccountEmail
+                })
+
+                .then((res) => {
+                  console.log(res);
+                  setMediatorMediatonsCompleted = true;
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+
               axios
                 .post(`${process.env.REACT_APP_BASE_URL}mediate/superMediatorInvolved`, {
                   orderId: this.state.magnifierViewUser.id,
@@ -275,13 +291,21 @@ class PurchaseHistory extends Component {
 
                 .then((res) => {
                   console.log(res);
-                  setTimeout(() => {
-                    window.location = "SalesHistory";
-                  }, 2000);
+                  navigationFUnc()
+                  function navigationFUnc() {
+                    console.log(setMediatorMediatonsCompleted);
+                    if (setMediatorMediatonsCompleted === true) {
+                      setTimeout(() => {
+                        window.location = "SalesHistory";
+                      }, 2000);
 
-                  toast.success("Successfully, Involved", {
-                    position: "top-right",
-                  });
+                      toast.success("Successfully, Involved", {
+                        position: "top-right",
+                      });
+                    } else {
+                      setTimeout(navigationFUnc, 250);
+                    }
+                  }
                   // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
                 })
                 .catch((err) => {
@@ -323,7 +347,7 @@ class PurchaseHistory extends Component {
   userAddressHandle = async () => {
     let userAddres;
     let connectedUserEmail;
-    if (this.props["props"].UserAccountAddr.userAccountAdd !== "" &&
+    if (this.props["props"].UserAccountAddr.userAccountAddr !== "" &&
       this.props["props"].userAccountEmail.userAccountEmail !== "") {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
       console.log(userAddres);

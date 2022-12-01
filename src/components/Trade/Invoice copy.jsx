@@ -99,7 +99,7 @@ class App extends Component {
   async componentWillMount() {}
   userAddressHandle = async () => {
     let userAddres;
-    if (this.props["props"].UserAccountAddr.userAccountAdd !== "") {
+    if (this.props["props"].UserAccountAddr.userAccountAddr !== "") {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
       console.log(userAddres);
 

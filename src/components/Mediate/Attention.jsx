@@ -85,7 +85,7 @@ class App extends Component {
     let userAddres;
     let connectedUserEmail;
     if (
-      this.props["props"].UserAccountAddr.userAccountAdd !== "" &&
+      this.props["props"].UserAccountAddr.userAccountAddr !== "" &&
       this.props["props"].userAccountEmail.userAccountEmail !== ""
     ) {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;

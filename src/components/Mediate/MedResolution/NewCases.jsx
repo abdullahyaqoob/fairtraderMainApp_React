@@ -174,17 +174,17 @@ class App extends Component {
 
   userAddressHandle = async () => {
     let userAddres;
-    let connectedUserEmail;
+    // let connectedUserEmail;
     if (
-      this.props["props"].UserAccountAddr.userAccountAdd !== "" &&
-      this.props["props"].userAccountEmail.userAccountEmail !== ""
+      this.props["props"].UserAccountAddr.userAccountAddr !== ""
+      // this.props["props"].userAccountEmail.userAccountEmail !== ""
     ) {
       userAddres = this.props["props"].UserAccountAddr.userAccountAddr;
       console.log(userAddres);
 
-      connectedUserEmail = this.props["props"].userAccountEmail
-        .userAccountEmail;
-      console.log(connectedUserEmail);
+      // connectedUserEmail = this.props["props"].userAccountEmail
+      //   .userAccountEmail;
+      // console.log(connectedUserEmail);
 
       // AXIOS CALL FOR HISTORY DATA
       // axios
@@ -214,10 +214,10 @@ class App extends Component {
       //   });
 
       // New Cases Call
-      console.log(connectedUserEmail);
+      // console.log(connectedUserEmail);
       axios
         .post(`${process.env.REACT_APP_BASE_URL}mediate/newCases`, {
-          mediatorEmail: connectedUserEmail
+          mediatorWalletAddress: userAddres
         })
 
         .then((res) => {
@@ -349,7 +349,7 @@ class App extends Component {
     let magnifierViewUserUI;
     if (this.state.magnifierViewUserViewPDF === false) {
       magnifierViewUserUI = (
-        <div className="hello">
+        <div>
           <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
             {/* <div id="invoiceUnpaidSearch" style={{ display: 'inherit', marginTop: '-8px' }}> */}
 
