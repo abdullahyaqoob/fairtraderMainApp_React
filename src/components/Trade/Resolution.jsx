@@ -674,7 +674,7 @@ class App extends Component {
 
 
                       {/* <p className="mediatorsInfoTxt" style={{textAlign: 'center'}}>{value.id}</p> */}
-                      <p className="mediatorsInfoTxt" style={{ marginTop: '5px' }}>{handleFlag(value)} {value.country}</p>
+                      <p className="mediatorsInfoTxt" style={{ marginTop: '5px', fontSize: '18px' }}>{handleFlag(value)} {value.country}</p>
                     </div>
                     {/* <img src={mediatorSearch} onClick={() => { this.handleMagnifierView() }} alt="mediatorSearch" className='mediatorSearch' /> */}
                     <img

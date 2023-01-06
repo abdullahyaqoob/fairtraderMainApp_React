@@ -256,6 +256,7 @@ class CreateInvoice extends Component {
           .userAccountEmail;
 
         if (userAccountEmail !== "") {
+          console.log("addedCorstOrigions");
 
           var formData = new FormData();
           formData.append("sellerwalletaddress", userAccountAddress);
@@ -281,6 +282,12 @@ class CreateInvoice extends Component {
               });
             },
             headers: {
+              "Content-Type": "multipart/form-data",
+              "Content-type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Headers":
+                "X-Requested-With, Content-Type, X-Token-Auth,Authorization",
+              "Access-Control-Allow-Methods": "OPTIONS, GET, POST, PUT, DELETE",
               "Content-Type": "multipart/form-data",
             },
           })

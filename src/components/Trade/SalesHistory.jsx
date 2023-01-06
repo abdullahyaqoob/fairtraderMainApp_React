@@ -71,6 +71,8 @@ import invoicePaymentStopped from "../../Images/Invoice/invoicePaymentStopped.pn
 import invoicePayNow from "../../Images/Invoice/invoicePayNow.png";
 import invoicePaymentStoppedIcon from "../../Images/Invoice/invoicePaymentStoppedIcon.png";
 import navMessage from "../../Images/Menu/navMessage.png";
+import sendMessageAdd from "../../Images/Invoice/sendMessageAdd.png";
+import addedFilesSndMessage from "../../Images/Invoice/addedFilesSndMessage.png";
 
 // Toast
 import { ToastContainer, toast } from "react-toastify";
@@ -91,15 +93,20 @@ class PurchaseHistory extends Component {
       invoicePurchaseHistorypaidData: [],
       invoicePurchaseHistoryDisputeData: [],
       magnifierViewUser: {},
+      fivePercentOfInvoiceInFTPCrntPrice: 0,
       searchUserMagnifierViewUnpaid: false,
       searchUserMagnifierViewPaid: false,
+      mediationStarted: false,
       totalAmountVarUnpaid: 0,
       totalAmountVarPaid: 0,
+      senMsgToMedOrSellerTextereaValue: '',
+      allMessages: "",
       magnifierViewUserViewPDF: false,
       purchasehistoryPaidBtn: false,
       resolutionSelectedPaid: false,
       contractSelectedPaid: false,
       ViewAddNotePaid: false,
+      mediatorSendMsgTo: "Buyer",
       editInvoiceHandler: false,
       propData: {},
       userAccountEmail: '',
@@ -173,10 +180,10 @@ class PurchaseHistory extends Component {
           this.setState({ FTPToken: FTPTokenVar });
 
           // 7999999
-          let connectedUserBalance = await FTPTokenVar.methods
-            .balanceOf(this.state.userAddres)
-            .call();
-          console.log('connectedUserBalanceOfToken', window.web3.utils.fromWei(connectedUserBalance, "Ether"));
+          // let connectedUserBalance = await FTPTokenVar.methods
+          //   .balanceOf(this.state.userAddres)
+          //   .call();
+          // console.log('connectedUserBalanceOfToken', window.web3.utils.fromWei(connectedUserBalance, "Ether"));
 
         } else {
           window.alert(
@@ -239,6 +246,212 @@ class PurchaseHistory extends Component {
   };
 
 
+  handleSendMessageToMed = () => {
+    let mediatorMsgField = this.state.senMsgToMedOrSellerTextereaValue
+    console.log('mediatorMsgField', mediatorMsgField);
+    if (mediatorMsgField === "" || mediatorMsgField === undefined) {
+      toast.error("Please type some message", {
+        position: "top-right",
+      });
+    } else {
+      if (this.state.mediatorSendMsgTo === "Buyer") {
+        axios
+          .post(`${process.env.REACT_APP_BASE_URL}message/createMsg`, {
+            senderEmail: this.state.userAccountEmail,
+            receiverEmail: this.state.magnifierViewUser.customeremail,
+            message: mediatorMsgField,
+            orderId: this.state.magnifierViewUser.id,
+            invoiceName: this.state.magnifierViewUser.invoiceName
+          })
+          .then((res) => {
+            toast.success("Message Sent to Buyer", {
+              position: "top-right",
+            });
+            document.getElementById("senMsgToMedOrSellerTextereaValue").value = ""
+            this.setState({ senMsgToMedOrSellerTextereaValue: "" })
+          }).catch((err) => {
+            console.log(err);
+          })
+      } else {
+        axios
+          .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
+            mediatorId: this.state.magnifierViewUser.mediator
+          })
+          .then((res) => {
+            if (res.data !== "") {
+              axios
+                .post(`${process.env.REACT_APP_BASE_URL}message/mediatorSendMsg`, {
+                  senderEmail: this.state.userAccountEmail,
+                  receiverEmail: res.data,
+                  message: mediatorMsgField,
+                  orderId: this.state.magnifierViewUser.id,
+                  invoiceName: this.state.selectedJob.invoiceName
+                })
+                .then((res) => {
+                  toast.success("Message Sent to Mediator", {
+                    position: "top-right",
+                  });
+                  document.getElementById("senMsgToMedOrSellerTextereaValue").value = ""
+                }).catch((err) => {
+                  console.log(err);
+                })
+            }
+          }).catch((err) => {
+            console.log(err);
+          })
+      }
+    }
+  }
+
+  formatTheCreatedAtDate(e) {
+    let newDateDate = new Date(e).toLocaleString()
+    return newDateDate.substring(0, 10)
+  }
+  async showSelectedUserMsgs(e) {
+    let userAccountEmail = this.state.userAccountEmail;
+    let allMessagesWithoutFilter;
+    await axios
+      .post(`${process.env.REACT_APP_BASE_URL}message/getAllSecondPersonEmailsMessages`, {
+        orderId: e
+      })
+
+      .then((res) => {
+        let respData = res.data
+
+        console.log(respData);
+
+
+
+        respData.sort(function (a, b) { return a.id - b.id });
+        allMessagesWithoutFilter = respData;
+        if (respData.length === 0) {
+          setTimeout(this.showSelectedUserMsgs, 250);
+        }
+        this.setState({ chatReceiverEmail: res.data[0].receiverEmail })
+      }).catch((err) => {
+        console.log(err);
+      })
+
+    await axios
+      .post(`${process.env.REACT_APP_BASE_URL}message/getOrderDetailByOrderId`, {
+        orderId: e
+      })
+      .then(async (res) => {
+        console.log(res.data);
+        this.setState({ orderDetail: res.data })
+        this.setState({ selectedJob: res.data })
+
+        await axios
+          .post(`${process.env.REACT_APP_BASE_URL}message/getMedEmailForMsg`, {
+            mediatorId: res.data.mediator
+          })
+
+          .then((res) => {
+            console.log(res.data);
+            this.setState({ mediatorEmail: res.data })
+
+            let answerOfMap = [];
+            if (userAccountEmail !== res.data) {
+              allMessagesWithoutFilter.map(function (value, index) {
+                if ((value.senderEmail === userAccountEmail || value.receiverEmail === userAccountEmail) && value.mediatorFeeMsg === false) {
+                  answerOfMap.push(value)
+                }
+              })
+              this.setState({ allMessages: answerOfMap })
+            } else {
+              this.setState({ allMessages: allMessagesWithoutFilter })
+            }
+          }).catch((err) => {
+            console.log(err);
+          })
+
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
+
+  handleStartMediation = async () => {
+    console.log(this.state.magnifierViewUser);
+    console.log(this.state.fivePercentOfInvoiceInFTPCrntPrice);
+    if (this.state.magnifierViewUser.mediation === false && this.state.fivePercentOfInvoiceInFTPCrntPrice !== 0) {
+      this.state.FTPToken.methods
+        .approve(
+          this.state.ethSwapAddressWithConnectedNetworkID,
+          // Amount
+          // window.web3.utils.toWei("1", "Ether")
+          window.web3.utils.toWei(this.state.fivePercentOfInvoiceInFTPCrntPrice.toString(), "Ether")
+        )
+        .send({ from: this.state.userAddres })
+        .on("transactionHash", (hash) => {
+          setTimeout(() => {
+            this.state.ethSwap.methods
+              .payFeeForMediator(
+                window.web3.utils.toWei(this.state.fivePercentOfInvoiceInFTPCrntPrice.toString(), "Ether"),
+                // window.web3.utils.toWei('1', "Ether"),
+                "seller",
+                this.state.magnifierViewUserIndex,
+                this.state.magnifierViewUser.customerWalletAddress
+              )
+              .send({
+                from: this.state.userAddres,
+              })
+              .on("transactionHash", async (hash) => {
+                let setMediatorMediatonsCompleted = false;
+
+                // Server side work
+
+                await axios
+                  .post(`${process.env.REACT_APP_BASE_URL}mediationAndAppeals/setMediatorsMediations`, {
+                    mediator: this.state.magnifierViewUser.mediator,
+                    whoStarted: this.state.userAccountEmail
+                  })
+
+                  .then((res) => {
+                    console.log(res);
+                    setMediatorMediatonsCompleted = true;
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+
+                axios
+                  .put(`${process.env.REACT_APP_BASE_URL}order/orderStartMediation`, {
+                    orderId: this.state.magnifierViewUser.id,
+                    mediationStatus: true,
+                    whoStartMediation: "seller"
+                  })
+
+                  .then((res) => {
+                    navigationFUnc()
+                    function navigationFUnc() {
+                      console.log(setMediatorMediatonsCompleted);
+                      if (setMediatorMediatonsCompleted === true) {
+                        setTimeout(() => {
+                          window.location = "SalesHistory";
+                        }, 2000);
+
+                        toast.success("Successfully, Started", {
+                          position: "top-right",
+                        });
+                      } else {
+                        setTimeout(navigationFUnc, 250);
+                      }
+                    }
+                    // this.setState({ invoicePurchaseHistoryUnpaidData: res.data.data });
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+
+              });
+          }, 2000);
+        })
+    } else {
+      toast.error("Already, Started", {
+        position: "top-right",
+      });
+    }
+  };
 
   handleSuperMediationInvolved = async () => {
     this.state.FTPToken.methods
@@ -424,6 +637,41 @@ class PurchaseHistory extends Component {
         </span>
       </div>
     );
+
+    let sendMsgBtn = <div className="selectResolutionDIv invoiceThreeBtnDiv">
+      <span className="alignStart">
+        <img
+          src={invoiceBack}
+          alt="invoiceBack"
+          onClick={() => {
+            this.setState({ mediationStarted: false })
+            this.setState({ resolutionSelectedPaid: false })
+            this.setState({ invoicePaidBtn: true });
+          }}
+        />
+      </span>
+      <span className="invoiceThreeBtn">
+        {this.state.mediationStarted === "startRes" ?
+          <p
+            className="selectResolutionBtn alignCenter"
+            onClick={() => {
+              this.handleSendMessageToMed();
+            }}
+            style={{ width: "200px" }}
+          >
+            Send Message
+          </p>
+          : <p
+            className="selectResolutionBtn alignCenter"
+            onClick={() => {
+              this.setState({ mediationStarted: "startRes" })
+            }}
+            style={{ width: "200px" }}
+          >
+            Send Message
+          </p>}
+      </span>
+    </div>
 
     let invoiceDisputeOptionsBtn;
 
@@ -719,7 +967,144 @@ class PurchaseHistory extends Component {
     //PDFjs worker from an external cdn
 
     let magnifierViewUserUI;
-    if (this.state.magnifierViewUserViewPDF === false) {
+    if (this.state.mediationStarted === "showAllMessages") {
+      magnifierViewUserUI =
+        <>
+          <div className="messageView" style={{ marginTop: '-12px' }}>
+            {this.state.allMessages.length !== 0 ?
+              <div>
+                {this.state.allMessages.map((val, i) => (
+                  <>
+                    {this.state.orderDetail.sellerEmail === val.senderEmail ?
+                      <div className="messageSenderSellToBuy">
+                        {val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail === val.senderEmail ?
+                          <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
+                          : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail === val.senderEmail ?
+                            <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
+                            : val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                              <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
+                              : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
+                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
+                                : val.superMediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Buyer</h5>
+                                  : val.superMediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Seller</h5>
+                                    :
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to Buyer</h5>
+                        }
+                        <h3>{val.message}</h3>
+                      </div>
+                      : <div className="messageSenderBuyToSell">
+                        {val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail === val.senderEmail ?
+                          <h5>{this.formatTheCreatedAtDate(val.createdAt)} Seller to <span style={{ color: 'red' }}>Mediator</span></h5>
+                          : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail === val.senderEmail ?
+                            <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to <span style={{ color: 'red' }}>Mediator</span></h5>
+                            : val.mediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                              <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Buyer</h5>
+                              : val.mediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
+                                <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Mediator</span> to Seller</h5>
+                                : val.superMediatorInvolved === "1" && this.state.orderDetail.sellerEmail !== val.senderEmail && this.state.selectedJob.customeremail === val.receiverEmail ?
+                                  <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Buyer</h5>
+                                  : val.superMediatorInvolved === "1" && this.state.orderDetail.customeremail !== val.senderEmail ?
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} <span style={{ color: 'red' }}>Super Mediator</span> to Seller</h5>
+                                    :
+                                    <h5>{this.formatTheCreatedAtDate(val.createdAt)} Buyer to Seller</h5>
+                        }
+                        <h3>{val.message}</h3>
+                      </div>
+                    }
+                  </>
+                ))}
+              </div>
+              : <div
+                className="attentionRedDiv"
+                style={{ marginTop: "10px" }}
+              >
+                <h2
+                  style={{
+                    textAlign: "center",
+                    paddingTop: "28px",
+                  }}
+                >
+                  This case has no messages
+                </h2>
+              </div>}
+            {/* {this.state.wantToOpenMsg.message} */}
+          </div>
+
+          {sendMsgBtn}
+
+        </>
+    } else if (this.state.mediationStarted === "startRes") {
+      magnifierViewUserUI =
+        <>
+          <div className="furtherDetailCOntainer" style={{ width: '100%', borderColor: '#21FFFE' }}>
+            <br />
+            <span className="sendMsgTxtLine">
+
+              {this.state.mediatorSendMsgTo === "Mediator" ?
+                <>
+                  <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Buyer" }) }} className="smallerThanSign">{">"}</span>{" "}
+                  <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Buyer" }) }}>Send Message to Buyer</span>
+                </>
+                :
+                <>
+                  <span style={{ color: 'white' }} className="smallerThanSign">{">"}</span>{" "}
+                  <span style={{ color: 'white' }}>Send Message to Buyer</span>
+                </>
+              }
+            </span>
+            <hr className="furtherDetailHR" />
+            {/* <span className="smallerThanSign">{">"}</span>{" "} */}
+            {this.state.mediatorSendMsgTo === "Buyer" ?
+              <>
+                <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Mediator" }) }} className="smallerThanSign">{">"}</span>{" "}
+                <span style={{ color: '#53ccf8' }} onClick={() => { this.setState({ mediatorSendMsgTo: "Mediator" }) }}>Send Message to Mediator</span>
+              </>
+              :
+              <>
+                <span style={{ color: 'white' }} className="smallerThanSign">{">"}</span>{" "}
+                <span style={{ color: 'white' }}>Send Message to Mediator</span>
+              </>
+            }
+            <br />
+            <br />
+            <textarea
+              className="SendMessageTxtarea"
+              id="senMsgToMedOrSellerTextereaValue"
+              onChange={(e) => {
+                this.setState({ senMsgToMedOrSellerTextereaValue: e.target.value })
+              }}
+            ></textarea>
+            <p className="addDocsTxt">
+              Add document or photos ( 0 of 5 )
+            </p>
+            <div className="attachFIle">
+              <img src={sendMessageAdd} alt="sendMessageAdd" />
+              <img
+                src={addedFilesSndMessage}
+                alt="addedFilesSndMessage"
+              />
+              <img
+                src={addedFilesSndMessage}
+                alt="addedFilesSndMessage"
+              />
+              <img
+                src={addedFilesSndMessage}
+                alt="addedFilesSndMessage"
+              />
+              <img
+                src={addedFilesSndMessage}
+                alt="addedFilesSndMessage"
+              />
+            </div>
+            <br />
+          </div>
+
+          {sendMsgBtn}
+
+        </>
+    } else if (this.state.magnifierViewUserViewPDF === false) {
       magnifierViewUserUI = (
         <div>
           <div id="invoiceUnpaidSearch" style={{ marginTop: "-8px" }}>
@@ -808,7 +1193,9 @@ class PurchaseHistory extends Component {
                     // document.getElementById(
                     //   "resolutionSelectedPaid"
                     // ).style.display = "inherit";
-                    this.setState({ resolutionSelectedPaid: true });
+                    if (this.state.magnifierViewUser.mediation === false) {
+                      this.setState({ resolutionSelectedPaid: true });
+                    }
 
                     // document.getElementById("ViewAddNotePaid").style.display =
                     //   "none";
@@ -830,10 +1217,18 @@ class PurchaseHistory extends Component {
                         Selected
                       </p>
                       :
-                      <p >
+                      <p onClick={() => {
+                        this.setState({ mediationStarted: "showAllMessages" })
+
+                        this.showSelectedUserMsgs(this.state.magnifierViewUser.id)
+
+                        setInterval(() => {
+                          this.showSelectedUserMsgs(this.state.magnifierViewUser.id)
+                        }, 50000);
+                      }}>
                         Resolution
                         <br />
-                        Started
+                        in progress
                       </p>
                     }
                   </div>
@@ -1030,6 +1425,21 @@ class PurchaseHistory extends Component {
             ) : (
               ""
             )}
+            {this.state.magnifierViewUser.orderStatusStopeed === true && this.state.magnifierViewUser.mediation === false && this.state.ViewAddNotePaid === false & this.state.contractSelectedPaid === false && this.state.resolutionSelectedPaid === false ?
+              <div id="invoiceStopPaymentContent">
+                <p style={{ color: "pink" }}>
+                  To start the mediation process you will
+                  need to pay XX FTP in your wallet.
+                </p>
+                <p>
+                  You can purchase the FTP in My Wallet
+                  tab if you do not have the tokens
+                  required to start the Resolution process.
+                </p>
+              </div>
+              :
+              ""
+            }
             <div id="invoiceStopPaymentContent" style={{ display: "none" }}>
               <p style={{ color: "pink" }}>
                 Pay the Gas fee in your wallet to stop the payment release.
@@ -1286,9 +1696,11 @@ class PurchaseHistory extends Component {
                         className="selectResolutionBtn alignCenter"
                         style={{ width: "200px" }}
                         onClick={() => {
+                          this.setState({ mediationStarted: "startRes" })
                         }}
                       >
-                        Not judged till
+                        {/* Not judged till */}
+                        Send Message
                       </p>
                       : this.state.magnifierViewUser.paidstatus === false ?
                         <p
@@ -1301,12 +1713,25 @@ class PurchaseHistory extends Component {
                         >
                           Edit Invoice
                         </p>
-                        : <p
-                          className="selectResolutionBtn alignCenter"
-                          style={{ width: "200px" }}
-                        >
-                          Invoice Paid
-                        </p>
+                        : this.state.magnifierViewUser.orderStatusStopeed === true || this.state.magnifierViewUser.orderStatusStopeed === "1" ?
+                          <p
+                            className="selectResolutionBtn alignCenter"
+                            onClick={() => {
+                              this.setState({ mediationStarted: true })
+
+                              // axios call
+                              this.handleStartMediation()
+                            }}
+                            style={{ width: "200px" }}
+                          >
+                            Start Mediation
+                          </p>
+                          : <p
+                            className="selectResolutionBtn alignCenter"
+                            style={{ width: "200px" }}
+                          >
+                            Invoice Paid
+                          </p>
                   }
                 </span>
                 {this.state.magnifierViewUser.paidstatus === false ?
@@ -1810,65 +2235,73 @@ class PurchaseHistory extends Component {
                   id="invoiceOptionsPaid"
                   style={{ display: "none" }}
                 >
-                  <p className="invoiceTabsRow">
-                    <span>
-                      Order History: <span style={{ color: "#059b34" }}>__</span>
-                    </span>
-                    <span
-                      style={{ color: "black" }}
-                      onClick={() => {
-                        document.getElementById(
-                          "invoiceOptionsPaid"
-                        ).style.display = "none";
-                        document.getElementById(
-                          "invoiceOptionDisputes"
-                        ).style.display = "none";
-                        document.getElementById(
-                          "invoicePaidOptions"
-                        ).style.display = "inherit";
+                  {this.state.mediationStarted === "showAllMessages" || this.state.mediationStarted === "startRes" ?
+                    <p className="invoiceTabsRow" style={{ marginTop: '-10px', marginBottom: '-20px' }}>
+                      <p style={{ textAlign: 'start', marginLeft: '20px', color: 'white' }}>
+                        Resolution Number: #{this.state.magnifierViewUser.id}
+                      </p>
+                    </p>
+                    :
+                    <p className="invoiceTabsRow">
+                      <span>
+                        Order History: <span style={{ color: "#059b34" }}>__</span>
+                      </span>
+                      <span
+                        style={{ color: "black" }}
+                        onClick={() => {
+                          document.getElementById(
+                            "invoiceOptionsPaid"
+                          ).style.display = "none";
+                          document.getElementById(
+                            "invoiceOptionDisputes"
+                          ).style.display = "none";
+                          document.getElementById(
+                            "invoicePaidOptions"
+                          ).style.display = "inherit";
 
 
-                        this.setState({
-                          invoicePaidBtn: false,
-                          invoiceUnpaidOrder: false,
-                          searchUserMagnifierViewUnpaid: false,
-                          searchUserMagnifierViewPaid: false,
-                          resolutionSelectedPaid: false,
-                          ViewAddNotePaid: false,
-                          contractSelectedPaid: false,
-                        });
-                      }}
-                    >
-                      Unpaid <span style={{ color: "#059b34" }}>__</span>
-                    </span>
-                    <span style={{ color: "white" }}>
-                      Paid <span style={{ color: "#059b34" }}>__</span>
-                    </span>
-                    <span style={{ color: "black" }}
-                      onClick={() => {
-                        document.getElementById(
-                          "invoicePaidOptions"
-                        ).style.display = "none";
-                        document.getElementById(
-                          "invoiceOptionDisputes"
-                        ).style.display = "inherit";
-                        document.getElementById(
-                          "invoiceOptionsPaid"
-                        ).style.display = "none";
+                          this.setState({
+                            invoicePaidBtn: false,
+                            invoiceUnpaidOrder: false,
+                            searchUserMagnifierViewUnpaid: false,
+                            searchUserMagnifierViewPaid: false,
+                            resolutionSelectedPaid: false,
+                            ViewAddNotePaid: false,
+                            contractSelectedPaid: false,
+                          });
+                        }}
+                      >
+                        Unpaid <span style={{ color: "#059b34" }}>__</span>
+                      </span>
+                      <span style={{ color: "white" }}>
+                        Paid <span style={{ color: "#059b34" }}>__</span>
+                      </span>
+                      <span style={{ color: "black" }}
+                        onClick={() => {
+                          document.getElementById(
+                            "invoicePaidOptions"
+                          ).style.display = "none";
+                          document.getElementById(
+                            "invoiceOptionDisputes"
+                          ).style.display = "inherit";
+                          document.getElementById(
+                            "invoiceOptionsPaid"
+                          ).style.display = "none";
 
 
-                        this.setState({
-                          invoicePaidBtn: false,
-                          invoiceUnpaidOrder: false,
-                          searchUserMagnifierViewUnpaid: false,
-                          searchUserMagnifierViewPaid: false,
-                          resolutionSelectedPaid: false,
-                          ViewAddNotePaid: false,
-                          contractSelectedPaid: false,
-                        });
-                      }}
-                    >Disputes</span>
-                  </p>
+                          this.setState({
+                            invoicePaidBtn: false,
+                            invoiceUnpaidOrder: false,
+                            searchUserMagnifierViewUnpaid: false,
+                            searchUserMagnifierViewPaid: false,
+                            resolutionSelectedPaid: false,
+                            ViewAddNotePaid: false,
+                            contractSelectedPaid: false,
+                          });
+                        }}
+                      >Disputes</span>
+                    </p>
+                  }
                   <div className="invoiceBlackContainer invoiceOrderBlackDiv">
                     {this.state.searchUserMagnifierViewPaid === false ? (
                       <div id="invoiceUnPaidSection">
@@ -1925,6 +2358,9 @@ class PurchaseHistory extends Component {
                                             src={searchWhite}
                                             alt=""
                                             onClick={() => {
+                                              this.findFeeOfApeal()
+                                              this.setState({ magnifierViewUserIndex: i })
+
                                               this.setState({
                                                 magnifierViewUser: val,
                                               });
@@ -1995,7 +2431,13 @@ class PurchaseHistory extends Component {
                   className="invoiceBlackDivMainContainer"
                   id="invoiceOptionDisputes"
                   style={{ display: "none" }}
-                >
+                > {this.state.mediationStarted === "showAllMessages" || this.state.mediationStarted === "startRes" ?
+                  <p className="invoiceTabsRow" style={{ marginTop: '-10px', marginBottom: '-20px' }}>
+                    <p style={{ textAlign: 'start', marginLeft: '20px', color: 'white' }}>
+                      Resolution Number: #{this.state.magnifierViewUser.id}
+                    </p>
+                  </p>
+                  :
                   <p className="invoiceTabsRow">
                     <span>
                       Order History: <span style={{ color: "#059b34" }}>__</span>
@@ -2054,6 +2496,7 @@ class PurchaseHistory extends Component {
                     </span>
                     <span style={{ color: "white" }}>Disputes</span>
                   </p>
+                  }
                   <div className="invoiceBlackContainer invoiceOrderBlackDiv">
                     {this.state.searchUserMagnifierViewPaid === false ? (
                       <div id="invoiceUnPaidSection">
